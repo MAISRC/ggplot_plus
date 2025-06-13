@@ -1,3 +1,5 @@
+#' @importFrom ggplot2 ggplot_add
+NULL
 #' Add a New Base Theme to ggplots With Elevated Defaults
 #'
 #' Wrapper function for ggplot2's `theme()` function that still allows users to specify custom values for theme attributes but has default values for many attributes that are more likely to result in a graph that meets best practices for design aesthetics, usability, and accessibility.

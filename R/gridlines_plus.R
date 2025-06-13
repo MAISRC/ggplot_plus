@@ -1,3 +1,5 @@
+#' @importFrom ggplot2 ggplot_add
+NULL
 #' Generates Subtle and Choice Gridlines on a ggplot
 #'
 #' This function adds, by default, subtle, light gray major gridlines to a ggplot graph only in directions mapped to continuous (and not discrete) variables.

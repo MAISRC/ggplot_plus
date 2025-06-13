@@ -1,5 +1,8 @@
 #ENHANCED VERSIONS OF EACH COMMON GEOM SO AS TO HAVE IMPROVED DEFAULTS (THAT ARE STILL OVERRIDABLE)
 
+#' @importFrom ggplot2 ggplot_add
+NULL
+
 #' Default settings for geometry layers created by `geom_plus()`
 #'
 #' A named list of default aesthetics used by `geom_plus()` to control styling of the resulting geometry layers.

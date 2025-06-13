@@ -1,3 +1,5 @@
+#' @importFrom ggplot2 ggplot_add ggplot_build ggplot_gtable
+NULL
 #' Relocate a Y Axis Title to Above the Y Axis on a ggplot and Turn it Horizontal.
 #'
 #' This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using `ggplot2`'s default styling tools.

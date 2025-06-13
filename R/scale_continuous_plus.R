@@ -1,3 +1,5 @@
+#' @importFrom ggplot2 ggplot_add
+NULL
 #' Find Pretty Breaks for Continuous Axes in ggplot While Ensuring End Labels
 #'
 #' This function attempts to find a set of breaks for a continuous variable such that there aren't too many breaks, the breaks are "pretty" values where possible, and breaks exist at or near to the range values of the variable. It is essential `pretty_breaks()` from the `scales` package except that it is more opinionated about needing breaks at or near both ends of the data range. If needed, the limits of the axis are expanded slightly to yield a new break just past the range of the data.
