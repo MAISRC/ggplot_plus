@@ -1,0 +1,1047 @@
+# Guide to the ggplot.plus package
+Dr. Alex Bajcz, Quantitative Ecologist for the Minnesota Aquatic
+Invasive Species Research Center at the University of Minnesota
+
+## Preface
+
+This guide introduces the `ggplot_plus` collection—tools developed by
+Dr. Alex Bajcz, Quantitative Ecologist at the Minnesota Aquatic Invasive
+Species Research Center (MAISRC) at the University of Minnesota. It is
+not intended to be exhaustive nor prescriptive. Rather, it offers a
+hands-on overview of what these tools can do to enhance a standard
+`ggplot2` graphic.
+
+At its core, `ggplot_plus` reimagines the default styling and aesthetics
+of `ggplot2`. While a typical one-line `ggplot` command produces a
+serviceable graphic, that graphic will often fall short of best
+practices in data visualization and graph design in a number of
+respects, including accessibility.
+
+All these design shortcomings can of course be remedied using base
+`ggplot2` features—including its `theme`, `scale`, and `geom`
+functions—but doing so requires substantial knowledge that many users
+lack and would find difficult to acquire and time-consuming to leverage.
+This toolkit was built to help users of all skill levels produce
+clearer, more polished, and more accessible graphics “out of the box,”
+while still allowing full subsequent customization and experimentation.
+
+Accessibility is a key priority. Many `ggplot_plus` defaults aim to meet
+basic accessibility standards. Where accessibility is especially
+relevant, this guide will call it out explicitly.
+
+**To be clear, `ggplot_plus` is not a substitute for thoughtful graph
+design, iterative refinement, or visual storytelling.** It is a starting
+point—a set of evidence-informed defaults to help you build better plots
+faster. If you don’t like how something looks, change it! You’re
+encouraged to seek outside opinions, honor the expectations of your
+audience, and adjust accordingly.
+
+While the design choices baked into these tools ultimate reflect
+Dr. Bajcz’s professional judgment, they are grounded in a thorough
+review of the last two decades of the data visualization literature, so
+they do not primarily reflect his personal opinions about good design.
+
+Without further ado, let’s see the tools contained within this
+collection in action!
+
+## Loading packages and files
+
+This package relies only on the tools contained within the `ggplot2` and
+`dplyr` packages by design, so those are the only packages that must be
+loaded:
+
+At time of writing, there are six sets of tools in the `ggplot_plus`
+collection to load:
+
+``` r
+files = list.files("./R/",pattern = "\\.R$") #FIND ALL R SCRIPT FILES IN THE CURRENT DIRECTORY.
+invisible(lapply(paste0("./R/", files), source)) #SOURCE ALL FILES
+```
+
+## A standard `ggplot` for comparison
+
+Let’s start by creating and examining a `ggplot` produced by a simple
+`ggplot2` command. The following code will produce a scatterplot of
+petal length vs. sepal length data for iris flowers from three different
+species (these data are found in the `iris` data set automatically
+available in every installation of R). The points will be filled with
+different colors for each different species:
+
+``` r
+ggplot(iris, #<--THE DATA SET
+       mapping = aes(x = Petal.Length, #<--MAPPING OUR AESTHETICS, I.E., SAYING "*THIS* VARIABLE IN THE DATA SET SHOULD USE *THAT* VISUAL CHANNEL IN THE GRAPH". HERE, WE'RE SAYING MAP PETAL LENGTH TO HORIZONTAL POSITION AND SEPAL LENGTH TO VERTICAL POSITION.
+           y = Sepal.Length)) +
+  geom_point(mapping = aes(color = Species)) #<--IN GGPLOT2, YOU CAN MAP AESTHETICS "GLOBALLY" INSIDE ggplot(), WHERE THEY WILL APPLY TO EVERY GEOMETRY, OR "LOCALLY" INSIDE A geom_*() FUNCTION, WHERE THEY WILL ONLY APPLY TO THAT GEOMETRY. A GEOMETRY IS A WAY OF REPRESENTING DATA--HERE, POINTS FOR A SCATTERPLOT. 
+```
+
+![](README_files/figure-commonmark/basic%20iris%20scatter-1.png)
+
+This is a nice, albeit basic, graph. It’d be perfectly serviceable for
+exploration or sharing with peers, but, for publication, it doesn’t meet
+a number of data visualization best practices. These include:
+
+1.  The text, especially that of the legend and axes labels, is
+    generally too small for easy reading by those with visual
+    impairments. The rule of thumb is that someone with “normal” vision
+    should feel like text is *almost* too big for it to be big enough.
+
+2.  Furthermore, the data geometries (points) themselves are on the
+    small side to be easily parsed by someone with visual impairment.
+    The same rule of thumb applies to these elements as for text.
+
+3.  Additionally, the default color palette for `ggplot2` is a “rainbow”
+    palette. These kinds of color palettes have a range of issues but,
+    in this particular case, they lack variance in **luminance**
+    (lightness vs. darkness), so a person lacking color vision entirely
+    would not be able to tell the colors apart. Someone with red-green
+    colorblindness would also not be able to tell the red and green
+    shades here apart either.
+
+4.  A big accessibility issue in design with respect to color is
+    **contrast**–how easily nearby objects are differentiated from each
+    other and also how easily foreground and background objects are
+    differentiated. Here, contrast between the points (foreground
+    objects) and the background (the gray-filled `plot.background`) is
+    probably sufficient for those with visual impairments, but it would
+    be enhanced if the points were darker in color and/or the background
+    were lighter.
+
+5.  For those with visual or cognitive impairments, void space (empty
+    space that does not contain information) between key elements is
+    valuable. Default `ggplot`s tend to have limited space between some
+    sets of key elements, including (but not limited to):
+
+    1.  Axis titles and their corresponding axis labels.
+
+    2.  Legend key elements.
+
+    3.  Axis labels on densely labeled axes (not an issue in this
+        graph).
+
+    If possible, key elements should be spaced to make it easier to
+    parse distinct elements from each other.
+
+6.  Axis and legend titles and labels here are “raw,” i.e., they are
+    identical to the column names in the original data set. This means
+    they are designed for computer- rather than human-readability. These
+    should be reformatted to be more immediately human-intuitive and
+    conform to normal spelling, punctuation, and capitalization rules.
+    They should also include units, if relevant.
+
+7.  Empirical research on **gridlines** (the criss-crossing white lines
+    in the background of the plot) is mixed.  
+      
+    On the one hand, **gridlines** increase cognitive load and can
+    increase the length of time it takes readers to successfully
+    interpret a graph. They can also decrease contrast between key
+    elements. They also convey much less vital information when they run
+    in directions mapped to categorical (text-based) data (as opposed to
+    numeric data).  
+      
+    On the other hand, **gridlines** are intuitively understood by those
+    with little to no graph-reading experience, so they can be a
+    scaffold for a novice’s understanding. Plus, they can increase the
+    speed and accuracy with which readers discern exact values of data
+    elements.  
+      
+    However, considerable research has shown that graphs are not the
+    best way to convey exact values to readers (tables, text, and direct
+    sharing of data sets are all superior). Graphs are better-designed
+    for “vibes” than precision! Moreover, even when gridlines are
+    valuable, research suggests they can be faint or infrequent. In the
+    graph above, they are probably more frequent than they need to be,
+    though this could be debated.
+
+8.  When vertical and/or horizontal position is mapped to numeric
+    variables, these axes essentially represent number lines. Readers
+    expect such lines to be graduated (labeled) not just regularly
+    throughout but also at both ends. In the graph above, the x axis is
+    missing a label near either end, and the y axis is also missing one
+    at its lower end. This looks “incomplete,” and also may increase the
+    reading time of the graph while reducing comprehension.
+
+9.  **Overplotting** occurs whenever data elements overlap in value
+    enough to be plotted partially or wholly overtop of one another.
+    When this occurs, the reader cannot accurately evaluate
+    **density**–they cannot determine whether one point exists in a
+    region or more than one.
+
+10. No human language reads at a 90 degree angle from horizontal.
+    Substantial research has shown that it takes considerably longer to
+    accurately read text at this angle vs. horizontal. Such text has
+    also been shown to be difficult to read for readers who have certain
+    visual or cognitive impairments (e.g., dyslexia), those with certain
+    physical disabilities or technological limitations that prevent them
+    from tipping the text horizontal to make it easier to read, and
+    those for whom the text is not in their native language.  
+      
+    As such, the default y axis title’s vertical orientation is not
+    ideal. It is also less prominently located (in the left plot margin)
+    than it could be, given that a graph is often “about” its y axis
+    (given that vertical position often corresponds to variance in the
+    **dependent variable**).
+
+11. The axis tick marks are quite small. For them to be easily noticed
+    and distinguished from possible data elements, they could be more
+    prominent.
+
+12. The legend’s position is not ideal in a couple of respects. First,
+    it’s space-inefficient, as it forces a large void space to its top
+    and bottom. Second, it is not in a prominent location relative to
+    how most readers actually read graphs, such that they are likely to
+    encounter it late, which may mean they struggle more to integrate
+    its contents with their understanding of the rest of the graph.
+    Ideally, the need for legend would be eliminated somehow (such as
+    through direct labeling within the plotting area), but, otherwise,
+    the legend could be placed somewhere more efficient and prominent.
+
+This isn’t meant to be an exhaustive list of design issues with the
+graph above, but they should provide a sense of the diverse array of
+design choices that someone could need to remedy if trying to prepare a
+`ggplot` for publication.
+
+## Colorblind-friendly palettes
+
+Conveniently, the `viridis` package, bundled with `ggplot2`, comes with
+eight colorblind-friendly color palettes we can leverage. These palettes
+vary not just hue (what is often thought of as “color”, i.e., yellow,
+red, green, etc.) but also luminance (and sometimes also **saturation**,
+which is how “gray” a color is). This double-variance enables colors to
+be distinguishable regardless of vision impairment or viewing
+technology.
+
+The `ggplot_plus` collection includes a function, `palettes_plus()`,
+that is a convenience function providing access to the default `viridis`
+palette for whenever the `color` (or, equivalently, `colour`) or `fill`
+channels are used:
+
+``` r
+palettes_plus() #<--CALL ONCE PER SESSION.
+
+#SAME GRAPH AS BEFORE
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_point(mapping = aes(color = Species))
+```
+
+![](README_files/figure-commonmark/palettes%20plus-1.png)
+
+While, by default, `viridis` runs from a dark purple to a light yellow
+through blue, green, and teal, `palettes_plus()` defaults to excluding
+the dark purple range, as this can lack contrast against black, and the
+light yellow range, as this can lack contrast against white. As such,
+the colors shown above would be distinguishable from each other and from
+the background in a wide range of circumstances.
+
+However, either of these settings can be adjusted: the `begin` and `end`
+parameters of `palettes_plus()` can run from `0` to `1`. Settings
+`begin` closer to 0 will include more of the dark purple range, whereas
+setting `end` closer to `1` will include more of the light yellow range:
+
+``` r
+palettes_plus(begin = 0) #<--ALLOW DARK PURPLE RANGE.
+
+#SAME GRAPH AS BEFORE
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_point(mapping = aes(color = Species))
+```
+
+![](README_files/figure-commonmark/bringing%20in%20dark%20purple-1.png)
+
+Here, dark purple contrasts well against the background, whereas light
+yellow would not.
+
+There are other color palettes available, though. These are coded “A”
+through “H” for `magma`, `inferno`, `plasma`, `viridis`, `cividis`,
+`rocket`, `mako`, and `turbo`, respectively. If you are looking for a
+more accessible “rainbow” palette, `turbo` is a good choice:
+
+``` r
+palettes_plus(begin = 0, end = 1, palette = "H") #<--SWITCH TO TURBO PALETTE FOR ITS FULL RANGE. 
+
+#SAME GRAPH AS BEFORE
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_point(mapping = aes(color = Species))
+```
+
+![](README_files/figure-commonmark/turbo-1.png)
+
+It should be noted that, in terms of luminance, `turbo` is
+bi-directional and thus has two “dark” regions that would not be
+distinguishable for those who are totally or partially colorblind (\<1%
+of the human population). If that is of concern, you could restrict
+either `begin` or `end` to `0.5` to exclude one half of the palette and
+use just its “blue” or “red” ends.
+
+`palettes_plus()` is designed to be called only as often as needed–once
+called, it will override `ggplot2`’s default choice of color palette for
+all subsequent graphs. Call it once per session, and only call it again
+if you want to change something. For now, we’ll return to a `viridis`
+palette that excludes the purple region.
+
+``` r
+palettes_plus(begin = 0.28, end = 1, palette = "D") #<--RESET TO VIRIDIS AND NORMAL RESTRICTIONS
+```
+
+This leaves us with a graph that has light yellow points against a light
+gray background, which lacks contrast, but we’ll fix that issue in a
+moment:
+
+``` r
+#SAME GRAPH AS BEFORE
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_point(mapping = aes(color = Species))
+```
+
+![](README_files/figure-commonmark/same%20graph-1.png)
+
+## Geometries with improved defaults
+
+One of `ggplot_plus`’s primary tools is `geom_plus()`. This function is
+meant to replace most other `geom_*()` function calls you’d typically
+include in a `ggplot` command string. `geom_plus()` has one required
+input, `geom`, which must either be first or named. It corresponds to
+the string that would follow `_` in whatever `geom` you were trying to
+call (i.e., “point” for `geom_point()`, “line” for `geom_line()`, “bar”
+for `geom_bar()`, etc.).
+
+So, to use this function to make our scatterplot, we can simply replace
+`geom_point()` with `geom_plus(geom = "point")`:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", #<--CHANGED FUNCTION, ADDED GEOM INPUT
+            mapping = aes(color = Species))
+```
+
+![](README_files/figure-commonmark/geom%20plus-1.png)
+
+The fundamental purpose of `geom_plus()` is to override some of
+`ggplot2`’s default geometry parameters to address some of the design
+concerns raised earlier.
+
+In this case, `geom_plus` made the points larger. It also switched their
+default shape to `21` from `16`. This is significant because the latter
+has only a `color` aesthetic, whereas the former has separate `color`
+and `fill` aesthetics for its **stroke** (outline) and interior regions,
+respectively. This allows us to specify a `"transparent"` fill by
+default to make the circles hollow. As a result, areas of partial
+overlap are discernible (though total overlap would still not be).
+
+If we switch `species` from being mapped to `color` to being mapped to
+`fill`, `geom_plus()` defaults to a `"black"` stroke that resolves the
+contrast issue between the yellow points and the gray background:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species)) #<--CHANGED TO FILL AESTHETIC
+```
+
+![](README_files/figure-commonmark/fill%20instead-1.png)
+
+Because our eyes will now compare the yellow to the black immediately
+next to it instead of to the gray behind it, this doesn’t have the
+contrast problem we had with simple monochromatic points.
+
+Dark purple wouldn’t contrast well against black, but since the point
+strokes don’t convey information directly, this isn’t a problem, so if
+we prefer it, we can restore the purple end of the spectrum to have more
+color options available:
+
+``` r
+palettes_plus(begin = 0, end = 1) #<--RESTORE PURPLE END OF COLOR RANGE AND RETAIN YELLOW RANGE (WHICH, BY DEFAULT, WOULD BE CUT OFF).
+
+#SAME GRAPH AS BEFORE
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species))
+```
+
+![](README_files/figure-commonmark/restore%20purple-1.png)
+
+So, a user has two options when they want to use color for a plot like
+this one:
+
+1.  Use transparent fill and map stroke color to a discrete variable
+    like `species`, favoring darker colors for contrast with the
+    background, and allowing partial overlaps to be directly visible.
+
+2.  Use dark stroke colors against a light background and map fill color
+    to the discrete variable.
+
+In the latter case, overplotting is still an issue. We can address it
+the “usual” way, which is to make the points semi-transparent so that
+points that stack on top of one another “bleed through” each other and
+result in a darker point (colors will “blend” as well, if applicable):
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) #<--MAKE POINTS MOSTLY TRANSPARENT. 0 IS TOTALLY CLEAR, AND 1 IS TOTALLY OPAQUE.
+```
+
+![](README_files/figure-commonmark/using%20alpha-1.png)
+
+This does have the consequence of dimming the black strokes as well, so
+keep that in mind from a contrast perspective.
+
+### Detour: Mapping visual channels in `ggplot2` (a review)
+
+In `ggplot2`, you can set the aesthetics of your graph’s visual channels
+in three (partially overlapping) ways:
+
+1.  You can map a visual channel (like x axis position) to a variable in
+    your data set globally inside of `aes()` inside of `ggplot()`. It’ll
+    then apply to every geometry added to the plot.
+
+2.  You can map a visual channel to a variable in your data set locally
+    inside of `aes()` inside of your `geom_*()` function. It’ll then
+    apply only to that geometry and not others (e.g., you could have
+    colored points but not colored lines).
+
+3.  You can also set a visual channel to a constant, either inside of
+    `aes()` in either of the two places listed above or outside of
+    `aes()` inside of your `geom_*()` function. Depending on where you
+    do this, it’ll either apply to every geometry added to the plot or
+    just one. For example, you can set `size = 5` to make all aspects of
+    your visual channels with a size parameter have a size of 5.
+
+This is one of the most confusing aspects of using `ggplot2` for
+beginning users, so if this is tricky to understand, that’s
+understandable. Let’s see this distinction with a couple of graphs.
+First, let’s convert our plot to a boxplot with **jittered** (randomly
+moved a small distance) points plotted overtop:
+
+``` r
+#NEW PLOT
+ggplot(iris,
+       mapping = aes(x = Species, #<--NOW, JUST SPECIES, A DISCRETE VARIABLE 
+           y = Sepal.Length)) +
+  geom_plus(geom = "boxplot") + #<--A NEW GEOM ADDED TO MAKE A BOXPLOT
+  geom_plus(geom = "jitter", #<--SAME POINTS AS BEFORE EXCEPT NOW JITTERED. OTHERWISE, THEY'D BE OVERPLOTTED A LOT.
+            mapping = aes(fill = Species),
+            alpha = 0.2)
+```
+
+![](README_files/figure-commonmark/understanding%20mapping-1.png)
+
+In the above example:
+
+- We map x and y axis position to two variables in our data set
+  globally, inside of `ggplot()`’s mapping input using `aes()`. Thus,
+  for both our jittered points and our boxplots, `x` is mapped to
+  `Species` and `y` is mapped to `Sepal.Length`.
+
+- We map `fill` to `Species` too, using `aes()`, but we do so only
+  inside of the `geom_plus()` call that builds our jittered points, so
+  that mapping *only* applies to that geometry (our boxplots are not
+  also filled according to species).
+
+- We map `alpha` (transparency) to a constant value of `0.2`, again only
+  locally inside of one of our geometries. This means it applies to
+  every element of that geometry, but only to elements of that geometry.
+
+Mapping visual channels locally takes precedence over mapping them
+globally, so if you map the same channel (e.g., `fill`) to 2+ values
+such that there are conflicts, the local settings will win locally.
+Also, if you (likely accidentally) map a channel to both a variable and
+to a constant value, usually, the constant value will win.
+
+The above describes how visual channel settings work in base `ggplot2`.
+Its reviewed here simply to say that all the same rules apply when using
+`ggplot_plus`’s tools. You can set aesthetics globally or locally, and
+map them to constants or variables, and all the same behaviors will
+apply:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Species, 
+           y = Sepal.Length, 
+           fill = Species, #<-- WE CAN SWITCH TO MAPPING FILL GLOBALLY SO IT APPLIES TO BOTH GEOMS. 
+           color = Petal.Length)) + #<--NOW ALSO MAPPING COLOR
+  geom_plus(geom = "boxplot", color = "blue") + #<--WE LOCALLY OVERRIDE COLOR, SO IT'LL BE BLUE, NOT LINKED TO PETAL.LENGTH 
+  geom_plus(geom = "jitter") #<--WE NO LONGER MAP FILL LOCALLY OR SET ALPHA TO A CONSTANT.
+```
+
+![](README_files/figure-commonmark/same%20plot%20diff%20map-1.png)
+
+The above examples demonstrate that many of the most common `ggplot`
+`geom`s are implemented for `geom_plus()` (though not all). A complete
+list of implemented `geom`s can be generated like this:
+
+``` r
+names(geom_plus_defaults)
+```
+
+     [1] "point"      "jitter"     "count"      "boxplot"    "violin"    
+     [6] "bar"        "col"        "histogram"  "line"       "freqpoly"  
+    [11] "segment"    "abline"     "hline"      "vline"      "curve"     
+    [16] "smooth"     "area"       "ribbon"     "crossbar"   "errorbar"  
+    [21] "linerange"  "pointrange" "density"    "dotplot"   
+
+If you are interested in seeing other base `ggplot2` `geom`s be
+implemented, let us know.
+
+## Improving axes
+
+Returning to our scatterplot from earlier:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2)
+```
+
+![](README_files/figure-commonmark/return%20to%20scatter-1.png)
+
+We still have some areas for improvement. One is with the axes titles
+and labels. We should first make the titles more human-readable,
+intuitive, and thorough by including units. We can do this using the
+`scale_*_*()` family functions in `ggplot2:`
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous(name = "Petal length (cm)") #<-- THE STANDARD WAY TO CHANGE THE X AXIS TITLE FOR A NUMERIC VARIABLE.
+```
+
+![](README_files/figure-commonmark/normal%20scale-1.png)
+
+This works, but you’ll notice that, by default, the axis fails to have
+axis labels at either end of the x axis. The `scale_x_continuous_plus()`
+function will attempt (if possible) to adjust the frequency of axis
+**breaks** (the values at which labels go) and the **limits** (the min
+and max values shown) automatically to ensure that breaks are regular
+and exist at or near the ends of the axes:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)") #<--SWITCHING TO THE PLUS VERSION
+```
+
+![](README_files/figure-commonmark/cont_plus-1.png)
+
+The x axis limits have been expanded to include 1 and 7, and the breaks
+frequency has been changed to keep the steps as “pretty” as possible.
+
+Notice that you can specify a `name` for the axis title in the `_plus()`
+version of the function just like in the regular `ggplot()` version. You
+can also specify values for other `scale` functions like `expand`,
+`transform`, and `labels`, if you want. You just can’t specify new
+`breaks` or `limits`, as the function is already trying to set those
+smartly for you, so if you try, this will return an error. If you want
+to set those parameters, using the plain `ggplot()` version.
+
+In this particular case, the resulting labels are arguably more frequent
+than needed for the purpose, so we could suppress the labels (but keep
+the tick marks) for every other break like so:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) #<--SPECIFYING A VECTOR OF CUSTOM LABELS THAT INCLUDES EMPTY STRINGS FOR EVERY OTHER VALUE
+```
+
+![](README_files/figure-commonmark/suppressing%20some%20labels-1.png)
+
+That would be optional, but perhaps a nice touch to reduce cognitive
+load and increase void space.
+
+Logically, there’s a similar function for the y axis too:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") #<--ADDED Y AXIS EQUIVALENT.
+```
+
+![](README_files/figure-commonmark/y%20cont%20plus-1.png)
+
+Now, the y axis limits have expanded to allow for a break at `4` so that
+the bottom end of the y axis has a label.
+
+## Improving the theme
+
+A lot of `ggplot2`’s visual styling of graphs is controlled by its
+`theme` function. With well over 100 parameters, `theme()` is often a
+daunting function for `ggplot` beginners to learn.
+
+As such, `ggplot_plus` features `theme_plus()`, a custom version of
+`theme()` that comes bundled with a bunch of default values meant to
+overcome some of the design challenges raised above:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus() #<--ADDING CUSTOM DEFAULT THEME.
+```
+
+![](README_files/figure-commonmark/theme_plus-1.png)
+
+This version of the theme:
+
+- Increases the size of all text elements to a more readable size.
+
+- Increases the spacing between text elements (e.g., legend keys, and
+  the legend title and the rest of the legend).
+
+- Expands the size of axis tick marks.
+
+- Removes gridlines. \[But these can be thoughtfully re-added; see next
+  section\].
+
+- Makes the background white for maximum contrast with foreground
+  elements. \[Note that, in some cases, white increases eye strain\].
+
+- Adds y and x axis lines that are black and prominent for easy parsing.
+  \[Note that no top or right border lines are added by default, as
+  these do not directly carry information in most cases.\]
+
+- Moves the legend to a horizontal strip above the graph, where it takes
+  up less room and is more likely to be immediately encountered by the
+  average reader.
+
+- Makes all font black by default for maximum contrast against a white
+  background (the default for some elements is a dark gray).
+
+All of these adjustments are easily overridden. Don’t like how thick the
+axis lines are? Prefer the legend where it normally is? No problem:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus(axis.line = element_line(linewidth = 0.75)) #<--WE CAN MAKE THE LINES A LITTLE THINNER IF WE REALLY WANT TO.
+```
+
+![](README_files/figure-commonmark/adj%20theme-1.png)
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus(axis.line = element_line(linewidth = 0.75),
+             legend.position = "right",#<--We CAN ALSO RESTORE THE RIGHT-SIDE LEGEND. 
+             legend.direction = "vertical", 
+             legend.title = element_text(margin = margin(b = 15, r = 0)), #<--...BUT I'D RECOMMEND MAKING A FEW SPACING ADJUSTMENTS IN THAT CASE.
+             legend.key.spacing.y = unit(0.5, "cm")
+             ) 
+```
+
+![](README_files/figure-commonmark/adj%20theme%202-1.png)
+
+So, `theme_plus()` exists, like the other tools in this toolkit, to be
+an informed starting point, not an ending point. If you don’t like
+aspects of the resulting design (and they certainly won’t work for every
+single graph type in every single contest!), you can change it.
+
+## Y axis title orientation and location
+
+Our graph is looking pretty nice now, but there’s one remaining issue
+from earlier: the orientation and location of the y axis title. It’d be
+nice if it were horizontal and placed somewhere more prominent.
+
+In base `ggplot2`, it is possible to re-orient the y axis like so:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal\nlength\n(cm)") + #<--INSERT SOME LINE BREAKS USING \n TO BREAK THE CURRENT TITLE ONTO MANY LINES FOR SPACE EFFICIENCY. 
+  theme_plus(axis.title.y = element_text(vjust = 0.5, angle = 0)) #<--CHANGE THE Y AXIS TITLE TO BE VERTICALLY JUSTIFIED AND HORIZONTAL.
+```
+
+![](README_files/figure-commonmark/change%20y%20axis%20title%20manual-1.png)
+
+Admittedly, this doesn’t look too bad, nor is it too terribly difficult
+to achieve. However, it doesn’t scale well for long axis titles, it’s
+space-inefficient (taking away horizontal space that could instead be
+occupied by the data, and it still doesn’t place the title in the most
+prominent location possible.
+
+The `yaxis_title_plus()` function is designed to relocate and reorient
+your y axis title to the top of the y axis line, left-justified to the
+edge of the graph:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + #<--NO NEED FOR ANY OTHER ADJUSTMENTS HERE
+  theme_plus() + #<--OR HERE.
+  yaxis_title_plus()
+```
+
+![](README_files/figure-commonmark/yaxis%20mover-1.png)
+
+This reorientation and relocation of the y axis title has many potential
+benefits:
+
+- It puts the title in a prominent location (most readers of a
+  left-to-right, top-to-bottom language will begin here first).
+
+- It also orients the text horizontally for easy reading.
+
+- It’s still very associated with the y axis (it’d be hard to confuse it
+  for anything else), and can now be *at least* as long as the graph is
+  wide without taking up more than a single horizontal stripe of space.
+
+- By moving the title (and the legend!) out of the central “row” of the
+  graph, the data now have as much horizontal room as possible.
+
+- Plus, for novice graph readers, this functions as a “pseudo-title.”
+  Most graph designer do **not** like plot titles primarily because,
+  typically, they do what the y axis title and/or caption would already
+  do, only worse. However, by making the y axis title into something
+  like a plot title, that redundancy is eliminated.
+
+While perhaps a tough sell for some, for what it’s worth, the data
+visualization community has been championing the relocated y axis title
+in publications dating back to the early 1990s, so this is not a fridge
+or new idea! Just remember that, while it’s recommended, this is an
+optional feature.
+
+## Thoughtful gridlines
+
+Another contentious opinion of the `ggplot_plus` tools is the complete
+suppression of gridlines in the default theme. While these can of course
+be added back manually using `theme()` or `theme_plus()`, there’s an
+easier option: `gridlines_plus()`. This function reintroduces only
+faint, major gridlines running only in directions mapped to numeric
+variables (not discrete ones):
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus() + 
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+![](README_files/figure-commonmark/gridlines%20plus-1.png)
+
+Research has shown that even very faint gridlines (the above are
+`gray90`) can still be effectively used by those who want or need them
+but are also relatively easily ignored by those who don’t want or need
+them, so ling as they aren’t too frequent, so they represent a good
+compromise.
+
+For convenience, `linetype`, line `color`, and `linewidth` can be
+adjusted within `gridlines_plus()` if you want to make small changes.
+
+## Faceting
+
+Faceting (breaking one graph into small multiples, i.e., functionally
+similar graphs of the same data divided by one or more discrete
+variables) is a major feature of ggplot2:
+
+``` r
+#EXAMPLE GRAPH TO SHOW FACETING FEATURES:
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal\nlength\n(cm)") + #<--RE-EMPLOY THE LINE BREAK TRICK
+  theme_plus(axis.title.y = element_text(angle = 0, vjust = 0.5)) + #<--TRICKS FOR LEFT-MARGIN Y AXIS TITLE POSITIONING. 
+  # yaxis_title_plus() + #<--LET'S COMMENT THIS OUT FOR NOW
+  gridlines_plus() +
+  facet_grid(. ~ Species) + #<--MAKE ONE SMALL MULTIPLE PANEL PER SPECIES (AS COLUMNS)
+  guides(fill = "none") #<--SUPPRESS THE LEGEND, SINCE IT'S NOW REDUNDANT.
+```
+
+![](README_files/figure-commonmark/faceting%20with%20geomplus-1.png)
+
+As these resources demonstrate, all the features of `ggplot_plus`
+(mostly, probably) work with faceting, though not all of them would
+always make sense to use in the context of facets.
+
+In particular, relocating the y axis title using `yaxis_title_plus()` is
+*possible*, but maybe not ideal:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2, 
+            show.legend = FALSE) + #<--A DIFFERENT, SOMETIMES BETTER WAY TO SUPPRESS THE LEGEND
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") +  #<--NORMAL
+  theme_plus() + #<--NORMAL
+  yaxis_title_plus() + #<--ADDED BACK IN
+  gridlines_plus() +
+  facet_grid(. ~ Species)
+```
+
+    Warning in switch_axis_label(plot$plot, location = loc): Heads-up: The top y
+    axis title will be placed above any top strip labels on faceted graphs. This
+    may not be ideal; in these instances, I recommend moving your top facet strips
+    to the bottom. In facet_*(), specify "switch = 'x'" to do this. Alternatively,
+    consider faceting by rows rather than columns to place strips on the sides.
+
+![](README_files/figure-commonmark/facets%20and%20y%20axis%20title-1.png)
+
+You can see that the y axis title gets placed *above* the facet strip
+labels, which means it is not as close to the y axis as it probably
+ought to be.
+
+There are two potential workarounds to this. The first would be to facet
+into rows rather than columns:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2, 
+            show.legend = FALSE) + 
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") +  
+  theme_plus() + 
+  yaxis_title_plus() + 
+  gridlines_plus() +
+  facet_grid(Species ~ .) #<--FLOPPING THE ORDER WILL FACET INTO ROWS.
+```
+
+![](README_files/figure-commonmark/plot%20as%20rows-1.png)
+
+Another option would be to relocate the facet labels to the bottom of
+the graph so they aren’t competing with the relocated y axis title:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2, 
+            show.legend = FALSE) + 
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") +  
+  theme_plus() + 
+  yaxis_title_plus() + 
+  gridlines_plus() +
+  facet_grid(. ~ Species, switch = "x") +
+  annotate("segment", x = Inf, xend = -Inf,y = -Inf,yend = -Inf, color = "black", linewidth = 1.2) #<--A TRICK, IN THIS CASE, IS TO PUT A SEGMENT AT THE BOTTOM OF THE GRAPH SO IT LOOKS LIKE A TOP BORDER LINE FOR THE FACET STRIP LABELS
+```
+
+![](README_files/figure-commonmark/moving%20facet%20labels-1.png)
+
+This also works, but perhaps suppressing the facet strip labels and
+retaining the legend is preferable:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2, 
+            show.legend = TRUE) + #<--KEEP THE LEGEND. 
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") +  
+  theme_plus(strip.background = element_blank(),
+             strip.text = element_blank()) + #<--SUPPRESSING THE STRIP TEXT AND BACKGROUNDS.
+  yaxis_title_plus() + 
+  gridlines_plus() +
+  facet_grid(. ~ Species)
+```
+
+![](README_files/figure-commonmark/retain%20legend-1.png)
+
+### Side-note: Transparency in the legend keys
+
+You’ll notice that the legend keys (the circles in the legend) look
+exactly like the points in the plot in that they are also
+semi-transparent. The `alpha` setting is applying to them as well. This
+isn’t a `ggplot_plot` feature, but, in `ggplot2`, you can override how
+the legend keys are drawn in several ways. Here’s one:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species, 
+                          alpha = 0.2)) + #<--MAP INSIDE AES INSTEAD OF OUTSIDE IT, WHICH HELPS FOR MYSTERIOUS REASONS
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") +  
+  theme_plus(strip.background = element_blank(),
+             strip.text = element_blank()) + 
+  yaxis_title_plus() + 
+  gridlines_plus() +
+  facet_grid(. ~ Species) +
+  scale_alpha(guide = "none") #<--DON'T INCLUDE A GUIDE FOR ALPHA. 
+```
+
+![](README_files/figure-commonmark/override%20aes-1.png)
+
+## Known issues
+
+One known issue with `ggplot_plus`’s tools is a conflict between top x
+axis titles and the relocated y axis title created by
+`yaxis_title_plus()`:
+
+``` r
+#UNFACETED GRAPH WITH GRIDLINES
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7),
+                          position = "top") + #<--MOVE THE X AXIS TO THE TOP OF THE GRAPH
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus() + 
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+    Warning in switch_axis_label(plot$plot, location = loc): Heads-up: The top y
+    axis title is likely to clip overtop of the x axis labels if your graph
+    features a top x axis. Move the x axis to the bottom using "position = 'top'"
+    in scale_x_*() (or remove the secondary x axis). Alternatively, set "location =
+    'bottom'" in switch_y_axis().
+
+![](README_files/figure-commonmark/yaxis%20top%20conflict-1.png)
+
+As you can see, the y axis title will be located to the same functional
+“row” as the top x axis labels, so they will clip into each other.
+
+In instances where a top x axis is desirable (which is probably uncommon
+but might happen occasionally), `yaxis_title_plus()` features a
+`location` argument that can be set to “bottom” to move the y axis title
+to the equivalent location at the bottom of the graph instead:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.2) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7),
+                          position = "top") + 
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus(axis.title.y = element_text(vjust = 0.75)) + #<--READJUST THE VERTICAL POSITIONING OF THIS ELEMENT 
+  yaxis_title_plus(location = "bottom") + #<--MOVE THE Y AXIS TITLE TO THE BOTTOM INSTEAD
+  gridlines_plus()
+```
+
+![](README_files/figure-commonmark/y%20axis%20bottom-1.png)
+
+This looks a little odd/backwards to me, but it works!
+
+If you duplicate the x axis such that it appears on *both* the top *and*
+bottom of the graph, there’s no recourse for adjusting the relocated y
+axis title in that case. At that point, breaking a horizontally oriented
+y axis onto many lines may be best.
+
+### Idealized scatterplot for reference
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species, alpha = 0.2)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus() + 
+  yaxis_title_plus() +
+  gridlines_plus() +
+  scale_alpha(guide = "none")
+```
+
+![](README_files/figure-commonmark/idealized%20graph-1.png)

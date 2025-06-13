@@ -1,7 +1,8 @@
 ---
-title: "Guide to ggplot_plus"
-author: "Alex Bajcz"
-format: html
+title: "Guide to the ggplot.plus package"
+author: "Dr. Alex Bajcz, Quantitative Ecologist for the Minnesota Aquatic Invasive Species Research Center at the University of Minnesota"
+format: gfm
+html: true
 editor: visual
 ---
 
@@ -33,8 +34,8 @@ library(dplyr)
 At time of writing, there are six sets of tools in the `ggplot_plus` collection to load:
 
 ```{r load tools}
-files = list.files(pattern = "\\.R$") #FIND ALL R SCRIPT FILES IN THE CURRENT DIRECTORY.
-invisible(lapply(files, source)) #SOURCE ALL FILES
+files = list.files("./R/",pattern = "\\.R$") #FIND ALL R SCRIPT FILES IN THE CURRENT DIRECTORY.
+invisible(lapply(paste0("./R/", files), source)) #SOURCE ALL FILES
 ```
 
 ## A standard `ggplot` for comparison

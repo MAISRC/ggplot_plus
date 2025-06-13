@@ -1,3 +1,12 @@
+#' Add a New Base Theme to ggplots With Elevated Defaults
+#'
+#' Wrapper function for ggplot2's `theme()` function that still allows users to specify custom values for theme attributes but has default values for many attributes that are more likely to result in a graph that meets best practices for design aesthetics, usability, and accessibility. 
+#'
+#' @param ... Other arguments to be passed along to the `theme()` (optional).
+#' @return List with the class "theme_plus", which will trigger the theme_plus method in ggplot_add. 
+#' @examples
+#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + theme_plus()
+#' @export
 theme_plus = function(...) {
     
   user_args = list(...)
@@ -5,6 +14,17 @@ theme_plus = function(...) {
             class = "theme_plus")
 }
 
+#' Add A theme_plus-generated theme to a ggplot
+#'
+#' This method defines how objects of class `theme_plus()`, added by the theme_plus function, are added to a ggplot2 plot using the `+` operator.
+#' It applies user-specified overrides to sensible default values and ensures compatibility with ggplot2 layering.
+#'
+#' @param object An object of class `theme_plus`, created by `theme_plus()`, containing user-provided arguments (if any) and otherwise default values for many theme attributes.
+#' @param plot A ggplot object to which the new thene will be applied
+#' @param name Internal name used by ggplot2 when adding the theme.
+#'
+#' @return A ggplot object with the new theme applied.
+#' @export
 ggplot_add.theme_plus = function(object, plot, name) {
   
   user_args = object$user_args #EXTRACT THE USER'S ARGUMENTS

@@ -1,0 +1,21 @@
+Package: ggplot.plus
+Title: Elevating ggplot2's Defaults Aesthetics and Behaviors
+Version: 0.1.1
+Authors@R: 
+    person("Alex", "Bajcz", email = "bajcz003@umn.com", role = c("aut", "cre"))
+Description: A collection of ggplot2 enhancements for improved design defaults, accessibility, and usability.
+Depends: R (>= 3.5.0)
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+LazyData: true
+Imports:
+    ggplot2,
+    grid,
+    utils,
+    dplyr,
+    scales
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

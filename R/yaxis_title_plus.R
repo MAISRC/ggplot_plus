@@ -1,4 +1,12 @@
-#THIS FUNCTION ALLOWS US TO PLUG INTO THE USUAL GGPLOT SYNTAX BY ESSENTIALLY RAISING A FLAG THAT WE WANT TO TRIGGER THE AXIS_SWITCHER METHOD NEXT, WHICH KICKS OFF THE Y AXIS LABELING PROCESS.
+#' Relocate a Y Axis Title to Above the Y Axis on a ggplot and Turn it Horizontal.
+#'
+#' This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using `ggplot2`'s default styling tools. 
+#'
+#' @param location A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to `"top"`. `"bottom"` should generally only be used when the x axis labels (which would occupy the same row as the new y axis title) have been moved to the top of the graph.
+#' @return Returns a list of class "axis_switcher", which will trigger the ggplot_add method by the same name.
+#' @examples
+#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + y_axis_title_plus()
+#' @export
 yaxis_title_plus = function(location = "top") {
   structure(
     list(location = match.arg(location, c("top", "bottom"))),
@@ -6,14 +14,32 @@ yaxis_title_plus = function(location = "top") {
   )
 }
 
-#THIS AMENDS GGPLOT_ADD'S NORMALLY BEHAVIOR TO FIND A PLOT PROVIDED AND APPEND THE CLASS "SWITCHER" TO IT.
+#' Initiate the Process of Moving the Y Axis Title to the Top of a ggplot Graph
+#'
+#' This method defines how objects of class `axis_switcher`, created by the `y_axis_title_plus()` function, are added to a ggplot2 plot using the `+` operator.
+#' The method begins the process of rebuilding the ggplot with the y axis title moved to its new location within the gtable.
+#'
+#' @param object An object of class `axis_switcher`, created by `y_axis_title_plus()`, containing user-provided arguments (if any) or else pre-defined default values that determine where to move the y axis title to.
+#' @param plot A ggplot object for which the y axis title should be moved.
+#' @param name Internal name used by ggplot2 when adding the layer. Defaults to "switcher" so that this class is added to the resulting object.
+#'
+#' @return A ggplot with the class of "switcher" to trigger the ggplot_build method of the same name and also with the `y_axis_switch_location` attribute set by the call to `y_axis_title_plus()`.
+#' @export
 ggplot_add.axis_switcher = function(object, plot, name = "switcher") {
-  plot$y_axis_switch_location = object$location
+  plot$y_axis_switch_location = object$location 
   class(plot) = c("switcher", class(plot))
-  plot + theme(axis.title.y = element_text(margin = margin(r = 0))) #ADD IN A THEME TO SWITCH HOW THE MARGIN IS ADJUSTED. 
+  plot
 }
 
-#THIS AMENDS GGPLOT_BUILD'S NORMAL BEHAVIOR TO WATCH FOR A PLOT WITH THE "SWITCHER" CLASS AND, WHEN IT ENCOUNTERS IT, BUILDS IT NORMALLY, THEN APPENDS THE "SWITCHED" CLASS.
+#' Build a ggplot With the Class "switcher".
+#'
+#' This method defines how objects of class `switcher`, created by the `ggplot_add.axis_switcher()` function, are built into a ggplot2 plot.
+#' The method continues the process of rebuilding the ggplot with the y axis title moved to its new location within the gtable.
+#'
+#' @param plot A ggplot object for which the y axis title should be moved.
+#'
+#' @return A ggplot with the class of "switched" to trigger the ggplot_gtable method of the same name and also with the `y_axis_switch_location` attribute set by the call to `y_axis_title_plus()`.
+#' @export
 ggplot_build.switcher = function(plot) {
   class(plot) = c("gg", "ggplot")
   output = ggplot_build(plot)
@@ -21,15 +47,32 @@ ggplot_build.switcher = function(plot) {
   output
 }
 
-#THIS AMENDS GGPLOT_GTABLE'S NORMAL OPERATIONS SUCH THAT, IF A PLOT HAS THE "SWITCHED" CLASS, IT APPENDS A NEW Y AXIS TITLE USING OUR FUNCTION ABOVE.
+#' Finish a ggplot With the Class "switched".
+#'
+#' This method defines how objects of class `switched`, created by the `ggplot_build.switcher()` function, are finalized into a ggplot2 plot.
+#' The method finishes the process of rebuilding the ggplot with the y axis title moved to its new location within the gtable.
+#'
+#' @param plot A ggplot object with the class of "switched" for which the y axis title should be moved.
+#'
+#' @return A ggplot object compatible with `ggplot2`'s + command structure.
+#' @export
 ggplot_gtable.switched = function(plot) {
   loc = ifelse(!is.null(plot$plot$y_axis_switch_location), 
                 plot$plot$y_axis_switch_location,
-                "top")
-  switch_axis_label(plot$plot, location = loc)
+                "top") #IF USER DIDN'T SPECIFY DIFFERENT, MOVE THE Y AXIS TITLE TO THE TOP.
+  plot = switch_axis_label(plot$plot, location = loc)
+  plot + theme(axis.title.y = element_text(margin = margin(r = 0))) #ADD IN A THEME TO SWITCH HOW THE MARGIN IS ADJUSTED. 
 }
 
-#A FUNCTION THAT CAN BE USED IN A TYPICAL + CHAIN TO CREATE A GGPLOT THAT HAS THE Y AXIS TITLE MOVED TO ABOVE THE PLOT, INTO A TEXTGROB THAT NORMALLY HOUSES TOP X AXIS INFO AND OTHERWISE HAS A HEIGHT OF 0. 
+#' Place a Y Axis Title on a ggplot in a Safe Place Above the Y Axis Line.
+#'
+#' This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using `ggplot2`'s default styling tools. This is the main function used by `y_axis_title_plus()` to ultimately accomplish its purpose.
+#' This function is used internally by the `ggplot_gtable.switched()` method and is not intended for separate use.
+#'
+#'#' @param p A ggplot object whose y axis title will be moved. 
+#' @param location A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to `"top"`. Potentially overridden by whatever is specified to `y_axis_title_plus()`'s parameter of the same name when it's called.
+#' @return A ggplot object compatible with `ggplot2`'s + command structure.
+#' @export
 switch_axis_label = function(p, location = "top") {
   
   lab = p$scales$get_scales("y")$name #GET THE Y AXIS TITLE STRING PROVIDED TO ANY SCALE_Y_ FUNCTION FIRST.

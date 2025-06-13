@@ -1,5 +1,11 @@
 #ENHANCED VERSIONS OF EACH COMMON GEOM SO AS TO HAVE IMPROVED DEFAULTS (THAT ARE STILL OVERRIDABLE)
 
+#' Default settings for geometry layers created by `geom_plus()`
+#'
+#' A named list of default aesthetics used by `geom_plus()` to control styling of the resulting geometry layers. 
+#'
+#' @format A named list with elements like "point", "jitter", "boxplot", etc., corresponding to commonly used ggplot2 geometries. USe names(geom_plus_defaults) for a full list.
+#' @export
 geom_plus_defaults = list(
   point = list(size = 5,
                shape = 21,
@@ -105,7 +111,16 @@ geom_plus_defaults = list(
 )
 
 
-#GEOM_POINT. PRIMARILY, CHANGES THE SHAPE, COLOR, SIZE, AND FILL. 
+#' Generates Base Geoms With Elevated Defaults
+#'
+#' Maps inputs to a base ggplot geom (e.g., geom_point or geom_line) but provides default values more likely to adhere to best practices around usability, design aesthetics, and accessibility. 
+#'
+#' @param geom The name of the geom being drawn. Corresponds to the portion of the geom_ function after the _, e.g., "point" for geom_point, "line" for geom_line, etc. Must be a length one character string, and must match an implemented geom. See names(geom_plus_defaults) for a list of these. Required input.
+#' @param ... Other arguments to be passed along to the geom_ function being called.
+#' @return List with the class "geom_plus", which will trigger the geom_plus method in ggplot_add. 
+#' @examples
+#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point")
+#' @export
 geom_plus = function(geom, ...) {
   if(is.null(geom)) { stop("A geom must be specified!") } #MUST SPECIFY A GEOM
   if(!geom %in% names(geom_plus_defaults)) { stop("The geom you've specified either doesn't exist or hasn't been implemented yet. Please double-check your code for typos. Note that this function only needs the part following the _ in the geom's name.") }
@@ -117,6 +132,17 @@ geom_plus = function(geom, ...) {
   )
 }
 
+#' Add A geom_plus-generated Geometry to a ggplot
+#'
+#' This method defines how objects of class `geom_plus()`, added by the geom_plus function, are added to a ggplot2 plot using the `+` operator.
+#' It processes default aesthetics, handles user overrides, and ensures compatibility with ggplot2 layering.
+#'
+#' @param object An object of class `geom_plus`, created by `geom_plus()`, containing user-provided arguments (if any).
+#' @param plot A ggplot object to which the new geometry layer should be added.
+#' @param name Internal name used by ggplot2 when adding the layer.
+#'
+#' @return A ggplot object with the new geometry layer added.
+#' @export
 ggplot_add.geom_plus = function(object, plot, name) {
 
   user_args = object$user_args #LOCALLY PROVIDED USER ARGUMENTS. 
@@ -212,6 +238,7 @@ ggplot_add.geom_plus = function(object, plot, name) {
         shape_pal = c(21:25)[1:shape_num] #WE FIT IT TO THE SHAPE PALETTE OF FILLED SHAPED.
       } else { #OTHERWISE, WE WARN. 
         warning("You've mapped shape to a variable with either too few or too many unique values for shape to be an appropriate visual channel, so your shape mapping is not going to be ideal. Use shape for discrete variables with between 1-5 unique values only.")
+        shape_pal = c(21:25)[1:shape_num] #WE FIT IT TO THE SHAPE PALETTE OF FILLED SHAPED.
       }
     } else { #OTHERWISE, WE GO LOOKING IN THE GLOBAL PLOT DATA AND SO THE SAME THING.
     if(shape_var %in% names(plot$data)) {
@@ -220,6 +247,7 @@ ggplot_add.geom_plus = function(object, plot, name) {
         shape_pal = c(21:25)[1:shape_num]
       } else {
         warning("You've mapped shape to a variable with either too few or too many unique values for shape to be an appropriate visual channel, so your shape mapping is not going to be ideal. Use shape for discrete variables with between 1-5 unique values only.")
+        shape_pal = c(21:25)[1:shape_num] #WE FIT IT TO THE SHAPE PALETTE OF FILLED SHAPED.
       }
      } 
     }
@@ -229,7 +257,7 @@ ggplot_add.geom_plus = function(object, plot, name) {
   layer = do.call(geom_fn, use_these_args)
   
   #WE DO THINGS JUST A LITTLE DIFFERENTLY IF SHAPE WAS MAPPED AND WE HAVE TO ADJUST THE PALETTE.
-  if(is.null(shape_pal)) {
+  if(!exists("shape_pal")) { #THIS IS A SAFE CONSTRUCTION THAT PREVENTS ERRORS WHEN shape_pal IS NULL.
     plot + layer
   } else {
     plot + layer + scale_shape_manual(values = shape_pal)
