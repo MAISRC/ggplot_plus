@@ -256,7 +256,7 @@ ggplot_add.geom_plus = function(object, plot, name) {
     }
   }
 
-  geom_fn = get(paste0("ggplot2::geom_", geom_name), mode = "function") #GET THE ACTUAL FUNCTION THAT THE USER IS HOPING WE'LL USE HERE.
+  geom_fn = get(paste0("geom_", geom_name), mode = "function") #GET THE ACTUAL FUNCTION THAT THE USER IS HOPING WE'LL USE HERE.
   layer = do.call(geom_fn, use_these_args)
 
   #WE DO THINGS JUST A LITTLE DIFFERENTLY IF SHAPE WAS MAPPED AND WE HAVE TO ADJUST THE PALETTE.
