@@ -48,7 +48,7 @@ Once loaded, you can start layering in the “plus” tools to improve your plot
 
 The `ggplot.plus` package is guided by three core principles:
 
-1.   **Better Defaults:**\
+1.  **Better Defaults:**\
     Many default settings in `ggplot2` are functional but sub-optimal from design and accessibility standpoints. `ggplot.plus` attempts to improve upon these—adjusting colors, shapes, gridlines, spacing, typefaces, etc. to yield cleaner, more accessible visuals from the outset.
 
 2.  **Override-ability:**\
@@ -62,7 +62,7 @@ The `ggplot.plus` package is guided by three core principles:
 The package introduces several new functions to add to your base `ggplot2` arsenal. These include:
 
 | Function | Purpose |
-|------------------------------------|------------------------------------|
+|----|----|
 | `geom_plus()` | A general wrapper for geoms with improved default aesthetics |
 | `theme_plus()` | A better base theme with improved default settings for size, spacing, legend placement, and much more. |
 | `scale_x/y_continuous_plus()` | Drop-in replacements for `scale_x_continuous()` and `scale_y_continuous()` that will attempt to ensure axis breakpoints and limits are appropriate for fully labeling these axes. |
@@ -282,21 +282,25 @@ ggplot(iris,
 
 There are two broadly effective options for using color with point-based geoms that may feature overplotting:
 
-1.   **Transparent fill + stroke color**
+1.  **Transparent fill + stroke color**
 
-    -   Map the discrete variable (e.g., species) to `color`.
+```         
+-   Map the discrete variable (e.g., species) to `color`.
 
-    -   Use a transparent fill and dark stroke colors for contrast.
+-   Use a transparent fill and dark stroke colors for contrast.
 
-    -   Advantage: overlapping points are visually distinguishable due to the hollow centers.
+-   Advantage: overlapping points are visually distinguishable due to the hollow centers.
+```
 
-2.   **Dark stroke + colored fill**
+2.  **Dark stroke + colored fill**
 
-    -   Map the discrete variable to `fill`.
+```         
+-   Map the discrete variable to `fill`.
 
-    -   Use a consistent dark stroke to improve contrast between fill and background.
+-   Use a consistent dark stroke to improve contrast between fill and background.
 
-    -   Advantage: strong contrast, especially on light backgrounds.
+-   Advantage: strong contrast, especially on light backgrounds.
+```
 
 In the latter case, overplotting will still be an issue without one more tweak: We can make the points semi-transparent so that points that stack on top of one another "bleed through" each other and result in a darker point (colors will "blend" as well, if applicable):
 
@@ -319,7 +323,7 @@ In `ggplot2`, you can control the visual appearance of your graph using **aesthe
 
 There are three (partially overlapping) ways to assign aesthetics:
 
-1.   **Global mapping**: Inside `aes()` in the main `ggplot()` call. These mappings apply to *all* layers (geoms) by default.
+1.  **Global mapping**: Inside `aes()` in the main `ggplot()` call. These mappings apply to *all* layers (geoms) by default.
 
 2.  **Local mapping**: Inside `aes()` within a specific `geom_*()` function. These only apply to that one layer.
 
@@ -372,7 +376,7 @@ ggplot(iris,
 
 In this version:
 
--    **Fill** is now applied to *both* geoms, since it’s mapped globally.
+-   **Fill** is now applied to *both* geoms, since it’s mapped globally.
 
 -   **Color** is also mapped globally but overridden locally in the boxplot layer (so boxplot outlines are blue, regardless of `Petal.Length`).
 
@@ -553,7 +557,7 @@ This works reasonably well—it's readable and relatively simple to implement, i
 
 -   It steals horizontal space from your data.
 
--    It keeps the label in a relatively unprominent location.
+-   It keeps the label in a relatively unprominent location.
 
 -   It doesn’t scale up well to longer axis titles or those with long, unbreakable words.
 

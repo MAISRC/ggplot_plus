@@ -94,7 +94,7 @@ switch_axis_label = function(p, location = "top") {
   p = p + ggplot2::labs(y = NULL)
 
   #NOW, WE CONVERT THE GGPLOT WE ALREADY HAVE INTO A GTABLE.
-  gt = p %>%  ggplot2::ggplot_build() %>% ggplot2::ggplot_gtable()
+  gt = ggplot2::ggplot_gtable(ggplot2::ggplot_build(p))
 
   #HERE, WE ATTEMPT TO PORT OVER ANY THEME-RELATED ADJUSTMENTS TO THE APPEARANCE OF THE Y AXIS TITLE.
   element = ggplot2::calc_element("axis.title.y", p$theme) #GRAB THE ELEMENT'S CURRENT THEME CHARACTERISTICS
