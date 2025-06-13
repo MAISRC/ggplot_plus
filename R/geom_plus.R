@@ -2,7 +2,7 @@
 
 #' Default settings for geometry layers created by `geom_plus()`
 #'
-#' A named list of default aesthetics used by `geom_plus()` to control styling of the resulting geometry layers. 
+#' A named list of default aesthetics used by `geom_plus()` to control styling of the resulting geometry layers.
 #'
 #' @format A named list with elements like "point", "jitter", "boxplot", etc., corresponding to commonly used ggplot2 geometries. USe names(geom_plus_defaults) for a full list.
 #' @export
@@ -28,7 +28,7 @@ geom_plus_defaults = list(
                  outlier.shape = 21,
                  outlier.colour = "black",
                  outlier.stroke = 1.2,
-                 outlier.fill = "transparent", 
+                 outlier.fill = "transparent",
                  alpha = 1),
   violin = list(linewidth = 1.2,
                 linetype = "solid",
@@ -113,18 +113,18 @@ geom_plus_defaults = list(
 
 #' Generates Base Geoms With Elevated Defaults
 #'
-#' Maps inputs to a base ggplot geom (e.g., geom_point or geom_line) but provides default values more likely to adhere to best practices around usability, design aesthetics, and accessibility. 
+#' Maps inputs to a base ggplot geom (e.g., geom_point or geom_line) but provides default values more likely to adhere to best practices around usability, design aesthetics, and accessibility.
 #'
 #' @param geom The name of the geom being drawn. Corresponds to the portion of the geom_ function after the _, e.g., "point" for geom_point, "line" for geom_line, etc. Must be a length one character string, and must match an implemented geom. See names(geom_plus_defaults) for a list of these. Required input.
 #' @param ... Other arguments to be passed along to the geom_ function being called.
-#' @return List with the class "geom_plus", which will trigger the geom_plus method in ggplot_add. 
+#' @return List with the class "geom_plus", which will trigger the geom_plus method in ggplot_add.
 #' @examples
 #' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point")
 #' @export
 geom_plus = function(geom, ...) {
   if(is.null(geom)) { stop("A geom must be specified!") } #MUST SPECIFY A GEOM
   if(!geom %in% names(geom_plus_defaults)) { stop("The geom you've specified either doesn't exist or hasn't been implemented yet. Please double-check your code for typos. Note that this function only needs the part following the _ in the geom's name.") }
-  
+
   structure(
     list(geom = geom,
          user_args = list(...)),
@@ -145,27 +145,27 @@ geom_plus = function(geom, ...) {
 #' @export
 ggplot_add.geom_plus = function(object, plot, name) {
 
-  user_args = object$user_args #LOCALLY PROVIDED USER ARGUMENTS. 
+  user_args = object$user_args #LOCALLY PROVIDED USER ARGUMENTS.
   geom_name = object$geom #UNPACK THE GEOM CHOSEN
-  
+
   #IF THE USER PROVIDED LOCAL MAPPINGS, WE GRAB THOSE HERE.
   aes_local = NULL #STORAGE OBJ.
-  
+
   #THEY MAY NOT HAVE NAMED THE MAPPINGS EXPLICITLY. IF NOT, DO THIS.
-  if (length(user_args) > 0 && 
+  if (length(user_args) > 0 &&
       inherits(user_args[[1]], "uneval")) {
     aes_local = user_args[[1]]
     user_args[[1]] = NULL
-    #OTHERWISE, WE FIND THE MAPPINGS BY THEIR NAME. 
+    #OTHERWISE, WE FIND THE MAPPINGS BY THEIR NAME.
   } else if (!is.null(user_args$mapping)) {
     aes_local = user_args$mapping
     user_args$mapping = NULL
   }
   #NOW, aes_local IS THE LOCAL MAPPINGS HOWEVER THEY WERE SPECIFIED.
-  
+
   #NEXT, EXTRACT THE GLOBAL MAPPINGS.
   aes_global = plot$mapping
-  
+
   #GGPLOT FUNCTIONS TAKE BOTH COLOR AND COLOUR AS THE SAME THING, SO WE TRANSLATE ANY "COLOR" STRINGS HERE PRIOR TO MATCHING.
   if(any(names(aes_global) == "color")) { names(aes_global)[which(names(aes_global) == "color")] = "colour" }
   if(any(names(aes_local) == "color")) { names(aes_local)[which(names(aes_local) == "color")] = "colour" }
@@ -173,45 +173,45 @@ ggplot_add.geom_plus = function(object, plot, name) {
   if(any(names(aes_global) == "outlier.color")) { names(aes_global)[which(names(aes_global) == "outlier.color")] = "outlier.colour" }
   if(any(names(aes_local) == "outlier.color")) { names(aes_local)[which(names(aes_local) == "outlier.color")] = "outlier.colour" }
   if(any(names(user_args) == "outlier.color")) { names(user_args)[which(names(user_args) == "outlier.color")] = "outlier.colour" }
-  
+
   #IF USERS SPECIFY THE SAME AESTHETIC BOTH INSIDE AND OUTSIDE OF AES LOCALLY, WE WANT TO FLAG THAT WITH A WARNING:
   conflict_aes = intersect(names(aes_local), names(user_args))
   if (length(conflict_aes) > 0) {
-    warning("The following aesthetics are mapped and also set to constants inside your geom call. The constant values will be used: ", 
+    warning("The following aesthetics are mapped and also set to constants inside your geom call. The constant values will be used: ",
             paste(conflict_aes, collapse = ", "))
   }
-  
-  #IF USERS SPECIFIED AESTHETICS GLOBALLY, WE KEEP THOSE. IF THEY WERE MAPPED LOCALLY (EITHER NAMED OR UNNAMED), THOSE WIN OUT ONLY IF GLOBAL MAPPINGS AREN'T PROVIDED. THEN, IF AESTHETICS ARE SET TO CONSTANTS, WE GO WITH THOSE IF NEITHER OF THE OTHER TWO OPTIONS ARE USED. OTHERWISE, WE FALL TO THE DEFAULTS. 
+
+  #IF USERS SPECIFIED AESTHETICS GLOBALLY, WE KEEP THOSE. IF THEY WERE MAPPED LOCALLY (EITHER NAMED OR UNNAMED), THOSE WIN OUT ONLY IF GLOBAL MAPPINGS AREN'T PROVIDED. THEN, IF AESTHETICS ARE SET TO CONSTANTS, WE GO WITH THOSE IF NEITHER OF THE OTHER TWO OPTIONS ARE USED. OTHERWISE, WE FALL TO THE DEFAULTS.
 
   defaults = geom_plus_defaults[[geom_name]] #USE THE LOOKUP TABLE TO MATCH THE SPECIFIED GEOM TO THE LIST OF DEFAULTS.
-  
-  #WE NOW SET UP A SERIES OF "CONTESTS", WHERE WE HAVE INPUTS LOSE TO HIGHER-PRIORITY INPUTS. THESE ARE DEFAULTS < GLOBAL AES < LOCAL AES < LOCAL CONSTANTS. 
-  
+
+  #WE NOW SET UP A SERIES OF "CONTESTS", WHERE WE HAVE INPUTS LOSE TO HIGHER-PRIORITY INPUTS. THESE ARE DEFAULTS < GLOBAL AES < LOCAL AES < LOCAL CONSTANTS.
+
   #THE ONLY DEFAULTS WE SHOULD USE ARE FOR THOSE AESTHETICS NOT REFERENCED ANY OTHER TIMES.
   defaults_used = defaults[!names(defaults) %in% c(names(user_args), names(aes_local), names(aes_global))]
-  
+
   #THE ONLY GLOBAL AESTHETICS WE SHOULD USE ARE THOSE NOT REFERENCE LOCALLY IN ANY WAY.
   #OF COURSE, USERS MIGHT HAVE SPECIFIED ONE THING BUT MEANT ANOTHER. ONE EXAMPLE IS INHERITANCE. IF THEY SPECIFY INHERIT.AES = FALSE, WE NEED TO RESPECT THAT HERE:
   inherit = if(!is.null(user_args$inherit.aes)) { user_args$inherit.aes } else {TRUE}
-  
+
   if(inherit) {
   globals_used = aes_global[!names(aes_global) %in% c(names(user_args), names(aes_local))]
   } else {
     globals_used = list()
   }
-  
+
   #WE SHOULD USE ALL LOCAL AESTHETICS UNLESS THE USER ALSO SET THAT SAME AESTHETIC TO A CONSTANT (WEIRD/UNCOMMON)
-  
+
   locals_used = aes_local[!names(aes_local) %in% c(names(user_args))]
 
-  #WHAT'S LEFT IS ANYTHING SET TO A LOCAL CONSTANT (I THINK), WHICH IS WHAT IS IN USER_ARGS. 
-  
+  #WHAT'S LEFT IS ANYTHING SET TO A LOCAL CONSTANT (I THINK), WHICH IS WHAT IS IN USER_ARGS.
+
   #BEFORE BUNDLING, WE NEED TO CHECK TO MAKE SURE EVERYTHING HERE IS A LIST:
   if(length(globals_used) < 1 || is.null(globals_used)) { globals_used = list() }
   if(length(locals_used) < 1 || is.null(locals_used)) { locals_used = list() }
   if(length(defaults_used) < 1 || is.null(defaults_used)) { defaults_used = list() }
   if(length(user_args) < 1 || is.null(user_args)) { user_args = list() }
-  
+
   #WE CAN THEN BUNDLE THE DEFAULTS AND USER ARGS AND THE GLOBAL AND LOCAL AESTHETICS
   final_aes = structure(c(globals_used, locals_used), class = "uneval") #NEEDS TO BE A LIST WITH A SPECIFIC CLASS TO LOOK LIKE WHAT AES() MAKES. THIS FORMULATION ALSO PRESERVES NULLS
   final_args = c(defaults_used, user_args)
@@ -224,19 +224,19 @@ ggplot_add.geom_plus = function(object, plot, name) {
     ),
     final_args
   )
-  
+
   #FOR HANDLING SHAPE SPECIFICALLY, WE CHECK TO SEE IF SHAPE HAS BEEN MAPPED.
   if("shape" %in% names(use_these_args$mapping)) {
-    
+
     shape_var = rlang::as_label(use_these_args$mapping$shape) #IF IT HAS, FIND THE VARIABLE IT'S MAPPED TO.
-    
+
     #IF THEY SPECIFIED IT LOCALLY IN DATA, WE GRAB IT THERE.
     if(shape_var %in% names(object$user_args$data)) {
       # WE CHECK TO SEE HOW MANY UNIQUE VALS THERE ARE. NEEDS TO BE BETWEEN 1 AND 5.
       shape_num = length(unique(object$user_args$data[[shape_var]]))
       if(!is.null(shape_num) && shape_num > 0 && shape_num < 6) { #IF IT IS.
         shape_pal = c(21:25)[1:shape_num] #WE FIT IT TO THE SHAPE PALETTE OF FILLED SHAPED.
-      } else { #OTHERWISE, WE WARN. 
+      } else { #OTHERWISE, WE WARN.
         warning("You've mapped shape to a variable with either too few or too many unique values for shape to be an appropriate visual channel, so your shape mapping is not going to be ideal. Use shape for discrete variables with between 1-5 unique values only.")
         shape_pal = c(21:25)[1:shape_num] #WE FIT IT TO THE SHAPE PALETTE OF FILLED SHAPED.
       }
@@ -249,18 +249,18 @@ ggplot_add.geom_plus = function(object, plot, name) {
         warning("You've mapped shape to a variable with either too few or too many unique values for shape to be an appropriate visual channel, so your shape mapping is not going to be ideal. Use shape for discrete variables with between 1-5 unique values only.")
         shape_pal = c(21:25)[1:shape_num] #WE FIT IT TO THE SHAPE PALETTE OF FILLED SHAPED.
       }
-     } 
+     }
     }
   }
-  
-  geom_fn = get(paste0("geom_", geom_name), mode = "function") #GET THE ACTUAL FUNCTION THAT THE USER IS HOPING WE'LL USE HERE.
+
+  geom_fn = get(paste0("ggplot2::geom_", geom_name), mode = "function") #GET THE ACTUAL FUNCTION THAT THE USER IS HOPING WE'LL USE HERE.
   layer = do.call(geom_fn, use_these_args)
-  
+
   #WE DO THINGS JUST A LITTLE DIFFERENTLY IF SHAPE WAS MAPPED AND WE HAVE TO ADJUST THE PALETTE.
   if(!exists("shape_pal")) { #THIS IS A SAFE CONSTRUCTION THAT PREVENTS ERRORS WHEN shape_pal IS NULL.
     plot + layer
   } else {
-    plot + layer + scale_shape_manual(values = shape_pal)
+    plot + layer + ggplot2::scale_shape_manual(values = shape_pal)
   }
 
 }

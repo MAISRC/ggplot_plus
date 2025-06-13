@@ -14,7 +14,7 @@ gridlines_plus(color = "gray90", linewidth = 1.2, linetype = "solid")
 \item{linetype}{Line type for the gridlines. Defaults to "solid." Must be a single character string value corresponding to an accepted linetype, such as "dotted" or "dashed".}
 }
 \value{
-List with the class "gridlines_plus", which will trigger the gridlines_plus method in ggplot_add.
+List with the class "gridlines_plus", which will trigger the gridlines_plus method in ggplot::ggplot_add.
 }
 \description{
 This function adds, by default, subtle, light gray major gridlines to a ggplot graph only in directions mapped to continuous (and not discrete) variables.

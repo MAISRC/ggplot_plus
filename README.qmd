@@ -1,42 +1,47 @@
 ---
 title: "Guide to the ggplot.plus package"
-author: "Dr. Alex Bajcz, Quantitative Ecologist for the Minnesota Aquatic Invasive Species Research Center at the University of Minnesota"
+author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center"
 format: gfm
 html: true
 editor: visual
+date: today
 ---
 
 ## Preface
 
-This guide introduces the `ggplot_plus` collection—tools developed by Dr. Alex Bajcz, Quantitative Ecologist at the Minnesota Aquatic Invasive Species Research Center (MAISRC) at the University of Minnesota. It is not intended to be exhaustive nor prescriptive. Rather, it offers a hands-on overview of what these tools can do to enhance a standard `ggplot2` graphic.
+This guide introduces the `ggplot.plus` package—a collection of tools developed by Dr. Alex Bajcz, Quantitative Ecologist at the Minnesota Aquatic Invasive Species Research Center (MAISRC) at the University of Minnesota. These tools provide evidence- and consensus-based improvements to many of `ggplot2`'s default design choices.
 
-At its core, `ggplot_plus` reimagines the default styling and aesthetics of `ggplot2`. While a typical one-line `ggplot` command produces a serviceable graphic, that graphic will often fall short of best practices in data visualization and graph design in a number of respects, including accessibility.
+The guide is neither exhaustive (some features may be omitted) nor prescriptive (nothing here is “objectively best”). Instead, it offers a practical overview of how the tools in this package can enhance standard `ggplot2` graphics with minimal hassle—even for users with limited knowledge of `ggplot2`'s inner workings.
 
-All these design shortcomings can of course be remedied using base `ggplot2` features—including its `theme`, `scale`, and `geom` functions—but doing so requires substantial knowledge that many users lack and would find difficult to acquire and time-consuming to leverage. This toolkit was built to help users of all skill levels produce clearer, more polished, and more accessible graphics "out of the box," while still allowing full subsequent customization and experimentation.
+At its core, `ggplot.plus` re-imagines the default aesthetics of `ggplot2`. While a typical one-line `ggplot()` call can yield a functional graphic, that default output often falls short of modern best practices in data visualization, including with regards to several issues of accessibility.
 
-Accessibility is a key priority. Many `ggplot_plus` defaults aim to meet basic accessibility standards. Where accessibility is especially relevant, this guide will call it out explicitly.
+Of course, these shortcomings can be addressed using base `ggplot2` tools like `theme()`, `scale_*()`, and `geom_*()`, but doing so requires hard-won knowledge of how these tools work and can be tedious to implement even when you have the knowledge to do so. Plus, even if one has the technical know-how, not everyone is familiar enough with the tenets of data visualization to know what to change and how. The `ggplot.plus` package is designed to help users of all experience levels start from a more polished and accessible foundation—without sacrificing the flexibility to experiment or fine-tune later.
 
-**To be clear, `ggplot_plus` is not a substitute for thoughtful graph design, iterative refinement, or visual storytelling.** It is a starting point—a set of evidence-informed defaults to help you build better plots faster. If you don’t like how something looks, change it! You’re encouraged to seek outside opinions, honor the expectations of your audience, and adjust accordingly.
+Accessibility is a major design goal of the package. Many `ggplot.plus` defaults are crafted to meet basic accessibility standards, and this guide will attempt to highlight those cases when  relevant.
 
-While the design choices baked into these tools ultimate reflect Dr. Bajcz’s professional judgment, they are grounded in a thorough review of the last two decades of the data visualization literature, so they do not primarily reflect his personal opinions about good design.
+**To be clear:** `ggplot.plus` is **not** a replacement for making careful design choices, artistry, solicitation of feedback, or understanding your audience's needs and capabilities. It’s meant to be a better launchpad—one built to save you time by starting you in a well-intentioned design space from the outset.
+
+While the design choices baked into these tools ultimate reflect Dr. Bajcz’s professional judgments, they are grounded in a thorough review of the last several decades of the data visualization literature, so it's key to note that they do not *primarily* reflect his personal opinions about good graph design (though they also do!).
 
 Without further ado, let's see the tools contained within this collection in action!
 
-## Loading packages and files
+## Getting Started
 
-This package relies only on the tools contained within the `ggplot2` and `dplyr` packages by design, so those are the only packages that must be loaded:
+To begin using the `ggplot.plus` package, you’ll first need to install it from GitHub using the devtools package:
 
-```{r load packs, message=FALSE, echo=FALSE}
+```{r load package, message=FALSE, echo=FALSE}
+# install.packages("devtools")  # if not already installed
+devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _ INSTEAD OF THE . IN THE NAME.
+```
+
+Then, load it alongside `ggplot2`:
+
+```{r}
+# install.packages("ggplot2")  # if not already installed
 library(ggplot2)
-library(dplyr)
+library(ggplot.plus)
 ```
 
-At time of writing, there are six sets of tools in the `ggplot_plus` collection to load:
-
-```{r load tools}
-files = list.files("./R/",pattern = "\\.R$") #FIND ALL R SCRIPT FILES IN THE CURRENT DIRECTORY.
-invisible(lapply(paste0("./R/", files), source)) #SOURCE ALL FILES
-```
 
 ## A standard `ggplot` for comparison
 
