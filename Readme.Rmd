@@ -1,0 +1,13 @@
+---
+title: "README.rmd"
+author: "Alex Bajcz"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# This file exists only to satisfy devtools and GitHub expectations.
+# The actual README is authored in Quarto (`README.qmd`) and rendered
+# to both README.md (for GitHub) and README.html (for reference).
+```
+

@@ -35,9 +35,10 @@ cont_breaks_plus = function(data,
     has_low = any(abs(brks - original_lower) < buffer_frac * span) || any(brks < original_lower)
     has_high = any(abs(brks - original_upper) < buffer_frac * span) || any(brks > original_upper)
 
-    #IF THERE IS, WE JUST RETURN THE BREAKS AND LIMITS AS SET BY THE DATA AND PRETTY_BREAKS
+    #IF THERE IS, WE JUST RETURN THE BREAKS AND LIMITS AS SET BY THE DATA AND PRETTY_BREAKS, WITH A LITTLE PADDING ON THE LIMITS FOR SAFETY.
     if (has_low && has_high) {
-      return(list(breaks = brks, limits = c(min(brks), max(brks))))
+      return(list(breaks = brks, limits = c((min(brks)-(buffer_frac*span)),
+                                            (max(brks)+(buffer_frac*span)))))
     }
 
     #IF NOT, WE ARTIFICIALLY DECREASE THE LOWER/UPPER VALUES BY ONE STEP AND THEN REPEAT THE PROCESS UNTIL WE SUCCEED.
@@ -47,7 +48,9 @@ cont_breaks_plus = function(data,
 
   #EITHER WAY, MAKE SURE WE COME OUT WITH BREAKS AND LIMITS EVEN IF THE ABOVE FAILS TO FIND A SOLUTION IN X TRIES.
   brks = breaks_fn(c(lower, upper))
-  list(breaks = brks, limits = c(min(brks), max(brks)))
+  #WE BUILD IN A LITTLE BUFFER REGION TO THE LIMITS SO THAT WE HOPEFULLY DON'T CUT OFF BINS ON GRAPHS LIKE HISTOGRAMS AND THE LIKE.
+  list(breaks = brks, limits = c((min(brks)-(buffer_frac*span)),
+                                 (max(brks)+(buffer_frac*span))))
 }
 
 
@@ -64,7 +67,7 @@ cont_breaks_plus = function(data,
 #' @export
 scale_x_continuous_plus = function(...,
                                  n = 5,
-                                 buffer_frac = 0.5) {
+                                 buffer_frac = 0.05) {
   extra = list(...)
 
   if(!is.null(extra) && length(extra) > 0 && is.character(extra[[1]]) && is.null(names(extra[[1]]))) {
@@ -98,8 +101,9 @@ scale_x_continuous_plus = function(...,
 #' @export
 scale_y_continuous_plus = function(...,
                                  n = 5,
-                                 buffer_frac = 0.5) {
+                                 buffer_frac = 0.05) {
   extra = list(...)
+
   if(!is.null(extra) && length(extra) > 0 && is.character(extra[[1]]) && is.null(names(extra[[1]]))) {
     names(extra)[1] = "name"  # assume title if unnamed character string
   }
@@ -130,12 +134,58 @@ scale_y_continuous_plus = function(...,
 #' @return A ggplot object with the x axis breaks and limits redefined.
 #' @export
 ggplot_add.scale_x_cont_plus = function(object, plot, name) {
-  x_data = plot$data[[rlang::as_name(plot$mapping$x)]] #GET THE X DATA
+
+  #CHECK TO SEE IF X WAS EXPLICITLY MAPPED.
+  if (!is.null(plot$mapping$x)) {
+    x_expr = rlang::as_name(plot$mapping$x)
+    x_data = plot$data[[x_expr]] #IF SO, GRAB THE X DATA EASILY FROM THE PLOT DATA.
+  } else {
+    #OTHERWISE, FAKE-BUILD THE PLOT...
+    built = suppressMessages(ggplot2::ggplot_build(plot))
+    x_data = NULL
+    #GO THRU THE PLOT'S DATA LAYERS TO SEE IF WE CAN FIND SOMETHING CALLED X
+    for (layer in built$data) {
+      if ("x" %in% names(layer)) {
+        #IF WE FIND ONE AND IT'S NUMERIC, LET'S GRAB THAT.
+        candidate = layer$x
+        if (is.numeric(candidate)) {
+          x_data = candidate
+          break
+        }
+      }
+    }
+    #IF WE COME UP EMPTY, LET'S ABORT MISSION WITH A WARNING.
+    if (is.null(x_data)) {
+      warning("scale_x_continuous_plus() could not locate a x-axis variable.")
+      return(plot)  # Or just skip adding breaks
+    }
+  }
+
   res = cont_breaks_plus(x_data,
                        n = object$n,
                        buffer_frac = object$buffer_frac) #CALL OUR NEW BREAKS FUNCTION
+
+  #IF X WASN'T EXPLICITLY MAPPED BUT INSTEAD DERIVED, BUT A NAME WAS PROVIDED FOR IT BY THE USER, MAKE SURE THAT GETS IN THERE.
+  if(!"x" %in% names(plot$mapping)) {
+    if(!is.null(object$extra_args$name)) {
+      plot$labels$x = object$extra_args$name #STUFF IT IN BY FORCE.
+      object$extra_args$name = NULL #WIPE THIS OUT.
+    }
+  }
+
+  #ON BINNED GRAPHS LIKE HISTOGRAMS, IT'S PROBABLY NOT A GREAT IDEA TO ENFORCE THE LIMITS BECAUSE IT'S HARD TO SET THOSE TO WORK FOR BINS...
+  built = suppressMessages(ggplot2::ggplot_build(plot)) #FAKE BUILD THE PLOT.
+  #SEE IF ANY OF THE LAYERS LOOK LIKE THEY'D BE BINNED.
+  is.binned = any(sapply(built$plot$layers, function(layer) {
+    inherits(layer$stat, "StatBin") || inherits(layer$stat, "StatBin2d")
+  }))
+
+  #IF ANY ARE BINNED, SUPPRESS THE LIMITS
+  breaks_limits = list(breaks = res$breaks, limits = res$limits)
+  if(is.binned) { breaks_limits = list(breaks = res$breaks) }
+
   plot + do.call(scale_x_continuous,
-          c(list(breaks = res$breaks, limits = res$limits),
+          c(breaks_limits,
             object$extra_args)) #CALL SCALE_X_CONTINUOUS AS NORMAL EXCEPT OVERRIDE IN THE NEW BREAKS AND LIMITS.
 }
 
@@ -152,11 +202,57 @@ ggplot_add.scale_x_cont_plus = function(object, plot, name) {
 #' @export
 ggplot_add.scale_y_cont_plus = function(object, plot, name) {
 
-  y_data = plot$data[[rlang::as_name(plot$mapping$y)]]
+  #CHECK TO SEE IF Y WAS EXPLICITLY MAPPED.
+  if (!is.null(plot$mapping$y)) {
+    y_expr = rlang::as_name(plot$mapping$y)
+    y_data = plot$data[[y_expr]] #IF SO, GRAB THE Y DATA EASILY FROM THE PLOT DATA.
+  } else {
+    #OTHERWISE, FAKE-BUILD THE PLOT...
+    built = suppressMessages(ggplot2::ggplot_build(plot))
+    y_data = NULL
+    #GO THRU THE PLOT'S DATA LAYERS TO SEE IF WE CAN FIND SOMETHING CALLED Y
+    for (layer in built$data) {
+      if ("y" %in% names(layer)) {
+        #IF WE FIND ONE AND IT'S NUMERIC, LET'S GRAB THAT.
+        candidate = layer$y
+        if (is.numeric(candidate)) {
+          y_data = candidate
+          break
+        }
+      }
+    }
+    #IF WE COME UP EMPTY, LET'S ABORT MISSION WITH A WARNING.
+    if (is.null(y_data)) {
+      warning("scale_y_continuous_plus() could not locate a y-axis variable.")
+      return(plot)  # Or just skip adding breaks
+    }
+  }
+
+  #CONTINUE ON TO CALCULATE NEW LIMITS AND BREAK.
   res = cont_breaks_plus(y_data,
                        n = object$n,
                        buffer_frac = object$buffer_frac)
+
+  #IF Y WASN'T EXPLICITLY MAPPED BUT INSTEAD DERIVED, BUT A NAME WAS PROVIDED FOR IT BY THE USER, MAKE SURE THAT GETS IN THERE.
+  if(!"y" %in% names(plot$mapping)) {
+    if(!is.null(object$extra_args$name)) {
+      plot$labels$y = object$extra_args$name #STUFF IT IN BY FORCE.
+      object$extra_args$name = NULL #WIPE THIS OUT.
+    }
+  }
+
+  #ON BINNED GRAPHS LIKE HISTOGRAMS, IT'S PROBABLY NOT A GREAT IDEA TO ENFORCE THE LIMITS BECAUSE IT'S HARD TO SET THOSE TO WORK FOR BINS...
+  built = suppressMessages(ggplot2::ggplot_build(plot)) #FAKE BUILD THE PLOT.
+  #SEE IF ANY OF THE LAYERS LOOK LIKE THEY'D BE BINNED.
+  is.binned = any(sapply(built$plot$layers, function(layer) {
+    inherits(layer$stat, "StatBin") || inherits(layer$stat, "StatBin2d")
+  }))
+
+  #IF ANY ARE BINNED, SUPPRESS THE LIMITS
+  breaks_limits = list(breaks = res$breaks, limits = res$limits)
+  if(is.binned) { breaks_limits = list(breaks = res$breaks) }
+
   plot + do.call(scale_y_continuous,
-          c(list(breaks = res$breaks, limits = res$limits),
-            object$extra_args))
+                 c(breaks_limits,
+                   object$extra_args)) #CALL SCALE_X_CONTINUOUS AS NORMAL EXCEPT OVERRIDE IN THE NEW BREAKS AND LIMITS.
 }

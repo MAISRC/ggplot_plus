@@ -32,21 +32,36 @@ gridlines_plus = function(color = "gray90",
 #' @return A ggplot object with the new gridlines added.
 #' @export
 ggplot_add.gridlines_plus = function(object, plot, name) {
+
   #STEP 1: GET THE MAPPING FOR THE PROVIDED PLOT.
   mapping = plot$mapping
 
   #STEP 2: GET CLASSES OF VARIABLES FOR X AND Y AXES.
-  x_var = rlang::as_name(mapping$x)
-  y_var = rlang::as_name(mapping$y)
+  x_var = if (!is.null(mapping$x)) rlang::as_name(mapping$x) else NULL #RETURN NULL IN CASE THIS IS A GRAPH WITH ONLY ONE MAPPED AESTHETIC, LIKE A HISTOGRAM
+  y_var = if (!is.null(mapping$y)) rlang::as_name(mapping$y) else NULL
 
-  #STEP 3: DETERMINE IF NUMERIC.
-  x_is_cont = is.numeric(plot$data[[x_var]])
-  y_is_cont = is.numeric(plot$data[[y_var]])
+  #STEP 3: DETERMINE IF ANY VARIABLE IS MAPPED, IF THAT VARIABLE IS IN THE DATA, AND IF IT'S NUMERIC.
+  x_is_cont = !is.null(x_var) && x_var %in% names(plot$data) && is.numeric(plot$data[[x_var]])
+  y_is_cont = !is.null(y_var) && y_var %in% names(plot$data) && is.numeric(plot$data[[y_var]])
+
+  #STEP 4: IN SOME GRAPH TYPES, A DERIVED NUMERIC AXIS MAY GET BUILT, SUCH AS A HISTOGRAM OR DENSITY PLOT. LET'S CHECK FOR THOSE.
+  if (!x_is_cont || !y_is_cont) {
+
+    built = suppressMessages(ggplot2::ggplot_build(plot)) #FAKE-BUILD THE PLOT.
+
+    #LOOK AT THE CLASSES OF ITS SCALES
+    x_scales = built$layout$panel_scales_x
+    y_scales = built$layout$panel_scales_y
+
+    #CHECK IF EITHER SCALE IS DERIVED BUT STILL CONTINUOUS. WE DO SO BY CHECKING FOR A ScaleContinuous CLASS DESIGNATION ON THE PANEL_SCALES.
+    x_is_cont = x_is_cont || any(vapply(x_scales, function(s) inherits(s, "ScaleContinuous"), logical(1)))
+    y_is_cont = y_is_cont || any(vapply(y_scales, function(s) inherits(s, "ScaleContinuous"), logical(1)))
+  }
 
   #BASELINE NEW THEME CALL.
   grid_theme = ggplot2::theme()
 
-  #IF X IS CONTINUOUS, ADD JUST MAJOR X AXIS GRIDLINES IN THIS DIRECTION.
+  #STEP 5: IF X IS CONTINUOUS, ADD JUST MAJOR X AXIS GRIDLINES IN THIS DIRECTION.
   if (x_is_cont) {
     grid_theme = grid_theme + ggplot2::theme(
       panel.grid.major.x = ggplot2::element_line(

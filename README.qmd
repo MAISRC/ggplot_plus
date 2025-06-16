@@ -1,8 +1,16 @@
 ---
-title: "Guide to the ggplot.plus package"
 author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center"
-format: gfm
-html: true
+format: 
+  html: 
+    output-file: "README.html"
+    title: "Guide to the ggplot.plus package"
+  gfm:
+    output-file: "README.md"
+    title: "README"
+execute: 
+  echo: false
+  warning: false
+  message: false
 editor: visual
 date: today
 ---
@@ -62,7 +70,7 @@ The `ggplot.plus` package is guided by three core principles:
 The package introduces several new functions to add to your base `ggplot2` arsenal. These include:
 
 | Function | Purpose |
-|----|----|
+|------------------------------------|------------------------------------|
 | `geom_plus()` | A general wrapper for geoms with improved default aesthetics |
 | `theme_plus()` | A better base theme with improved default settings for size, spacing, legend placement, and much more. |
 | `scale_x/y_continuous_plus()` | Drop-in replacements for `scale_x_continuous()` and `scale_y_continuous()` that will attempt to ensure axis breakpoints and limits are appropriate for fully labeling these axes. |

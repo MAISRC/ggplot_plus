@@ -44,7 +44,7 @@ ggplot_add.axis_switcher = function(object, plot, name = "switcher") {
 #' @export
 ggplot_build.switcher = function(plot) {
   class(plot) = c("gg", "ggplot")
-  output = ggplot2::ggplot_build(plot)
+  output = suppressMessages(ggplot2::ggplot_build(plot))
   class(output) = c("switched", class(output))
   output
 }
@@ -66,6 +66,27 @@ ggplot_gtable.switched = function(plot) {
   plot + ggplot2::theme(axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 0))) #ADD IN A THEME TO SWITCH HOW THE MARGIN IS ADJUSTED.
 }
 
+#****
+translate_element = function(el) {
+  el_list = as.list(el)
+  #TRANSLATE BETWEEN SOME DIFFERENT AESTHETICS DEPENDING ON HOW EXACTLY THEY ARE CODED.
+  if (!is.null(el_list$colour)){ el_list$col = el_list$colour }
+  if (!is.null(el_list$face)){ el_list$fontface = el_list$face }
+  if (!is.null(el_list$size)){ el_list$fontsize = el_list$size }
+
+  return(el_list)
+}
+
+#****
+element_to_gpar = function(el) {
+  el_list = translate_element(el)
+  #ATTRIBUTES THAT GPARS NEED TO HAVE--LINE THESE UP WITH THE ATTRIBUTES OF THE ELEMENT BEING PORTED IN.
+  gpar_args = c("col", "fill", "alpha", "lty", "lwd", "lex", "lineend",
+                "linejoin", "linemitre", "fontsize", "cex", "fontfamily",
+                "fontface", "font", "lineheight")
+  do.call(grid::gpar, el_list[intersect(names(el_list), gpar_args)])
+}
+
 #' Place a Y Axis Title on a ggplot in a Safe Place Above the Y Axis Line.
 #'
 #' This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using `ggplot2`'s default styling tools. This is the main function used by `y_axis_title_plus()` to ultimately accomplish its purpose.
@@ -77,11 +98,25 @@ ggplot_gtable.switched = function(plot) {
 #' @export
 switch_axis_label = function(p, location = "top") {
 
-  lab = p$scales$get_scales("y")$name #GET THE Y AXIS TITLE STRING PROVIDED TO ANY SCALE_Y_ FUNCTION FIRST.#****
-  if(is.null(lab)) {
-    lab = p$labels$y #OTHERWISE, GRAB THE DEFAULT Y LABEL FROM THE ORIGINAL DATA COLUMN'S NAME.
+  y_scale = p$scales$get_scales("y")
+
+  #DEFAULT TO THE SCALE LABEL, IF ANY
+  if (!is.null(y_scale)) {
+    name = y_scale$name
+    if (!is.null(name) && !inherits(name, "waiver") && nzchar(name)) {
+      lab = name
+    }
   }
-  #
+
+  #OTHERWISE, FALL BACK TO THE PLOT LABEL IF ANY.
+  label = p$labels[["y"]]
+  if (!is.null(label) && !inherits(label, "waiver") && nzchar(label)) {
+    lab = label
+  } else {
+    #OTHERWISE, FALL BACK TO SOMETHING GENERIC
+    lab = "Replace me with scale_y_*()"
+  }
+
   # #ALL THEME-RELATED ADJUSTMENTS MUST BE PORTED OVER MANUALLY. HERE, WE PORT OVER SIZE, TAKING EITHER A CUSTOM SIZE FROM THE PROVIDED THEME, IF ANY, OR ELSE THE SIZE FROM THE DEFAULT THEME. A SIMILAR MODEL COULD BE USED FOR CARRYING OVER THINGS LIKE FONT COLOR AND STYLE.
 
   #IF YOU'VE SPECIFIED A NEW Y SCALE TITLE VALUE VIA A SCALE_Y_ FUNCTION, THIS NUKES IT.
@@ -98,26 +133,6 @@ switch_axis_label = function(p, location = "top") {
 
   #HERE, WE ATTEMPT TO PORT OVER ANY THEME-RELATED ADJUSTMENTS TO THE APPEARANCE OF THE Y AXIS TITLE.
   element = ggplot2::calc_element("axis.title.y", p$theme) #GRAB THE ELEMENT'S CURRENT THEME CHARACTERISTICS
-
-  #NOT ALL THEME CHARACTERISTICS HAVE THE SAME NAME WITH GROBS, SO THIS TRANSLATES.
-  translate_element = function(el) {
-    el_list = as.list(el)
-    # Translate key names
-    if (!is.null(el_list$colour)){ el_list$col = el_list$colour }
-    if (!is.null(el_list$face)){ el_list$fontface = el_list$face }
-    if (!is.null(el_list$size)){ el_list$fontsize = el_list$size }
-
-    return(el_list)
-  }
-
-  #THIS FUNCTION MATCHES UP GROB CHARACTERISTICS WITH THEME ONES WHERE APPROPRIATE.
-  element_to_gpar = function(el) {
-    el_list = translate_element(el)
-    gpar_args = c("col", "fill", "alpha", "lty", "lwd", "lex", "lineend",
-                   "linejoin", "linemitre", "fontsize", "cex", "fontfamily",
-                   "fontface", "font", "lineheight")
-    do.call(grid::gpar, el_list[intersect(names(el_list), gpar_args)])
-  }
 
   #USUALLY, WE TARGET ROW [8,6] BUT CAN INSTEAD TARGET [11,6] IF THE USER WANTS AND WE LACK A BOTTOM X AXIS LABEL ROW.
   target_row = ifelse(location == "bottom", 11, 8)
@@ -168,7 +183,7 @@ switch_axis_label = function(p, location = "top") {
 
   #IF ANY DO FAIL TO INHERIT, THEN WE WARN THE USER.
   if (top_strips) {
-    warning("Heads-up: The top y axis title will be placed above any top strip labels on faceted graphs. This may not be ideal; in these instances, I recommend moving your top facet strips to the bottom. In facet_*(), specify \"switch = 'x'\" to do this. Alternatively, consider faceting by rows rather than columns to place strips on the sides.")
+    warning("Heads-up: The top y axis title will be placed above any top strip labels on faceted graphs. This may not be ideal; in these instances, I recommend moving your top facet strips to the bottom. In facet_wrap(), specify \"strip.position = 'bottom'\" to do this; In facet_grid(), specify \"switch = 'x'\" instead. Alternatively, consider faceting by rows rather than columns to place strips on the sides.")
   }
 
   # END WARNINGS ----

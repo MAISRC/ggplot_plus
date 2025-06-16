@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center">
+<meta name="dcterms.date" content="2025-06-16">
+
+<title>Guide to the ggplot.plus package</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="README_files/libs/clipboard/clipboard.min.js"></script>
+<script src="README_files/libs/quarto-html/quarto.js"></script>
+<script src="README_files/libs/quarto-html/popper.min.js"></script>
+<script src="README_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="README_files/libs/quarto-html/anchor.min.js"></script>
+<link href="README_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="README_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="README_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="README_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="README_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="README.md"><i class="bi bi-file-code"></i>Github (GFM)</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Guide to the ggplot.plus package</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 16, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="preface" class="level2">
+<h2 class="anchored" data-anchor-id="preface">Preface</h2>
+<p>This guide introduces the <code>ggplot.plus</code> package—a collection of tools developed by Dr.&nbsp;Alex Bajcz, Quantitative Ecologist at the Minnesota Aquatic Invasive Species Research Center (MAISRC) at the University of Minnesota. These tools provide evidence- and consensus-based improvements to many of <code>ggplot2</code>’s default design choices.</p>
+<p>The guide is neither exhaustive (some features may be omitted) nor prescriptive (nothing here is “objectively best”). Instead, it offers a practical overview of how the tools in this package can enhance standard <code>ggplot2</code> graphics with minimal hassle—even for users with limited knowledge of <code>ggplot2</code>’s inner workings.</p>
+<p>At its core, <code>ggplot.plus</code> re-imagines the default aesthetics of <code>ggplot2</code>. While a typical one-line <code>ggplot()</code> call can yield a functional graphic, that default output often falls short of modern best practices in data visualization, including with regards to several issues of accessibility.</p>
+<p>Of course, these shortcomings can be addressed using base <code>ggplot2</code> tools like <code>theme()</code>, <code>scale_*()</code>, and <code>geom_*()</code>, but doing so requires hard-won knowledge of how these tools work and can be tedious to implement even when you have the knowledge to do so. Plus, even if one has the technical know-how, not everyone is familiar enough with the tenets of data visualization to know what to change and how. The <code>ggplot.plus</code> package is designed to help users of all experience levels start from a more polished and accessible foundation—without sacrificing the flexibility to experiment or fine-tune later.</p>
+<p>Accessibility is a major design goal of the package. Many <code>ggplot.plus</code> defaults are crafted to meet basic accessibility standards, and this guide will attempt to highlight those cases when relevant.</p>
+<p><strong>To be clear:</strong> <code>ggplot.plus</code> is <strong>not</strong> a replacement for making careful design choices, artistry, solicitation of feedback, or understanding your audience’s needs and capabilities. It’s meant to be a better launchpad—one built to save you time by starting you in a well-intentioned design space from the outset.</p>
+<p>While the design choices baked into these tools ultimate reflect Dr.&nbsp;Bajcz’s professional judgments, they are grounded in a thorough review of the last several decades of the data visualization literature, so it’s key to note that they do not <em>primarily</em> reflect his personal opinions about good graph design (though they also do!).</p>
+<p>Without further ado, let’s see the tools contained within this collection in action!</p>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">Getting Started</h2>
+<p>To begin using the <code>ggplot.plus</code> package, you’ll first need to install it from GitHub using the devtools package:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+── R CMD build ─────────────────────────────────────────────────────────────────
+* checking for file 'C:\Users\Bajcz\AppData\Local\Temp\Rtmp8IDoTs\remotes2d4c14969af\MAISRC-ggplot_plus-76e8752/DESCRIPTION' ... OK
+* preparing 'ggplot.plus':
+* checking DESCRIPTION meta-information ... OK
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+Omitted 'LazyData' from DESCRIPTION
+* building 'ggplot.plus_0.1.2.tar.gz'
+</code></pre>
+</div>
+</div>
+<p>Then, load it alongside <code>ggplot2</code>:</p>
+<p>Once loaded, you can start layering in the “plus” tools to improve your plot design with minimal effort.</p>
+</section>
+<section id="overview-of-the-package-philosophy" class="level2">
+<h2 class="anchored" data-anchor-id="overview-of-the-package-philosophy">Overview of the Package Philosophy</h2>
+<p>The <code>ggplot.plus</code> package is guided by three core principles:</p>
+<ol type="1">
+<li><p><strong>Better Defaults:</strong><br>
+Many default settings in <code>ggplot2</code> are functional but sub-optimal from design and accessibility standpoints. <code>ggplot.plus</code> attempts to improve upon these—adjusting colors, shapes, gridlines, spacing, typefaces, etc. to yield cleaner, more accessible visuals from the outset.</p></li>
+<li><p><strong>Override-ability:</strong><br>
+All defaults set by <code>ggplot.plus</code>’s tools can be overridden by the user, either through standard <code>ggplot2</code> syntax or using <code>_plus</code> variants with arguments. You’re rarely (if ever) forced to keep anything these tools generate.</p></li>
+<li><p><strong>Modularity:</strong><br>
+Each tool in <code>ggplot.plus</code> is designed to be additive. You can use just one of them (e.g., <code>theme_plus()</code> or <code>geom_plus()</code>) or combine them as needed.</p></li>
+</ol>
+</section>
+<section id="key-tools-and-their-roles" class="level2">
+<h2 class="anchored" data-anchor-id="key-tools-and-their-roles">Key Tools and Their Roles</h2>
+<p>The package introduces several new functions to add to your base <code>ggplot2</code> arsenal. These include:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>geom_plus()</code></td>
+<td>A general wrapper for geoms with improved default aesthetics</td>
+</tr>
+<tr class="even">
+<td><code>theme_plus()</code></td>
+<td>A better base theme with improved default settings for size, spacing, legend placement, and much more.</td>
+</tr>
+<tr class="odd">
+<td><code>scale_x/y_continuous_plus()</code></td>
+<td>Drop-in replacements for <code>scale_x_continuous()</code> and <code>scale_y_continuous()</code> that will attempt to ensure axis breakpoints and limits are appropriate for fully labeling these axes.</td>
+</tr>
+<tr class="even">
+<td><code>yaxis_title_plus()</code></td>
+<td>A function for relocating the y axis title from its normal, less accessible location and orientation.</td>
+</tr>
+<tr class="odd">
+<td><code>palettes_plus()</code></td>
+<td>Converts <code>ggplot2</code>’s default color palette for <code>color</code> and <code>fill</code> aesthetics over to <code>viridis</code>’s more accessible palettes for the session.</td>
+</tr>
+<tr class="even">
+<td><code>gridlines_plus()</code></td>
+<td>Adds subtle, clear gridlines only when and where really needed.</td>
+</tr>
+</tbody>
+</table>
+<p>Each of these is discussed in more depth in the sections that follow, along with examples.</p>
+</section>
+<section id="a-standard-ggplot-for-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="a-standard-ggplot-for-comparison">A Standard <code>ggplot</code> for Comparison</h2>
+<p>Let’s start by creating a simple <code>ggplot2</code> plot to use as a reference point. The code below generates a scatterplot of petal length vs.&nbsp;sepal length for iris flowers from three species. These data come from the <code>iris</code> dataset, which is automatically included in every installation of R. Points are colored by species:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/basic%20iris%20scatter-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This graph is simple and effective—perfectly suitable for exploratory work or sharing with colleagues for a hot take. However, for presentation or publication, it falls short of several well-established design and accessibility best practices. Some of the key issues include:</p>
+<ul>
+<li><p><strong>Text size</strong>: The default font sizes for axis and legend text are too small for easy reading, especially for those with visual impairments. A common rule of thumb is: if the text feels <em>almost</em> <strong>too</strong> large to you (assuming you have “standard” vision), it’s probably just right.</p></li>
+<li><p><strong>Point size</strong>: The points are also quite small, which can hinder visibility for some users. The same rule about size applies here too—they should be larger than you think you need them.</p></li>
+<li><p><strong>Color palette</strong>: The default “rainbow” palette lacks luminance (how “bright” or “dark” the hue is) variance. For someone who is colorblind (especially with red-green color blindness), the red and green shades used are indistinguishable. For those with no color vision at all, or for those using black-and-white viewing technologies, all three hues would be difficult to differentiate.</p></li>
+<li><p><strong>Foreground/background contrast</strong>: While contrast between points and background here is <em>ok</em>, it could be improved by using darker point colors and/or a lighter plot background. As noted above, it would also be helpful if the different color shades used for points contrasted better with each other too. Strong contrast is critical for accessible and quickly interpretable design.</p></li>
+<li><p><strong>Whitespace and layout</strong>: Default <code>ggplot</code>s often suffer from cramped layouts. In particular, spacing is often tight between:</p>
+<ul>
+<li><p>Axis titles and their axis labels</p></li>
+<li><p>Elements within the legend</p></li>
+<li><p>Axis labels on densely labeled axes (not an issue here, but often a problem)</p></li>
+</ul>
+<p>Adding more <strong>void spacing</strong> between elements helps readers visually parse and process the plot more efficiently, especially those with cognitive or visual impairments.</p></li>
+<li><p><strong>Axis titles</strong>: Axis and legend titles and labels will default to the column names/values found in the data set. These are often formatted for coding (e.g., no spaces, inconsistent capitalization) rather than for human readability or interpretation. They should have standard spelling, spacing, and punctuation, and they should be human-readable, with units (if applicable).</p></li>
+<li><p><strong>Gridlines</strong>: The research on the merits of gridlines is, admittedly, mixed in some ways. They:</p>
+<ul>
+<li><p>Can reduce contrast between themselves, the background, and the data elements as well as increase cognitive load.</p></li>
+<li><p>May slow down interpretation and clutter the plot.</p></li>
+<li><p>Are especially unhelpful when aligned with categorical axes.</p></li>
+</ul>
+<p>On the flip side, they’re familiar to novice readers and can help with estimating exact values, where this is required. However, it should be noted that most experts agree that graphs are not the most efficient device for conveying exact values–text, tables, and sharing the raw data files are all superior. Graphs out to primarily be about “vibes!” Even when they are needed, though, research has shown that gridlines can and should be faint and infrequent.</p></li>
+<li><p><strong>Incomplete axis labeling</strong>: Axes should generally include tick marks and labels at both ends to align with reader expectations (especially those of more novice readers) and to aid in efficient comprehension. Here, both axes are missing outermost labels, which makes them feel visually “unfinished.”</p></li>
+<li><p><strong>Overplotting</strong>: When data points partially or wholly overlap, it becomes hard to judge how many values are present in that location. This limits the reader’s ability to interpret density.</p></li>
+<li><p><strong>Vertical y-axis title</strong>: Text rotated 90 degrees is harder to read and less accessible—especially for dyslexic users, non-native readers of the language, users with motor or visual impairments, and those with certain technological limitations. The y axis title is almost always rotated 90 degrees in scientific graphs, despite these facts. The y axis tile is also less prominent when placed in the left margin, where it defaults to. Since many graphs are “about” the y-axis variable, it deserves a more prominent location so that readers encounter it first.</p></li>
+<li><p><strong>Tick marks</strong>: The tick marks are small and easily lost. More prominent ticks improve usability and help distinguish axes from the data region.</p></li>
+<li><p><strong>Legend placement</strong>: The default legend location in the right-hand margin is space-inefficient and relatively hidden at the plot’s side. Most readers scan left to right, top-to-bottom, so the legend information should be either integrated (e.g., through direct labeling inside the plotting area) or the legend should be placed more prominently and compactly somewhere else.</p></li>
+</ul>
+<p>This list isn’t an exhaustive list of the design aspects of this graph that someone <em>might</em> object to on some grounds or another, but it illustrates how even a simple <code>ggplot()</code> often requires many tweaks to meet accessibility, clarity, and design standards to publication-quality.</p>
+</section>
+<section id="colorblind-friendly-palettes" class="level2">
+<h2 class="anchored" data-anchor-id="colorblind-friendly-palettes">Colorblind-Friendly Palettes</h2>
+<p>Fortunately, the <code>viridis</code> package—bundled with <code>ggplot2</code>—includes several colorblind-friendly and broadly accessible palettes. These palettes vary not just in <strong>hue</strong> (i.e., the base “color” like red, green, or blue), but also in <strong>luminance</strong> (light vs.&nbsp;dark) and sometimes <strong>saturation</strong> (intensity or “grayness” of the color). This multidimensional variance makes the colors distinguishable across a range of visual impairments and viewing conditions.</p>
+<p>The <code>ggplot.plus</code> package includes a convenience function, <code>palettes_plus()</code>, that activates a carefully chosen default <code>viridis</code> palette for use whenever the <code>color</code> or <code>fill</code> aesthetics are required by your subseqent plots:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/palettes%20plus-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>By default, <code>viridis</code> spans from dark purple to light yellow, passing through blue, green, and teal. However, <code>palettes_plus()</code> <strong>excludes</strong>, by default, both the darkest purple and the lightest yellow—because these shades can lack contrast against common fore- or background elements that are black and white, respectively. As a result, the remaining palette maintains both accessibility and visual appeal in most contexts.</p>
+<p>However, you can easily adjust this behavior using the <code>begin</code> and <code>end</code> parameters, which both range from 0 to 1:</p>
+<ul>
+<li><p><code>begin = 0</code> would include the dark purple portion of the color range.</p></li>
+<li><p><code>end = 1</code> would include the light yellow portion.</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/bringing%20in%20dark%20purple-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this example, we’ve re-enabled the purple end of the palette. This color contrasts well against the light background, unlike the light yellow, which can be harder to distinguish.</p>
+<section id="other-palette-options" class="level3">
+<h3 class="anchored" data-anchor-id="other-palette-options">Other Palette Options</h3>
+<p><code>viridis</code> isn’t your only option in the <code>viridis</code> package. You can choose from eight palettes, labeled “A” through “H”:</p>
+<ul>
+<li><p><strong>A</strong> = magma</p></li>
+<li><p><strong>B</strong> = inferno</p></li>
+<li><p><strong>C</strong> = plasma</p></li>
+<li><p><strong>D</strong> = viridis (default)</p></li>
+<li><p><strong>E</strong> = cividis</p></li>
+<li><p><strong>F</strong> = rocket</p></li>
+<li><p><strong>G</strong> = mako</p></li>
+<li><p><strong>H</strong> = turbo</p></li>
+</ul>
+<p>If you want a more vibrant “rainbow-like” palette that’s still relatively accessible, <strong>turbo</strong> (“H”) is a good choice:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/turbo-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note: <strong>Turbo</strong> has two dark regions (at both ends), which may be indistinguishable to users with total or partial colorblindness (&lt; 1% of the population). To mitigate this, you can trim one half of the palette using <code>begin</code> or <code>end</code> values around 0.5 to include only the “red” or “blue” side.</p>
+</section>
+<section id="a-few-usage-tips" class="level3">
+<h3 class="anchored" data-anchor-id="a-few-usage-tips">A Few Usage Tips</h3>
+<p><code>palettes_plus()</code> only needs to be called once per session (unless you want to change the palette again). It sets the default color and fill palettes globally for all <code>ggplot2</code> plots thereafter.</p>
+<p>Let’s now change the palette to a modified <em>viridis</em> with the darkest shades removed:</p>
+<p>This gives us a graph that includes light yellow points on a light gray background, so the contrast is not sufficient—that’s something we’ll fix in the next section.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/same%20graph-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="geometries-with-improved-defaults" class="level2">
+<h2 class="anchored" data-anchor-id="geometries-with-improved-defaults">Geometries with Improved Defaults</h2>
+<p>One of the core tools in <code>ggplot.plus</code> is <code>geom_plus()</code>. This function is designed to replace most of the standard <code>geom_*()</code> function calls you’d typically use in a <code>ggplot2</code> pipeline.</p>
+<p>It has one required argument: <code>geom</code>, which should be either the first argument or explicitly named. The value corresponds to the portion <em>after</em> the underscore in the <em>geom</em> function you’d normally call. For example:</p>
+<ul>
+<li><p><code>"point"</code> for <code>geom_point()</code></p></li>
+<li><p><code>"line"</code> for <code>geom_line()</code></p></li>
+<li><p><code>"bar"</code> for <code>geom_bar()</code>,</p></li>
+</ul>
+<p>And so on.</p>
+<p>So, to recreate our scatterplot using <code>geom_plus()</code>, we simply swap out <code>geom_point()</code> with <code>geom_plus(geom = "point")</code>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/geom%20plus-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The primary purpose of <code>geom_plus()</code> is to apply better default parameters that address common design concerns—especially those related to accessibility.</p>
+<p>In this example:</p>
+<ul>
+<li><p>The points are made <strong>larger</strong> and thus easier to parse.</p></li>
+<li><p>The default <strong>shape</strong> changes from 16 to <strong>21</strong>.</p></li>
+</ul>
+<p>This latter change is important because shape 16 only uses the <code>color</code> aesthetic while shape 21 supports <strong>both</strong> <code>color</code> (for the stroke/outline) and <code>fill</code> (for the interior). This gives us more flexibility in design.</p>
+<p>By default, the interior is set to transparent, resulting in <strong>hollow circles</strong>. This allows <strong>partial overlaps</strong> between points to be visually distinguishable—though, of course, total overlap is still not discernable. We’ll present some ideas for fixing that later on.</p>
+<section id="improving-contrast-with-the-fill-aesthetic" class="level3">
+<h3 class="anchored" data-anchor-id="improving-contrast-with-the-fill-aesthetic">Improving Contrast with the Fill Aesthetic</h3>
+<p>If we switch from mapping species to <code>color</code> to instead mapping it to <code>fill</code>, <code>geom_plus()</code> uses a black stroke color by default. This fixes the earlier issue where light yellow points lacked sufficient contrast with the light gray background:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/fill%20instead-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Because the fill colors are now surrounded by <strong>black outlines</strong>, our eyes compare the fill color to the black directly next to it rather than to the background, resolving the contrast issue.</p>
+<p>Even though dark purple can be distinguish from a black stroke, that’s not a problem here, since the stroke doesn’t encode any data. So, if we want more color options, we can restore the full range of the <em>viridis</em> palette:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/restore%20purple-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>There are two broadly effective options for using color with point-based geoms that may feature overplotting:</p>
+<ol type="1">
+<li><strong>Transparent fill + stroke color</strong></li>
+</ol>
+<pre><code>-   Map the discrete variable (e.g., species) to `color`.
+
+-   Use a transparent fill and dark stroke colors for contrast.
+
+-   Advantage: overlapping points are visually distinguishable due to the hollow centers.</code></pre>
+<ol start="2" type="1">
+<li><strong>Dark stroke + colored fill</strong></li>
+</ol>
+<pre><code>-   Map the discrete variable to `fill`.
+
+-   Use a consistent dark stroke to improve contrast between fill and background.
+
+-   Advantage: strong contrast, especially on light backgrounds.</code></pre>
+<p>In the latter case, overplotting will still be an issue without one more tweak: We can make the points semi-transparent so that points that stack on top of one another “bleed through” each other and result in a darker point (colors will “blend” as well, if applicable):</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/using%20alpha-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Setting <code>alpha = 0</code> would make points fully transparent (invisible), while <code>alpha = 1</code> makes them fully opaque. At <code>alpha = 0.3</code>, points remain sufficiently visible but points in dense regions layer on top of each other and become darker, indicating density.</p>
+<p>Note: this approach also dims the <strong>black strokes</strong>, so contrast could still be a concern for low-vision readers. Always consider the balance between legibility and density encoding and consider whether a scatterplot is the best way to represent your data!</p>
+</section>
+<section id="detour-mapping-visual-channels-in-ggplot2-a-review" class="level3">
+<h3 class="anchored" data-anchor-id="detour-mapping-visual-channels-in-ggplot2-a-review">Detour: Mapping Visual Channels in <code>ggplot2</code> (A Review)</h3>
+<p>In <code>ggplot2</code>, you can control the visual appearance of your graph using <strong>aesthetics</strong>, which connect <strong>visual channels</strong> (like position, color, size, or fill) to either data variables or fixed values.</p>
+<p>There are three (partially overlapping) ways to assign aesthetics:</p>
+<ol type="1">
+<li><p><strong>Global mapping</strong>: Inside <code>aes()</code> in the main <code>ggplot()</code> call. These mappings apply to <em>all</em> layers (geoms) by default.</p></li>
+<li><p><strong>Local mapping</strong>: Inside <code>aes()</code> within a specific <code>geom_*()</code> function. These only apply to that one layer.</p></li>
+<li><p><strong>Constant values</strong>: Set inside or outside <code>aes()</code> within a geom or inside of <code>aes()</code> within <code>ggplot()</code>. These are fixed and override any mapping at or above their same level.</p></li>
+</ol>
+<p>This system gives you flexibility, but it can be confusing—especially for new users. Let’s clarify with an example that uses two geoms: a boxplot overlaid with <strong>jittered</strong> points (jittering randomly shuffles their location):</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/understanding%20mapping-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here’s what’s happening:</p>
+<ul>
+<li><p><strong>Global mappings</strong> of <code>x = Species</code> and <code>y = Sepal.Length</code> apply to <em>both</em> the boxplot and the jittered points.</p></li>
+<li><p>The <strong>fill aesthetic</strong> is mapped to <code>Species</code>, but <strong>only locally</strong> within the jittered points layer, so the boxplot is unaffected.</p></li>
+<li><p>The <strong>alpha aesthetic</strong> is set to a constant value (0.3), again <strong>only locally</strong> for the jittered points.</p></li>
+</ul>
+<p>If you map the <em>same aesthetic</em> in multiple places (e.g., globally and locally), the <strong>local mapping always wins</strong>—it overrides any global specification for that layer. Also, if you try to map an aesthetic to both a variable <em>and</em> a constant, the constant usually takes precedence.</p>
+</section>
+<section id="how-this-applies-to-ggplot.plus" class="level3">
+<h3 class="anchored" data-anchor-id="how-this-applies-to-ggplot.plus">How This Applies to <code>ggplot.plus</code></h3>
+<p>All of the same rules apply when using <code>ggplot.plus</code> tools. You can:</p>
+<ul>
+<li><p>Map aesthetics globally or locally</p></li>
+<li><p>Use aesthetics to variables in your data set or to constant values</p></li>
+<li><p>Combine the approaches as needed–conflicts will resolve as they normally do in <code>ggplot2</code>.</p></li>
+</ul>
+<p>Here’s a similar plot with a few tweaks to illustrate this further:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/same%20plot%20diff%20map-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this version:</p>
+<ul>
+<li><p><strong>Fill</strong> is now applied to <em>both</em> geoms, since it’s mapped globally.</p></li>
+<li><p><strong>Color</strong> is also mapped globally but overridden locally in the boxplot layer (so boxplot outlines are blue, regardless of <code>Petal.Length</code>).</p></li>
+</ul>
+<p>Many common base geoms are already implemented in <code>geom_plus()</code>. To see a list of those currently available:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "point"      "jitter"     "count"      "boxplot"    "violin"    
+ [6] "bar"        "col"        "histogram"  "line"       "freqpoly"  
+[11] "segment"    "abline"     "hline"      "vline"      "curve"     
+[16] "smooth"     "area"       "ribbon"     "crossbar"   "errorbar"  
+[21] "linerange"  "pointrange" "density"    "dotplot"   </code></pre>
+</div>
+</div>
+<p>If you’d like to see additional geoms supported, you can request them using the Issues feature on the package’s Github page.</p>
+</section>
+</section>
+<section id="improving-axes" class="level2">
+<h2 class="anchored" data-anchor-id="improving-axes">Improving Axes</h2>
+<p>Let’s return to our earlier scatterplot:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/return%20to%20scatter-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>There’s still room for improvement, including with the axis titles and labels. A key first step is to make the axis titles more human-readable, intuitive, and complete by including units. You can do this using the <code>scale_*_*()</code> family of functions in <code>ggplot2</code>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/normal%20scale-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This works, but the x-axis still lacks labels near its endpoints—a common issue with <code>ggplot2</code>’s default breaks determination. You can fix this using <code>scale_x_continuous_plus()</code>, which automatically adjusts breaks and limits to ensure label coverage near the extremes:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/cont_plus-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The axis is now expanded to start at 1 and end at 7, with breaks still chosen to be regular and “pretty,” as in <code>ggplot2</code>.</p>
+<p>As with the base function, you can still pass arguments like <code>name</code>, <code>expand</code>, <code>transform</code>, or <code>labels</code> to the <code>_plus()</code> version. However, you <em>cannot</em> manually set <code>breaks</code> or <code>limits</code>, since those are managed internally by the function. If you need full control over those, revert to <code>scale_x_continuous()</code> instead.</p>
+<p>If the resulting labels feel too frequent, here’s a trick: You can suppress some of them by setting custom label text—for instance, removing every other label while keeping the tick marks:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/suppressing%20some%20labels-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This reduces cognitive load while preserving the visual scaffolding the ticks provide. Optional, but a nice touch!</p>
+<p>Unsurprisingly, there’s a matching function for the y-axis:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/y%20cont%20plus-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, the y-axis expands downward to include a break at 4, making the axis appear more complete and aiding interpretation.</p>
+</section>
+<section id="improving-the-theme" class="level2">
+<h2 class="anchored" data-anchor-id="improving-the-theme">Improving the Theme</h2>
+<p>Much of <code>ggplot2</code>’s visual styling is governed by the <code>theme()</code> function, which controls over 100 parameters affecting how a plot looks and feels. That flexibility is powerful—but also overwhelming for beginners.</p>
+<p>To help with this, <code>ggplot.plus</code> includes <code>theme_plus()</code>, a custom version of <code>ggplot2</code>’s <code>theme()</code> function that sets more publication- and accessibility-friendly defaults out of the box:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/theme_plus-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This version of the theme makes a number of visual improvements:</p>
+<ul>
+<li><p><strong>Larger text</strong> for better readability.</p></li>
+<li><p><strong>Increased spacing</strong> between key elements (like legend keys and axis titles and labels).</p></li>
+<li><p><strong>Thicker axis ticks</strong> for greater visibility and distinguishing.</p></li>
+<li><p><strong>Removes gridlines</strong> by default (but see next section for how to selectively reintroduce them).</p></li>
+<li><p><strong>White background</strong> for high contrast (though note this can increase eye strain in some cases).</p></li>
+<li><p><strong>Black axis lines</strong> at the bottom and left (but no top or right borders, which typically carry no data).</p></li>
+<li><p><strong>Legend moved above the plot</strong> as a horizontal strip—space-efficient and more likely to be seen early by the reader.</p></li>
+<li><p><strong>All text rendered in black</strong>, rather than the default dark gray for some elements, to maximize contrast.</p></li>
+</ul>
+<p>Of course, everything is still customizable. If you don’t love a particular choice—say, the thickness of the axis lines or the legend’s location—you can adjust them, same as you normally would:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/adj%20theme-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You can even restore the right-side legend if you prefer—but it’s wise to adjust spacing too if you do:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/adj%20theme%202-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Like the rest of the toolkit, <code>theme_plus()</code> is meant to be a smart starting point—not a final destination. It won’t be ideal for every plot or context, but it’s designed to save you time and steer your design toward best practices from the start.</p>
+</section>
+<section id="y-axis-title-orientation-and-location" class="level2">
+<h2 class="anchored" data-anchor-id="y-axis-title-orientation-and-location">Y Axis Title Orientation and Location</h2>
+<p>Our graph is nearly there—but one issue remains: the <strong>y axis title</strong> is still vertically oriented and tucked away in the left margin. Let’s fix that.</p>
+<p>In base <code>ggplot2</code>, you <em>can</em> reorient the title using hacky adjustments like line breaks and theme tweaks:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/change%20y%20axis%20title%20manual-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This works reasonably well—it’s readable and relatively simple to implement, if you know how (a big if for many beginning <code>ggplot2</code> users!). But it has limitations:</p>
+<ul>
+<li><p>It steals horizontal space from your data.</p></li>
+<li><p>It keeps the label in a relatively unprominent location.</p></li>
+<li><p>It doesn’t scale up well to longer axis titles or those with long, unbreakable words.</p></li>
+</ul>
+<p>To get around these challenges, <code>ggplot.plus</code> includes <code>yaxis_title_plus()</code>, which repositions the y axis title to the <strong>top left corner of the plotting area</strong>, aligned above the y axis and left-justified:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/yaxis%20mover-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This small adjustment brings a number of benefits:</p>
+<ul>
+<li><p><strong>Prominence</strong>: Readers of left-to-right, top-to-bottom languages naturally start in the upper-left, so the y axis title now gets seen early.</p></li>
+<li><p><strong>Readability</strong>: The title is horizontal, making it easier and faster to read for all kinds of people in all kinds of contexts.</p></li>
+<li><p><strong>Space efficiency</strong>: Instead of taking up horizontal room, the title sits in a narrow horizontal band above the plot, freeing up the core of the graphing area for your data to shine.</p></li>
+<li><p><strong>Title dual-purpose</strong>: For graphs that don’t have a main title (which many design experts recommend omitting because, at best, titles tend to do what y axis titles and captions already do but worse), this functions sort of like one but with a much tighter focus, which can be beneficial for novice graph readers.</p></li>
+</ul>
+<p>Some may find this placement unconventional, but it’s backed by <strong>decades of advocacy</strong> from the data visualization community (dating back to at least the 1990s). So while it’s optional, it’s not a fringe or new idea! Give it a try–you might just like it better.</p>
+</section>
+<section id="thoughtful-gridlines" class="level2">
+<h2 class="anchored" data-anchor-id="thoughtful-gridlines">Thoughtful Gridlines</h2>
+<p>One potentially controversial design choice in <code>ggplot.plus</code>’s <code>theme_plus()</code> is the <strong>removal of gridlines</strong>. While some readers rely on them or expect them, many others find them distracting or visually cluttering.</p>
+<p>If you’d like to restore them, you <em>could</em> manually add them back using <code>theme()</code> or <code>theme_plus()</code>. But there’s a better option: <code>gridlines_plus()</code>. This function selectively reintroduces only the <strong>major gridlines</strong> (not minor ones), in directions mapped to <strong>numeric</strong> variables (not discrete ones), and renders them faintly:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/gridlines%20plus-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These gridlines default to <code>color = "gray90"</code>, offering a <strong>low-contrast, high-compromise solution</strong>:</p>
+<ul>
+<li><p>They’re just visible enough for those who need help estimating values or otherwise want to use them, according to empirical research.</p></li>
+<li><p>But they’re light enough to fade into the background for everyone else.</p></li>
+</ul>
+<p>Research has shown that <strong>faint and infrequent gridlines</strong> can improve comprehension for some readers without drawing undue attention or degrading visual contrast. That’s what we’re aiming for here.</p>
+<p>Want to customize them? <code>gridlines_plus()</code> allows adjustments to <code>linetype</code>, <code>color</code>, and <code>linewidth</code>. This flexibility ensures you can match gridlines to your graph’s tone and complexity without sacrificing readability.</p>
+</section>
+<section id="faceting-with-ggplot.plus" class="level2">
+<h2 class="anchored" data-anchor-id="faceting-with-ggplot.plus">Faceting With <code>ggplot.plus</code></h2>
+<p>Faceting—splitting a plot into <strong>small multiples</strong> based on one or more discrete variables—is a core feature of <code>ggplot2</code>, and it works with the tools provided by <code>ggplot.plus</code>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/faceting%20with%20geomplus-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As this example shows, <strong>most features in <code>ggplot.plus</code> are compatible with faceting</strong>, though a few require some extra thought.</p>
+<p>For example, using <code>yaxis_title_plus()</code> with facets technically works, but the result may not look ideal:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/facets%20and%20y%20axis%20title-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, the y-axis title ends up <em>above</em> the facet labels, where it’s disconnected from the axis it describes.</p>
+<p>There are two potential workarounds to this. The first would be to facet by rows instead of columns. This restores a more natural association between the y-axis title and the data:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/plot%20as%20rows-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Another option would be to relocate the facet labels to the bottom of the graph so they aren’t competing with the relocated y axis title:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/moving%20facet%20labels-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This also works, but a third option would be to suppress the facet strip labels entirely and instead retain the legend:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/retain%20legend-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Of all the core features of <code>ggplot.plus</code> that are likely to intersect strangely with faceting, <code>yaxis_title_plus()</code> probably tops the list. But, even then, you’ve got many options available to choose from.</p>
+<section id="side-note-transparency-in-the-legend-keys" class="level3">
+<h3 class="anchored" data-anchor-id="side-note-transparency-in-the-legend-keys">Side-note: Transparency in the Legend Keys</h3>
+<p>You may have noticed that the <strong>legend keys</strong>—the little circles in the legend that explain fill color—are also <strong>semi-transparent</strong>, just like the plotted points. That’s because the <code>alpha</code> value is being applied to both the points and their legend representations.</p>
+<p>This behavior isn’t specific to <code>ggplot.plus</code>. In base <code>ggplot2</code>, legend keys inherit aesthetics unless you override those aesthetics. Here’s one clean way to make the <strong>legend keys opaque</strong> while keeping transparency in the plot itself:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/override%20aes-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Placing <code>alpha = 0.3</code> <strong>inside</strong> <code>aes()</code> helps ggplot handle alpha in the legend differently. Then, <code>scale_alpha(guide = "none")</code> removes the alpha guide from the legend to prevent it from being confusing.</p>
+</section>
+</section>
+<section id="known-issues" class="level2">
+<h2 class="anchored" data-anchor-id="known-issues">Known Issues</h2>
+<p>There’s a known limitation when using <code>yaxis_title_plus()</code> alongside a <strong>top-positioned x-axis</strong>. The relocated y-axis title will end up in the same horizontal “row” as the top x axis labels, causing them to clip into each other:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/yaxis%20top%20conflict-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If a top x-axis is important for your graph, you can use the <code>location = "bottom"</code> option in <code>yaxis_title_plus()</code> to relocate the y title beneath the plot instead:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/y%20axis%20bottom-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It’s a bit unorthodox visually, but it works! If you duplicate the x-axis on <strong>both top and bottom</strong> or have a secondary x axis on the top, however, you won’t be able to relocate the y-axis title easily. In that case, the best fallback may be to stick with the horizontal y-axis title broken across as many lines as possible using line breaks (<code>\n</code>).</p>
+<section id="idealized-scatterplot-for-reference" class="level3">
+<h3 class="anchored" data-anchor-id="idealized-scatterplot-for-reference">Idealized scatterplot for reference</h3>
+<p>Here’s the final, <strong>cleaned-up version</strong> of our scatterplot using most of <code>ggplot.plus</code>’s tools together:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/idealized%20graph-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

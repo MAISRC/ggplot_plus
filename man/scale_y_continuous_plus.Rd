@@ -4,7 +4,7 @@
 \alias{scale_y_continuous_plus}
 \title{Find Pretty Breaks for a Continuous Y axis in ggplot While Ensuring End Labels}
 \usage{
-scale_y_continuous_plus(..., n = 5, buffer_frac = 0.5)
+scale_y_continuous_plus(..., n = 5, buffer_frac = 0.05)
 }
 \arguments{
 \item{...}{Standard inputs normally given to \code{scale_y_continuous()}. Must not include \code{breaks} or \code{limits} or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.}

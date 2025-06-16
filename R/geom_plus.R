@@ -31,8 +31,7 @@ geom_plus_defaults = list(
                  outlier.shape = 21,
                  outlier.colour = "black",
                  outlier.stroke = 1.2,
-                 outlier.fill = "transparent",
-                 alpha = 1),
+                 outlier.fill = "transparent"),
   violin = list(linewidth = 1.2,
                 linetype = "solid",
                 colour = "black",
@@ -261,9 +260,10 @@ ggplot_add.geom_plus = function(object, plot, name) {
 
   #WE DO THINGS JUST A LITTLE DIFFERENTLY IF SHAPE WAS MAPPED AND WE HAVE TO ADJUST THE PALETTE.
   if(!exists("shape_pal")) { #THIS IS A SAFE CONSTRUCTION THAT PREVENTS ERRORS WHEN shape_pal IS NULL.
-    plot + layer
+    plot = plot + layer
   } else {
-    plot + layer + ggplot2::scale_shape_manual(values = shape_pal)
+    plot = plot + layer + ggplot2::scale_shape_manual(values = shape_pal)
   }
+plot
 
 }
