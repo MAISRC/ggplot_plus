@@ -98,9 +98,20 @@ element_to_gpar = function(el) {
 #' @export
 switch_axis_label = function(p, location = "top") {
 
-  y_scale = p$scales$get_scales("y")
+  #IF A USER USES coord_flip(), I.E., THE WORST GGPLOT2 FUNCTION EVER LOL, THEN WE *REALLY* NEED TO GRAB THE X AXIS TITLE INSTEAD.
+  #THE p$coordinates OBJECT WILL HAVE CLASS "CoordFlip" IN THAT INSTANCE.
 
-  #DEFAULT TO THE SCALE LABEL, IF ANY
+  if(inherits(p$coordinates, "CoordFlip")) {
+    real_scale = "x"
+    title_element = "axis.title.x"
+  } else {
+    real_scale = "y"
+    title_element = "axis.title.y"
+  }
+
+  y_scale = p$scales$get_scales(real_scale)
+
+  #DEFAULT TO THE SCALE LABEL, IF ANY, AS THIS WILL BE WHAT THE USER HAS HOPEFULLY SET.
   if (!is.null(y_scale)) {
     name = y_scale$name
     if (!is.null(name) && !inherits(name, "waiver") && nzchar(name)) {
@@ -108,31 +119,38 @@ switch_axis_label = function(p, location = "top") {
     }
   }
 
-  #OTHERWISE, FALL BACK TO THE PLOT LABEL IF ANY.
-  label = p$labels[["y"]]
+  if(!exists("lab")) { #WE FAILED ABOVE, SO WE ENTER HERE IF SO.
+
+  #OTHERWISE, FALL BACK TO THE PLOT LABEL IF ANY, AS THIS WILL GENERALLY BE WHATEVER THE DEFAULT VALUE SET BY GGPLOT WAS.
+  label = p$labels[[real_scale]]
   if (!is.null(label) && !inherits(label, "waiver") && nzchar(label)) {
     lab = label
   } else {
-    #OTHERWISE, FALL BACK TO SOMETHING GENERIC
-    lab = "Replace me with scale_y_*()"
+    #OTHERWISE, FALL BACK TO SOMETHING GENERIC THAT THE USER WILL KNOW THEY NEED TO REPLACE.
+    lab = "Replace with a scale() function!"
+   }
   }
 
   # #ALL THEME-RELATED ADJUSTMENTS MUST BE PORTED OVER MANUALLY. HERE, WE PORT OVER SIZE, TAKING EITHER A CUSTOM SIZE FROM THE PROVIDED THEME, IF ANY, OR ELSE THE SIZE FROM THE DEFAULT THEME. A SIMILAR MODEL COULD BE USED FOR CARRYING OVER THINGS LIKE FONT COLOR AND STYLE.
 
   #IF YOU'VE SPECIFIED A NEW Y SCALE TITLE VALUE VIA A SCALE_Y_ FUNCTION, THIS NUKES IT.
-  if(!is.null(p$scales$get_scales("y"))) {
-    y = which(unlist(lapply(p$scales$scales, function(x) { "y" %in% x$aesthetics } )))
+  if(!is.null(p$scales$get_scales(real_scale))) {
+    y = which(unlist(lapply(p$scales$scales, function(x) { real_scale %in% x$aesthetics } )))
     p$scales$scales[[y]]$name = NULL
   }
 
   #THIS ALSO NUKES THE DEFAULT Y AXIS TITLE STRING.
+  if(real_scale == "y") {
   p = p + ggplot2::labs(y = NULL)
+  } else {
+    p = p + ggplot2::labs(x = NULL)
+  }
 
   #NOW, WE CONVERT THE GGPLOT WE ALREADY HAVE INTO A GTABLE.
   gt = ggplot2::ggplot_gtable(ggplot2::ggplot_build(p))
 
-  #HERE, WE ATTEMPT TO PORT OVER ANY THEME-RELATED ADJUSTMENTS TO THE APPEARANCE OF THE Y AXIS TITLE.
-  element = ggplot2::calc_element("axis.title.y", p$theme) #GRAB THE ELEMENT'S CURRENT THEME CHARACTERISTICS
+    #HERE, WE ATTEMPT TO PORT OVER ANY THEME-RELATED ADJUSTMENTS TO THE APPEARANCE OF THE Y AXIS TITLE.
+  element = ggplot2::calc_element(title_element, p$theme) #GRAB THE ELEMENT'S CURRENT THEME CHARACTERISTICS
 
   #USUALLY, WE TARGET ROW [8,6] BUT CAN INSTEAD TARGET [11,6] IF THE USER WANTS AND WE LACK A BOTTOM X AXIS LABEL ROW.
   target_row = ifelse(location == "bottom", 11, 8)
@@ -153,13 +171,46 @@ switch_axis_label = function(p, location = "top") {
                             gp = element_to_gpar(element)), #TRANSLATE IN THEME CHARACTERISTICS TO THE GROB.
       t = target_row,
       l = 6,
-      name = "custom-y-title",
+      name = paste0("custom-", real_scale, "-title"),
       clip = "off"
     )
   }
 
   #MAKE ROW 8/11 HAVE A NON-ZERO HEIGHT (THIS IS THE ROW THAT SECOND GTABLE GROB WOULD NORMALLY GO IN--IT HAS A 0 HEIGHT UNLESS A TOP X-AXIS EXISTS.)
   gt$heights[target_row] = grid::unit(1.5, "lines") #=-FOR ME, 2 LINES SEEMS ENOUGH SPACE.
+
+  #IF THE USER HAS FACETED, AND IF THEY HAVE STRIP LABELS AT THE TOP, AND THEY ARE TRYING TO PUT THE Y AXIS ON TOP INSTEAD OF ON BOTTOM (3 CHECKS!), THE FACET STRIP LABELS GO IN ROW 9 BY DEFAULT, BELOW THE NEW Y AXIS TITLE IN ROW 8, WHICH IS ILLOGICAL, SO WE FLIP THE ORDER OF THESE TWO ROWS.
+  if (inherits(p$facet, "Facet") &&
+      target_row == 8 &&
+      any(!sapply(gt$grobs[which(gt$layout$t <= 9 &
+                                 gt$layout$b >= 9 &
+                                 grepl("strip-t", gt$layout$name))], function(x) {
+                                   inherits(x, "zeroGrob")
+                                 }))) {
+
+    oldlayout = gt$layout #GET CURRENT LAYOUT AND HEIGHTS
+    oldheights = gt$heights
+
+    #GET OLD CONTENTS OF THESE TWO ROWS.
+    oldrow8 = oldlayout$t == 8 & oldlayout$b == 8 #TRUE FOR CONTENTS ONLY IN ROW 8/9
+    oldrow9 = oldlayout$t == 9 & oldlayout$b == 9
+
+    #SWAPPING THE T AND B VALUES FOR ALL ELEMENTS IN THESE TWO ROWS.
+    oldlayout$t[oldrow8] = 9
+    oldlayout$b[oldrow8] = 9
+    oldlayout$t[oldrow9] = 8
+    oldlayout$b[oldrow9] = 8
+
+    #SWAP THE HEIGHTS TOO.
+    tmp = oldheights[8]
+    oldheights[8] = oldheights[9]
+    oldheights[9] = tmp
+
+    #OVERWRITE GT WITH MODIFIED VERSIONS
+    gt$layout = oldlayout
+    gt$heights = oldheights
+  }
+
   #WARNINGS REGIONS ------
 
   #WARNING #1--IF USERS HAVE MOVED THE X AXIS TO THE TOP OR HAVE DUPLICATED IT THERE, THE NEW Y AXIS TITLE WILL LIKELY CLIP THE LABELS
@@ -172,18 +223,6 @@ switch_axis_label = function(p, location = "top") {
   #IF ANY DO FAIL TO INHERIT, THEN WE WARN THE USER.
   if (x_axis_top_visible & location == "top") {
     warning("Heads-up: The top y axis title is likely to clip overtop of the x axis labels if your graph features a top x axis. Move the x axis to the bottom using \"position = 'top'\" in scale_x_*() (or remove the secondary x axis). Alternatively, set \"location = 'bottom'\" in switch_y_axis(). ")
-  }
-
-  #WARNING #2--IF USERS HAVE FACETED AND HAVE FACET STRIPS AT THE TOP POSITION, THE NEW Y AXIS TITLE WILL GO ABOVE RATHER THAN BELOW THEM. IN THIS CASE, I'D ADVISE MOVING THEM TO THE BOTTOM OF THE GRAPH INSTEAD.
-  strip_t_rows = which(grepl("^strip-t", gt$layout$name)) #FIND ANY STRIP-T GROBS.
-  strip_t_grobs = gt$grobs[strip_t_rows] #PULL THEM OUT
-
-  #SEE IF ANY OF THESE GROBS FAIL TO INHERIT THE ZEROGROB CLASS, WHICH THEY GET IF THEY ARE ACTUALLY EMPTY.
-  top_strips = any(!vapply(strip_t_grobs, inherits, what = "zeroGrob", logical(1)))
-
-  #IF ANY DO FAIL TO INHERIT, THEN WE WARN THE USER.
-  if (top_strips) {
-    warning("Heads-up: The top y axis title will be placed above any top strip labels on faceted graphs. This may not be ideal; in these instances, I recommend moving your top facet strips to the bottom. In facet_wrap(), specify \"strip.position = 'bottom'\" to do this; In facet_grid(), specify \"switch = 'x'\" instead. Alternatively, consider faceting by rows rather than columns to place strips on the sides.")
   }
 
   # END WARNINGS ----

@@ -34,22 +34,25 @@ ggplot_add.theme_plus = function(object, plot, name) {
   #DEFINE THE DEFAULT THEME HERE.
   default_theme = ggplot2::theme(
   # aspect.ratio = 1, #I WANT TO DO MORE RESEARCH ON WHAT THIS VALUE SHOULD BE OR HOW TO CALCULATE IT.
-  axis.line = ggplot2::element_line(color = "black", linewidth = 1.2), #ADD THICK BLACK X AND Y AXIS LINES
+  axis.line = ggplot2::element_line(color = "black", linewidth = 1.2, lineend = "square"), #ADD THICK BLACK X AND Y AXIS LINES WITH SQUARE ENDS TO ENSURE THAT THEY APPEAR TO VISUALLY MEET.
   axis.title.x = ggplot2::element_text(color = "black", size = 18, margin = ggplot2::margin(t = 10)), #ADD TOP MARGIN TO X AXIS TITLE.
   axis.title.y = ggplot2::element_text(color = "black", size = 18, vjust = 0.25, margin = ggplot2::margin(r  = 15)),
   axis.text = ggplot2::element_text(size = 16, color = "black"), #ENSURE AXIS LABELS ARE BLACK AND SIZE 16
   axis.ticks.length = unit(0.3, "cm"), #INCREASE SIZE OF AXIS TICK MARKS TO BE MORE NOTICEABLE.
   legend.position = "top",
   legend.direction = "horizontal",
-  legend.title = ggplot2::element_text(color = "black", size = 18, margin = ggplot2::margin(r = 15)),
+  legend.title = ggplot2::element_text(color = "black", size = 18, margin = ggplot2::margin(r = 15), vjust = 0.5),
   legend.box.just = "bottom",
   legend.key.spacing.x = ggplot2::unit(0.5, "cm"),
   legend.text = ggplot2::element_text(size = 16, color = "black"),
   legend.justification = "right",
   legend.key = ggplot2::element_rect(fill = "transparent", color = "white"),
   legend.background = ggplot2::element_rect(color = "white", fill = "white"),
-  legend.ticks.length = ggplot2::unit(0.3, "cm"),
-  legend.frame = ggplot2::element_rect(color = "black", linewidth = 1.2),
+  # legend.ticks.length = ggplot2::unit(0.2, "cm"),
+  # legend.frame = ggplot2::element_rect(color = "black", linewidth = 1.2), #MAKE SOLID BLACK LINES FOR THE LEGEND BORDER FOR CONTINUOUS SCALES.
+  # legend.ticks = ggplot2::element_line(color = "white", linewidth = 1.2, linetype = "solid"), #MAKE THE TICKS WHITE
+  # legend.key.width = unit(2, "cm"), #GREATLY EXPAND THE WIDTH
+  # legend.key.height = unit(1, "cm"), #EXPAND THE HEIGHT A BIT ALSO.
   panel.border = ggplot2::element_blank(),
   panel.grid = ggplot2::element_blank(), #ELIMINATE MAJOR AND MINOR GRIDLINES
   panel.background = ggplot2::element_rect(fill = "white"), #SWITCH FROM GRAY TO WHITE BACKGROUND

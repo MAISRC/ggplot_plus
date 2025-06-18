@@ -139,7 +139,7 @@ This list isn’t an exhaustive list of the design aspects of this graph that so
 
 Fortunately, the `viridis` package—bundled with `ggplot2`—includes several colorblind-friendly and broadly accessible palettes. These palettes vary not just in **hue** (i.e., the base “color” like red, green, or blue), but also in **luminance** (light vs. dark) and sometimes **saturation** (intensity or “grayness” of the color). This multidimensional variance makes the colors distinguishable across a range of visual impairments and viewing conditions.
 
-The `ggplot.plus` package includes a convenience function, `palettes_plus()`, that activates a carefully chosen default `viridis` palette for use whenever the `color` or `fill` aesthetics are required by your subseqent plots:
+The `ggplot.plus` package includes a convenience function, `palettes_plus()`, that activates a carefully chosen default palette for use whenever the `color` or `fill` aesthetics are required by your subsequent plots:
 
 ```{r palettes plus}
 palettes_plus() #<--CALL ONCE PER SESSION.
@@ -151,16 +151,18 @@ ggplot(iris,
   geom_point(mapping = aes(color = Species))
 ```
 
-By default, `viridis` spans from dark purple to light yellow, passing through blue, green, and teal. However, `palettes_plus()` **excludes**, by default, both the darkest purple and the lightest yellow—because these shades can lack contrast against common fore- or background elements that are black and white, respectively. As a result, the remaining palette maintains both accessibility and visual appeal in most contexts.
+This function uses the titular `viridis` palette for discrete variables and the `cividis` palette for continuous variables. By default, `viridis` spans from dark purple to light yellow, passing through blue, green, and teal. This relatively large number of hues makes it easier to find discrete hues that are visually distinct. \
+\
+However, `palettes_plus()` **excludes**, by default, both the darkest purple and the lightest yellow—because these shades can lack contrast against common fore- or background elements that are black and white, respectively. As a result, the remaining palette maintains both accessibility and visual appeal in most contexts.
 
-However, you can easily adjust this behavior using the `begin` and `end` parameters, which both range from 0 to 1:
+However, you can easily adjust this behavior using the `begin_*` and `end_*` parameters, which range from 0 to 1:
 
--   `begin = 0` would include the dark purple portion of the color range.
+-   `begin_discrete = 0` would include the dark purple portion of the color range for discrete scales.
 
--   `end = 1` would include the light yellow portion.
+-   `end_discrete = 1` would include the light yellow portion.
 
 ```{r bringing in dark purple}
-palettes_plus(begin = 0) #<--ALLOW DARK PURPLE RANGE.
+palettes_plus(begin_discrete = 0) #<--ALLOW DARK PURPLE RANGE.
 
 #SAME GRAPH AS BEFORE
 ggplot(iris,
@@ -170,6 +172,17 @@ ggplot(iris,
 ```
 
 In this example, we’ve re-enabled the purple end of the palette. This color contrasts well against the light background, unlike the light yellow, which can be harder to distinguish.
+
+To see what the color palette looks like for continuous variables, let's map color to a different numeric variable in the data set:
+
+```{r check out cividis}
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_point(mapping = aes(color = Petal.Width), show.legend = FALSE) #<--MAP COLOR TO A CONTINUOUS VARIABLE INSTEAD, SUPPRESS THE LEGEND FOR NOW.
+```
+
+In contrast to `viridis`, the `cividis` palette has essentially just three hues: blue, gray, and yellow. Because humans like to "chunk" data into discrete groups by hue, this palette's low number of distinct hues will result in fewer false segmentations of the underlying data, even compared to other accessible palettes. After all, blue, gray, and yellow points here *are* quite different, so the hue differences many will perceive here map accurately to differences in the underlying data, which isn't always true when many hues are used.
 
 ### Other Palette Options
 
@@ -181,9 +194,9 @@ In this example, we’ve re-enabled the purple end of the palette. This color co
 
 -   **C** = plasma
 
--   **D** = viridis (default)
+-   **D** = viridis (default for discrete variables)
 
--   **E** = cividis
+-   **E** = cividis (default for continuous variables)
 
 -   **F** = rocket
 
@@ -194,7 +207,7 @@ In this example, we’ve re-enabled the purple end of the palette. This color co
 If you want a more vibrant “rainbow-like” palette that’s still relatively accessible, **turbo** ("H") is a good choice:
 
 ```{r turbo}
-palettes_plus(begin = 0, end = 1, palette = "H") #<--SWITCH TO TURBO PALETTE FOR ITS FULL RANGE. 
+palettes_plus(begin_discrete = 0, end_discrete = 1, palette = "H") #<--SWITCH TO TURBO PALETTE FOR ITS FULL RANGE. 
 
 #SAME GRAPH AS BEFORE
 ggplot(iris,
@@ -203,16 +216,14 @@ ggplot(iris,
   geom_point(mapping = aes(color = Species))
 ```
 
-Note: **Turbo** has two dark regions (at both ends), which may be indistinguishable to users with total or partial colorblindness (\< 1% of the population). To mitigate this, you can trim one half of the palette using `begin` or `end` values around 0.5 to include only the "red" or "blue" side.
+Note: **Turbo** has two dark regions (at both ends), which may be indistinguishable to users with total or partial colorblindness (\< 1% of the population). To mitigate this, you can trim one half of the palette using `begin_*` or `end_*` values around 0.5 to include only the "red" or "blue" side.
 
 ### A Few Usage Tips
 
-`palettes_plus()` only needs to be called once per session (unless you want to change the palette again). It sets the default color and fill palettes globally for all `ggplot2` plots thereafter.
-
-Let’s now change the palette to a modified *viridis* with the darkest shades removed:
+`palettes_plus()` is called automatically when the package is loaded. It sets the default color and fill palettes globally for all `ggplot2` plots thereafter. It needn't be called again unless you want to change something. For example, let's change the palette for discrete variables to a modified *viridis* with the darkest shades removed:
 
 ```{r reset to virids}
-palettes_plus(begin = 0.28, end = 1, palette = "D") #<--RESET TO VIRIDIS, DON'T INCLUDE THE DARK REGION.
+palettes_plus(begin_discrete = 0.28, end_discrete = 1, palette = "D") #<--RESET TO VIRIDIS, DON'T INCLUDE THE DARK REGION.
 ```
 
 This gives us a graph that includes light yellow points on a light gray background, so the contrast is not sufficient—that's something we’ll fix in the next section.
@@ -278,7 +289,7 @@ Because the fill colors are now surrounded by **black outlines**, our eyes compa
 Even though dark purple can be distinguish from a black stroke, that’s not a problem here, since the stroke doesn’t encode any data. So, if we want more color options, we can restore the full range of the *viridis* palette:
 
 ```{r restore purple}
-palettes_plus(begin = 0, end = 1) #<--RESTORE PURPLE END OF COLOR RANGE AND RETAIN YELLOW RANGE (WHICH, BY DEFAULT, WOULD BE CUT OFF).
+palettes_plus(begin_discrete = 0, end_discrete = 1) #<--RESTORE PURPLE END OF COLOR RANGE AND RETAIN YELLOW RANGE (WHICH, BY DEFAULT, WOULD BE CUT OFF).
 
 #SAME GRAPH AS BEFORE
 ggplot(iris,
@@ -541,6 +552,38 @@ ggplot(iris,
 ```
 
 Like the rest of the toolkit, `theme_plus()` is meant to be a smart starting point—not a final destination. It won’t be ideal for every plot or context, but it’s designed to save you time and steer your design toward best practices from the start.
+
+There are a few theme considerations that apply only to color bars, but, to see them, we need to map a continuous variable to color/fill to get such a legend:
+
+```{r cont color bar theme }
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Petal.Width), #<--CHANGE TO CONTINUOUS VARIABLE.
+            alpha = 0.3) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus()
+```
+
+The changes here include longer and fatter tick marks, a black border, and larger dimensions for easier reading.
+
+Note that colorbars can have the same issue as axes, where the ends don't necessarily get labels at or near them, depending upon how breaks are decided. `ggplot.plus` includes functions equivalent to `scale_x/y_continuous_plus()` for `color` and `fill` as well:
+
+```{r fill plus scale}
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Petal.Width)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", 
+                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus() +
+  scale_fill_continuous_plus(name = "Petal width (cm)") #<--GET BETTER AXIS BREAKS
+```
 
 ## Y Axis Title Orientation and Location
 

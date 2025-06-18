@@ -2,7 +2,7 @@
 % Please edit documentation in R/scale_continuous_plus.R
 \name{ggplot_add.scale_y_cont_plus}
 \alias{ggplot_add.scale_y_cont_plus}
-\title{Add A scale_x_cont_plus-generated Y axis Gradation to a ggplot}
+\title{Add A scale_y_cont_plus-generated Y axis Gradation to a ggplot}
 \usage{
 \method{ggplot_add}{scale_y_cont_plus}(object, plot, name)
 }

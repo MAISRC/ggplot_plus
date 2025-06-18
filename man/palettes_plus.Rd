@@ -4,10 +4,18 @@
 \alias{palettes_plus}
 \title{Makes the Viridis Family of Color Palettes the Default For ggplots}
 \usage{
-palettes_plus(palette = "D", begin = 0.28, end = 0.72)
+palettes_plus(
+  palette_discrete = "D",
+  palette_continuous = "E",
+  begin_discrete = 0.28,
+  end_discrete = 0.72,
+  begin_continuous = 0,
+  end_continuous = 1
+)
 }
 \arguments{
-\item{palette}{The viridis-family color palette to use. Defaults to "D", which corresponds to the viridis color palette. Must be a length-1 character string from "A" to "H" corresponding to the same codes used by \code{scale_color_viridis_d()} and similar functions to refer to the eight color families available in the viridis package.}
+\item{palette_discrete}{The viridis-family color palette to use for discrete variables. Defaults to "D", which corresponds to the viridis color palette. Must be a length-1 character string from "A" to "H" corresponding to the same codes used by \code{scale_color_viridis_d()} and similar functions to refer to the eight color families available in the viridis package.
+#' @param palette_continuous The viridis-family color palette to use for continuous variables. Defaults to "E", which corresponds to the cividis color palette, which has fewer distinct hues, resulting in fewer false segmentations of the underlying data driven by hue transitions. Must be a length-1 character string from "A" to "H" corresponding to the same codes used by \code{scale_color_viridis_d()} and similar functions to refer to the eight color families available in the viridis package.}
 
 \item{begin}{The color value of the "low" end of the color palette. Defaults to 0.28, which is a medium-dark blue in the viridis palette. Must be a single numeric value between 0 and 1.}
 

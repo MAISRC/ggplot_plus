@@ -118,17 +118,19 @@ geom_plus_defaults = list(
 #' Maps inputs to a base ggplot geom (e.g., geom_point or geom_line) but provides default values more likely to adhere to best practices around usability, design aesthetics, and accessibility.
 #'
 #' @param geom The name of the geom being drawn. Corresponds to the portion of the geom_ function after the _, e.g., "point" for geom_point, "line" for geom_line, etc. Must be a length one character string, and must match an implemented geom. See names(geom_plus_defaults) for a list of these. Required input.
+#' #' @param silence_warnings `geom_plus()` triggers some checks for aspects of good graph design and, if any of these checks fail, a warning is triggered to direct the user towards better practices. Set this parameter to `FALSE` to silence these warnings.
 #' @param ... Other arguments to be passed along to the geom_ function being called.
 #' @return List with the class "geom_plus", which will trigger the geom_plus method in ggplot_add.
 #' @examples
 #' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point")
 #' @export
-geom_plus = function(geom, ...) {
+geom_plus = function(geom, silence_warnings = FALSE, ...) {
   if(is.null(geom)) { stop("A geom must be specified!") } #MUST SPECIFY A GEOM
-  if(!geom %in% names(geom_plus_defaults)) { stop("The geom you've specified either doesn't exist or hasn't been implemented yet. Please double-check your code for typos. Note that this function only needs the part following the _ in the geom's name.") }
+  if(!geom %in% names(geom_plus_defaults)) { stop("The geom you've specified either doesn't exist or hasn't been implemented yet. Please double-check your code for typos. Note that this function only needs the part following the _ in the geom's name. For a complete list of implemented geoms, run names(geom_plus_defaults). ") }
 
   structure(
     list(geom = geom,
+         silence_warnings = silence_warnings,
          user_args = list(...)),
     class = "geom_plus"
   )
@@ -149,6 +151,7 @@ ggplot_add.geom_plus = function(object, plot, name) {
 
   user_args = object$user_args #LOCALLY PROVIDED USER ARGUMENTS.
   geom_name = object$geom #UNPACK THE GEOM CHOSEN
+  silence_warnings = object$silence_warnings #UNPACK USER DESIRES FOR WARNINGS.
 
   #IF THE USER PROVIDED LOCAL MAPPINGS, WE GRAB THOSE HERE.
   aes_local = NULL #STORAGE OBJ.
@@ -264,6 +267,147 @@ ggplot_add.geom_plus = function(object, plot, name) {
   } else {
     plot = plot + layer + ggplot2::scale_shape_manual(values = shape_pal)
   }
-plot
+  #ONLY APPLY WARNINGS RELATED CLASS IF USER WANTS WARNINGS ON.
+  if(silence_warnings == FALSE) {
+  class(plot) = c("geom_plus_warnings", class(plot))
+  }
+  plot
 
+}
+
+#' Build a ggplot With the Class "geom_plus_warnings".
+#'
+#' This method defines how objects of class `geom_plus_warnings`, created by the `ggplot_add.geom_plus()` function, are built into a ggplot2 plot.
+#' The method is where various checks are performed to see if the user may be doing something "suboptimal" design-wise that could be used to trigger an informative warning to steer better behaviors.
+#'
+#' @param plot A ggplot object for which the checks should be performed.
+#'
+#' @return A built ggplot.
+#' @export
+ggplot_build.geom_plus_warnings = function(plot) {
+
+    class(plot) = setdiff(class(plot), "geom_plus_warnings") #REMOVE THE TRIGGERING CLASS TO PREVENT RECURSION.
+
+    built = ggplot2:::ggplot_build.ggplot(plot) #BYPASSES MY METHOD SO IT DOESN'T JUST CALL RECURSIVELY, WHICH IT WOULD BECAUSE THE CLASS CHANGE ABOVE WOULDN'T HAVE TAKEN EFFECT YET.
+
+    all_layers = built$plot$layers
+
+  #WARNING CHECKS #1--SEE IF USERS ARE SPECIFYING COLOR/FILL AS A MAPPING. IF SO, SEE IF IT'S FOR A DISCRETE VARIABLE. IF SO, SEE HOW MANY LEVELS ARE BEING GENERATED. IF IT'S MORE THAN X, TRIGGER A WARNING ABOUT POTENTIAL LOSS OF CONTRAST.
+  #FIRST, CHECK TO SEE IF FILL AND/OR COLOR ARE MAPPED IN ANY OF THE PLOT'S LAYERS.
+  if(any(sapply(all_layers, function(x) { any(c("fill", "colour") %in% names(x$mapping))}))) {
+
+    #IF YES, GO LAYER BY LAYER...
+    for(l in all_layers) {
+      #IF COLOR AND/OR FILL ARE IN THIS LAYER'S MAPPING...
+      if(any(c("fill", "colour") %in% names(l$mapping))) {
+
+        #GRAB THE VARIABLES NAMES OF THE MAPPED VARIABLES (IF ANY)
+        if(!is.null(l$mapping$colour)) {
+          color_aes = deparse(l$mapping$colour)
+          color_var = sub(".*\\(([^()]+)\\).*", "\\1", color_aes) #SANITIZE THE VARIABLE NAME(S) IF AN EXPRESSION HAD BEEN PROVIDED
+        } else { color_aes = NULL; color_var = NULL }
+
+        if(!is.null(l$mapping$fill)) {
+          fill_aes = deparse(l$mapping$fill)
+          fill_var = sub(".*\\(([^()]+)\\).*", "\\1", fill_aes)
+          } else { fill_aes = NULL; fill_var = NULL }
+
+        #IF EITHER OF THESE NAMES IS NOT NULL...
+        if(!is.null(color_aes) | !is.null(fill_aes)) {
+
+          #IF A USER TRANSFORMS A NUMERIC VARIABLE TO A FACTOR IN THE GGPLOT CALL, ala factor(x), IT'S NOT THE RAW DATA BUT THE COMPUTED DATA WE WANT TO CHECK FOR NUMERIC. PLUS, THE DATA COULD BE IN TWO PLACES...
+          if(!is.null(color_aes)) {
+          color_dat2check = if(!inherits(l$data, "waiver")) { l$data[[color_var]] } else { built$plot$data[[color_var]] }
+          }
+          if(!is.null(fill_aes)) {
+          fill_dat2check = if(!inherits(l$data, "waiver")) { l$data[[fill_var]] } else { built$plot$data[[fill_var]] }
+          }
+
+          #PERFORM THE COLOR CHECK, ASSUMING COLOR WAS MAPPED AND THE VARIABLE WAS DISCRETE.
+          if(!is.null(color_aes) &&
+              (
+                (!is.null(color_dat2check) &&
+                !is.numeric(color_dat2check)) |
+               (grepl("factor\\(", color_aes)) #IF USERS USED as.factor() OR factor(), THEN WE KNOW WE'RE DEALING WITH DISCRETE VARIABLES NO MATTER WHAT ELSE.
+               )
+              ) {
+
+            n_levels = length(unique(plot$data[[color_var]])) #GET NUM LEVELS
+            #FLAG IF THE NUM LEVELS IS > X
+            if(n_levels > 8) {
+              warning(sprintf("%s, the variable you mapped to color, has %d unique levels. Even with a high-quality palette, it's difficult to ensure all colors chosen will be clearly distinguishable when the number of categories exceeds ~8. In such cases, consider using a different visual channel, intersecting another visual channel (e.g., shape) with color, or reducing the number of groups shown.", color_var, n_levels), call. = FALSE)
+            }
+          }
+
+          #SAME FOR FILL AESTHETIC.
+          if(!is.null(fill_aes) &&
+             ((!is.null(fill_dat2check) &&
+              !is.numeric(fill_dat2check)) |
+             (grepl("factor\\(", fill_aes)))) {
+
+            n_levels = length(unique(plot$data[[fill_var]]))
+            if(n_levels > 8) {
+              warning(sprintf("%s, the variable you mapped to fill, has %d unique levels. Even with a high-quality palette, it's difficult to ensure all colors chosen will be clearly distinguishable when the number of categories exceeds ~8. In such cases, consider using a different visual channel, intersecting another visual channel (e.g., shape) with color, or reducing the number of groups shown.", fill_var, n_levels), call. = FALSE)
+            }
+          }
+
+
+        }
+      }
+    }
+  }
+
+    #WARNING CHECKS #2--SEE IF USERS HAVE FAILED TO SPECIFY A CUSTOM TITLE FOR EACH SCALE THEY'VE MAPPED. IF THEY HAVEN'T PROVIDE A FRIENDLY WARNING THAT THEY SHOULD CONSIDER DOING SO.
+
+    bad_scales = c() #STORAGE OBJS.
+    bad_vars = c()
+
+    #GO THRU ALL THE MAPPINGS IN THE PLOT.
+    for(m in 1:length(built$plot$mapping)) {
+
+      aes_name = names(built$plot$mapping)[m] #WHICH AESTHETIC ARE WE ON?
+
+      #WHAT VARIABLE WAS THAT MAPPED TO? (MUST CLEAN OF EXPRESSION GUNK)
+      var_dirty = rlang::as_label(built$plot$mapping[[m]])
+      default_var = sub(".*\\(([^()]+)\\).*", "\\1", var_dirty)
+
+      #USERS CAN SPECIFY CUSTOM NAMES 3 WAYS--VIA LABS(), VIA *LAB(), AND VIA SCALE_*(). THIS CHECKS FOR THE FIRST TWO. ALSO NEEDS CLEANING.
+      label_from_labs = built$plot$labels[[aes_name]]
+      label_clean = if (length(label_from_labs) > 0) {
+        sub(".*\\(([^()]+)\\).*", "\\1", label_from_labs)
+      } else {
+        NULL #WILL NULL OUT IF THERE'S NOTHING HERE.
+      }
+
+      #IF THE USER USED A SCALE FUNCTION INSTEAD, LABEL_CLEAN WILL HAVE FOUND JUST THE DEFAULT VARIABLE NAME HERE, SO WE NULL IT BACK OUT TO CONTINUE.
+      if(label_clean == default_var) {label_clean = NULL }
+
+      #NOW, WE CHECK TO SEE IF THEY'VE SPECIFIED IT VIA SCALES.
+      if(is.null(label_clean)) {
+        scale_obj = built$plot$scales$get_scales(aes_name)
+        label_clean = if (!is.null(scale_obj$name) &&
+                          !inherits(scale_obj$name, "waiver")) {
+          sub(".*\\(([^()]+)\\).*", "\\1", scale_obj$name)
+        } else {
+          NULL #WILL AGAIN NULL OUT IF WE FAIL TO FIND ONE.
+        }
+      }
+
+      #IF THERE IS NO USER PROVIDED NAME, OR THE CLEANED SCALE NAME MATCHES THE CLEANED COLUMN NAME OF THE ORIGINAL DATA, STORE THIS AS A VIOLATION.
+      if(is.null(label_clean) || label_clean == default_var) {
+        bad_scales = c(bad_scales, aes_name)
+        bad_vars = c(bad_vars, default_var)
+      }
+    }
+
+    #TRIGGER THE WARNING IF ANY SCALES VIOLATE.
+    if(length(bad_scales) > 0) {
+      warning(sprintf("It looks like you haven't provided a custom title for variable(s) [%s], mapped to the [%s] aesthetic(s). This means the title(s) might still be the column name(s) from your data set, which may not be human-readable, nicely formatted, and intuitive and contain units (if any). We recommend using, e.g., a scale*() function to specify a custom title for each such scale.",
+                      paste0(bad_vars, collapse = ", "),
+                      paste0(bad_scales, collapse = ", ")),
+              call. = FALSE)
+
+    }
+
+    return(built)
 }

@@ -58,6 +58,13 @@ ggplot_add.gridlines_plus = function(object, plot, name) {
     y_is_cont = y_is_cont || any(vapply(y_scales, function(s) inherits(s, "ScaleContinuous"), logical(1)))
   }
 
+  #IF COORD_FLIP IS USED, WE NEED TO FLOP THE LOGIC OF THIS FUNCTION BY SWAPPING THE VALUES ABOVE. I CAN'T JUST ! THEM BOTH BECAUSE THEY COULD BOTH BE TRUE OR BOTH FALSE AND THAT WOULD RESULT IN IMPROPER OUTCOMES.
+  if(inherits(plot$coordinates, "CoordFlip")) {
+    swap = x_is_cont
+    x_is_cont = y_is_cont
+    y_is_cont = swap
+  }
+
   #BASELINE NEW THEME CALL.
   grid_theme = ggplot2::theme()
 
