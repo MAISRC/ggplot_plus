@@ -11,6 +11,8 @@ format:
     title: "README"
     echo: true
     code-annotations: select
+    fig-format: png
+    fig-dpi: 600
 execute: 
   message: false
 editor: visual
