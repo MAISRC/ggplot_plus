@@ -43,7 +43,7 @@ ggplot_add.axis_switcher = function(object, plot, name = "switcher") {
 #' @return A ggplot with the class of "switched" to trigger the ggplot_gtable method of the same name and also with the `y_axis_switch_location` attribute set by the call to `y_axis_title_plus()`.
 #' @export
 ggplot_build.switcher = function(plot) {
-  class(plot) = c("gg", "ggplot")
+  class(plot) = setdiff(class(plot), "switcher")
   output = suppressMessages(ggplot2::ggplot_build(plot))
   class(output) = c("switched", class(output))
   output
@@ -146,6 +146,13 @@ switch_axis_label = function(p, location = "top") {
     p = p + ggplot2::labs(x = NULL)
   }
 
+  #IF A USER IS PLOTTING ON THE BOTTOM INSTEAD OF THE TOP, LET'S AUTO-ADJUST THE VERTICAL ALIGNMENT:
+  if(location == "bottom") {
+    p = p + theme(axis.title.y = element_text(vjust = 0.75)) #THE DEFAULT OF VJUST = 0.25 WORKS GREAT FOR THE TOP POSITION ALREADY.
+  } else {
+    p = p + theme(axis.title.y = element_text(vjust = 0.25))
+  }
+
   #NOW, WE CONVERT THE GGPLOT WE ALREADY HAVE INTO A GTABLE.
   gt = ggplot2::ggplot_gtable(ggplot2::ggplot_build(p))
 
@@ -222,7 +229,7 @@ switch_axis_label = function(p, location = "top") {
 
   #IF ANY DO FAIL TO INHERIT, THEN WE WARN THE USER.
   if (x_axis_top_visible & location == "top") {
-    warning("Heads-up: The top y axis title is likely to clip overtop of the x axis labels if your graph features a top x axis. Move the x axis to the bottom using \"position = 'top'\" in scale_x_*() (or remove the secondary x axis). Alternatively, set \"location = 'bottom'\" in switch_y_axis(). ")
+    warning("Heads-up: The top y axis title is likely to clip overtop of the x axis labels if your graph features a top x axis. Move the x axis to the bottom using \"position = 'top'\" in scale_x_*() (or remove the secondary x axis). Alternatively, set \"location = 'bottom'\" in switch_y_axis(). ", call. = FALSE)
   }
 
   # END WARNINGS ----
