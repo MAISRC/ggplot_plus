@@ -13,6 +13,7 @@ format:
     code-annotations: select
     fig-format: png
     fig-dpi: 600
+    dev: ragg_png
 execute: 
   message: false
 editor: visual
