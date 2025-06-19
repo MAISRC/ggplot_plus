@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center">
-<meta name="dcterms.date" content="2025-06-16">
+<meta name="dcterms.date" content="2025-06-19">
 
 <title>Guide to the ggplot.plus package</title>
 <style>
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -65,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 16, 2025</p>
+      <p class="date">June 19, 2025</p>
     </div>
   </div>
   
@@ -79,12 +113,12 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="preface" class="level2">
 <h2 class="anchored" data-anchor-id="preface">Preface</h2>
-<p>This guide introduces the <code>ggplot.plus</code> package—a collection of tools developed by Dr.&nbsp;Alex Bajcz, Quantitative Ecologist at the Minnesota Aquatic Invasive Species Research Center (MAISRC) at the University of Minnesota. These tools provide evidence- and consensus-based improvements to many of <code>ggplot2</code>’s default design choices.</p>
-<p>The guide is neither exhaustive (some features may be omitted) nor prescriptive (nothing here is “objectively best”). Instead, it offers a practical overview of how the tools in this package can enhance standard <code>ggplot2</code> graphics with minimal hassle—even for users with limited knowledge of <code>ggplot2</code>’s inner workings.</p>
-<p>At its core, <code>ggplot.plus</code> re-imagines the default aesthetics of <code>ggplot2</code>. While a typical one-line <code>ggplot()</code> call can yield a functional graphic, that default output often falls short of modern best practices in data visualization, including with regards to several issues of accessibility.</p>
-<p>Of course, these shortcomings can be addressed using base <code>ggplot2</code> tools like <code>theme()</code>, <code>scale_*()</code>, and <code>geom_*()</code>, but doing so requires hard-won knowledge of how these tools work and can be tedious to implement even when you have the knowledge to do so. Plus, even if one has the technical know-how, not everyone is familiar enough with the tenets of data visualization to know what to change and how. The <code>ggplot.plus</code> package is designed to help users of all experience levels start from a more polished and accessible foundation—without sacrificing the flexibility to experiment or fine-tune later.</p>
-<p>Accessibility is a major design goal of the package. Many <code>ggplot.plus</code> defaults are crafted to meet basic accessibility standards, and this guide will attempt to highlight those cases when relevant.</p>
-<p><strong>To be clear:</strong> <code>ggplot.plus</code> is <strong>not</strong> a replacement for making careful design choices, artistry, solicitation of feedback, or understanding your audience’s needs and capabilities. It’s meant to be a better launchpad—one built to save you time by starting you in a well-intentioned design space from the outset.</p>
+<p>This guide introduces the <code>ggplot.plus</code> package—a collection of tools developed by Dr.&nbsp;Alex Bajcz, Quantitative Ecologist at the Minnesota Aquatic Invasive Species Research Center (MAISRC) at the University of Minnesota. These tools are an attempt to provide evidence- and consensus-based improvements to many of <code>ggplot2</code>’s default design choices.</p>
+<p>The guide is neither exhaustive (some features may be omitted) nor prescriptive (nothing here is “objectively correct”). Instead, it offers a practical overview of how the tools in this package can enhance standard <code>ggplot2</code> graphics with minimal hassle—even for users with limited knowledge of <code>ggplot2</code>’s inner workings.</p>
+<p>At its core, <code>ggplot.plus</code> re-imagines the default aesthetics of <code>ggplot2</code>. While a typical one-line <code>ggplot()</code> call can yield a functional graphic, that default output often falls short of modern best practices in data visualization, including with regards to several issues of accessibility. As such, many simple <code>ggplot()</code> calls do not immediately yield a graph fit for publication.</p>
+<p>Of course, these shortcomings can be addressed using base <code>ggplot2</code> tools like <code>theme()</code>, <code>scale_*()</code>, and <code>geom_*()</code>, but doing so requires hard-won knowledge of how these tools work and can be tedious to implement even when you have the knowledge to do so. Plus, even if one has the technical know-how, not everyone is familiar enough with the tenets of data visualization to know what to change and how. The <code>ggplot.plus</code> package is designed to help users of all experience levels start from a more polished and accessible foundation—without sacrificing <code>ggplot2</code>’s immense flexibility to experiment or fine-tune one’s creations.</p>
+<p>Accessibility is a major design goal of the package. Many <code>ggplot.plus</code> defaults are intended to improve compliance with modern accessibility standards, and this guide will attempt to highlight those cases when relevant.</p>
+<p><strong>To be clear:</strong> <code>ggplot.plus</code> is <strong>not</strong> a replacement for making careful design choices, artistry, solicitation of feedback, or understanding your audience’s needs and capabilities. It’s meant to be a solid launchpad—one that should save you time by starting you in a well-intentioned design space from which to build upon.</p>
 <p>While the design choices baked into these tools ultimate reflect Dr.&nbsp;Bajcz’s professional judgments, they are grounded in a thorough review of the last several decades of the data visualization literature, so it’s key to note that they do not <em>primarily</em> reflect his personal opinions about good graph design (though they also do!).</p>
 <p>Without further ado, let’s see the tools contained within this collection in action!</p>
 </section>
@@ -92,20 +126,15 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="getting-started">Getting Started</h2>
 <p>To begin using the <code>ggplot.plus</code> package, you’ll first need to install it from GitHub using the devtools package:</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-── R CMD build ─────────────────────────────────────────────────────────────────
-* checking for file 'C:\Users\Bajcz\AppData\Local\Temp\Rtmp8IDoTs\remotes2d4c14969af\MAISRC-ggplot_plus-76e8752/DESCRIPTION' ... OK
-* preparing 'ggplot.plus':
-* checking DESCRIPTION meta-information ... OK
-* checking for LF line-endings in source and make files and shell scripts
-* checking for empty or unneeded directories
-Omitted 'LazyData' from DESCRIPTION
-* building 'ggplot.plus_0.1.2.tar.gz'
-</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("devtools")  # if not already installed</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"https://github.com/MAISRC/ggplot_plus"</span>) <span class="co">#&lt;--</span><span class="al">NOTE</span><span class="co"> THE _ INSTEAD OF THE . IN THE NAME.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then, load it alongside <code>ggplot2</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("ggplot2")  # if not already installed</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot.plus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Once loaded, you can start layering in the “plus” tools to improve your plot design with minimal effort.</p>
 </section>
 <section id="overview-of-the-package-philosophy" class="level2">
@@ -113,11 +142,11 @@ Omitted 'LazyData' from DESCRIPTION
 <p>The <code>ggplot.plus</code> package is guided by three core principles:</p>
 <ol type="1">
 <li><p><strong>Better Defaults:</strong><br>
-Many default settings in <code>ggplot2</code> are functional but sub-optimal from design and accessibility standpoints. <code>ggplot.plus</code> attempts to improve upon these—adjusting colors, shapes, gridlines, spacing, typefaces, etc. to yield cleaner, more accessible visuals from the outset.</p></li>
+Many default settings in <code>ggplot2</code> are functional but sub-optimal in terms of design and accessibility. <code>ggplot.plus</code> attempts to improve upon these—adjusting colors, shapes, gridlines, spacing, text, etc. to yield cleaner, more accessible starting visuals.</p></li>
 <li><p><strong>Override-ability:</strong><br>
-All defaults set by <code>ggplot.plus</code>’s tools can be overridden by the user, either through standard <code>ggplot2</code> syntax or using <code>_plus</code> variants with arguments. You’re rarely (if ever) forced to keep anything these tools generate.</p></li>
+All defaults set by <code>ggplot.plus</code>’s tools can be overridden by the user, either through standard <code>ggplot2</code> syntax or using <code>_plus</code> variants with arguments. You’re rarely (if ever) stuck with anything these tools generate.</p></li>
 <li><p><strong>Modularity:</strong><br>
-Each tool in <code>ggplot.plus</code> is designed to be additive. You can use just one of them (e.g., <code>theme_plus()</code> or <code>geom_plus()</code>) or combine them as needed.</p></li>
+Each tool in <code>ggplot.plus</code> is designed to be additive. You can use just one of them (e.g., <code>theme_plus()</code> or <code>geom_plus()</code>) or call all relevant ones together (recommended!).</p></li>
 </ol>
 </section>
 <section id="key-tools-and-their-roles" class="level2">
@@ -144,20 +173,20 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 <td>A better base theme with improved default settings for size, spacing, legend placement, and much more.</td>
 </tr>
 <tr class="odd">
-<td><code>scale_x/y_continuous_plus()</code></td>
-<td>Drop-in replacements for <code>scale_x_continuous()</code> and <code>scale_y_continuous()</code> that will attempt to ensure axis breakpoints and limits are appropriate for fully labeling these axes.</td>
+<td><code>scale_x/y/color/fill_continuous_plus()</code></td>
+<td>Drop-in replacements for <code>scale_x/y/color/fill_continuous()</code> that will attempt to ensure axis breakpoints and limits are appropriate for fully labeling these axes, especially their ends.</td>
 </tr>
 <tr class="even">
 <td><code>yaxis_title_plus()</code></td>
-<td>A function for relocating the y axis title from its normal, less accessible location and orientation.</td>
+<td>A function for relocating the y axis title from its normal, less accessible location and orientation to the top of the graph.</td>
 </tr>
 <tr class="odd">
 <td><code>palettes_plus()</code></td>
-<td>Converts <code>ggplot2</code>’s default color palette for <code>color</code> and <code>fill</code> aesthetics over to <code>viridis</code>’s more accessible palettes for the session.</td>
+<td>Converts <code>ggplot2</code>’s default color palette for <code>color</code> and <code>fill</code> aesthetics over to <code>viridis</code>’s more accessible color palettes for the session. Runs automatically on load.</td>
 </tr>
 <tr class="even">
 <td><code>gridlines_plus()</code></td>
-<td>Adds subtle, clear gridlines only when and where really needed.</td>
+<td>Adds subtle gridlines only when and where justified to add the minimal cognitive load to the graph.</td>
 </tr>
 </tbody>
 </table>
@@ -167,6 +196,10 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 <h2 class="anchored" data-anchor-id="a-standard-ggplot-for-comparison">A Standard <code>ggplot</code> for Comparison</h2>
 <p>Let’s start by creating a simple <code>ggplot2</code> plot to use as a reference point. The code below generates a scatterplot of petal length vs.&nbsp;sepal length for iris flowers from three species. These data come from the <code>iris</code> dataset, which is automatically included in every installation of R. Points are colored by species:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="co">#&lt;--THE DATA SET</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, <span class="co">#&lt;--MAPPING OUR AESTHETICS, I.E., SAYING "*THIS* VARIABLE IN THE DATA SET SHOULD USE *THAT* VISUAL CHANNEL IN THE GRAPH". HERE, WE'RE SAYING MAP PETAL LENGTH TO HORIZONTAL POSITION AND SEPAL LENGTH TO VERTICAL POSITION.</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species)) <span class="co">#&lt;--WE'LL ALSO MAP COLOR TO DIFFERENT SPECIES.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -175,40 +208,50 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>This graph is simple and effective—perfectly suitable for exploratory work or sharing with colleagues for a hot take. However, for presentation or publication, it falls short of several well-established design and accessibility best practices. Some of the key issues include:</p>
+<p>This graph is simple and reasonably effective—perfectly suitable for exploratory work or informally sharing with colleagues. However, for presentation or publication, it falls short of several well-established design and accessibility best practices. Some of the key issues include:</p>
 <ul>
-<li><p><strong>Text size</strong>: The default font sizes for axis and legend text are too small for easy reading, especially for those with visual impairments. A common rule of thumb is: if the text feels <em>almost</em> <strong>too</strong> large to you (assuming you have “standard” vision), it’s probably just right.</p></li>
-<li><p><strong>Point size</strong>: The points are also quite small, which can hinder visibility for some users. The same rule about size applies here too—they should be larger than you think you need them.</p></li>
-<li><p><strong>Color palette</strong>: The default “rainbow” palette lacks luminance (how “bright” or “dark” the hue is) variance. For someone who is colorblind (especially with red-green color blindness), the red and green shades used are indistinguishable. For those with no color vision at all, or for those using black-and-white viewing technologies, all three hues would be difficult to differentiate.</p></li>
-<li><p><strong>Foreground/background contrast</strong>: While contrast between points and background here is <em>ok</em>, it could be improved by using darker point colors and/or a lighter plot background. As noted above, it would also be helpful if the different color shades used for points contrasted better with each other too. Strong contrast is critical for accessible and quickly interpretable design.</p></li>
+<li><p><strong>Text size</strong>: The default font size for axis and legend text is too small for easy reading, especially for those with visual impairments. A common rule of thumb is: if the text feels <em>almost</em> <strong>too</strong> large to you (assuming you have “standard” vision), it’s probably just right.</p></li>
+<li><p><strong>Point size</strong>: The points are also quite small, which can hinder readability for some users. The same rule applies here too—data elements should be larger than you probably <em>think</em> they need to be.</p></li>
+<li><p><strong>Color palette</strong>: <code>ggplot2</code>’s default “rainbow” palette lacks variance in <strong>luminance</strong> (how “bright” or “dark” the color is). For someone who is colorblind (especially red-green colorblind), the red and green shades used are difficult to distinguish. For those with no color vision at all, or for those using black-and-white viewing technologies, all three hues would look <em>very</em> similar.</p></li>
+<li><p><strong>Foreground/background contrast</strong>: While <strong>contrast</strong> (the ease with which nearby elements can be distinguished from one another on the basis of color) between the points and the background here is <em>ok</em>, it could be improved by using darker point colors and/or a lighter plot background. As noted above, it would also be helpful if the different color shades used for the points contrasted better with each other too. High contrast is critical for accessible and quickly interpretable design.</p></li>
 <li><p><strong>Whitespace and layout</strong>: Default <code>ggplot</code>s often suffer from cramped layouts. In particular, spacing is often tight between:</p>
 <ul>
-<li><p>Axis titles and their axis labels</p></li>
-<li><p>Elements within the legend</p></li>
+<li><p>Axis <strong>titles</strong> and the paired axis <strong>labels</strong></p></li>
+<li><p>Elements within the <strong>legend</strong></p></li>
 <li><p>Axis labels on densely labeled axes (not an issue here, but often a problem)</p></li>
 </ul>
-<p>Adding more <strong>void spacing</strong> between elements helps readers visually parse and process the plot more efficiently, especially those with cognitive or visual impairments.</p></li>
-<li><p><strong>Axis titles</strong>: Axis and legend titles and labels will default to the column names/values found in the data set. These are often formatted for coding (e.g., no spaces, inconsistent capitalization) rather than for human readability or interpretation. They should have standard spelling, spacing, and punctuation, and they should be human-readable, with units (if applicable).</p></li>
+<p>Adding more <strong>void space</strong> (space not housing any graphical element) between elements helps readers visually parse and process the plot more efficiently, especially those with cognitive or visual impairments.</p></li>
+<li><p><strong>Axis readability</strong>: In <code>ggplot2</code>, axis and legend titles and labels will default to the column names/values found in the data set unless the user sets custom text for them. These default title/label strings are often “computer-y” (e.g., they lack spaces, have unusual capitalization, and contain punctuation instead of spaces, etc.) rather than designed for human readability or interpretation. Axis titles and labels should have standard spelling, spacing, and punctuation, and they should be readily human-interpretable and contain units, if applicable.</p></li>
 <li><p><strong>Gridlines</strong>: The research on the merits of gridlines is, admittedly, mixed in some ways. They:</p>
 <ul>
-<li><p>Can reduce contrast between themselves, the background, and the data elements as well as increase cognitive load.</p></li>
-<li><p>May slow down interpretation and clutter the plot.</p></li>
-<li><p>Are especially unhelpful when aligned with categorical axes.</p></li>
+<li><p><em>Can</em> reduce contrast between themselves, the background, and the data elements.</p></li>
+<li><p>Increase <strong>cognitive load</strong> (the amount of mental effort needed to integrate the available information and form conclusions) by adding visual information to the plotting area.</p></li>
+<li><p><em>May</em> slow down interpretation as they must be parsed from the data elements.</p></li>
+<li><p><em>May</em> constitute visual clutter if they are not used by the reader.</p></li>
+<li><p>Are especially unhelpful when included for scales linked to discrete data.</p></li>
 </ul>
-<p>On the flip side, they’re familiar to novice readers and can help with estimating exact values, where this is required. However, it should be noted that most experts agree that graphs are not the most efficient device for conveying exact values–text, tables, and sharing the raw data files are all superior. Graphs out to primarily be about “vibes!” Even when they are needed, though, research has shown that gridlines can and should be faint and infrequent.</p></li>
-<li><p><strong>Incomplete axis labeling</strong>: Axes should generally include tick marks and labels at both ends to align with reader expectations (especially those of more novice readers) and to aid in efficient comprehension. Here, both axes are missing outermost labels, which makes them feel visually “unfinished.”</p></li>
-<li><p><strong>Overplotting</strong>: When data points partially or wholly overlap, it becomes hard to judge how many values are present in that location. This limits the reader’s ability to interpret density.</p></li>
-<li><p><strong>Vertical y-axis title</strong>: Text rotated 90 degrees is harder to read and less accessible—especially for dyslexic users, non-native readers of the language, users with motor or visual impairments, and those with certain technological limitations. The y axis title is almost always rotated 90 degrees in scientific graphs, despite these facts. The y axis tile is also less prominent when placed in the left margin, where it defaults to. Since many graphs are “about” the y-axis variable, it deserves a more prominent location so that readers encounter it first.</p></li>
-<li><p><strong>Tick marks</strong>: The tick marks are small and easily lost. More prominent ticks improve usability and help distinguish axes from the data region.</p></li>
-<li><p><strong>Legend placement</strong>: The default legend location in the right-hand margin is space-inefficient and relatively hidden at the plot’s side. Most readers scan left to right, top-to-bottom, so the legend information should be either integrated (e.g., through direct labeling inside the plotting area) or the legend should be placed more prominently and compactly somewhere else.</p></li>
+<p>On the flip side, gridlines familiar to novice readers and can help with estimating exact values, when this is required. However, most experts agree that graphs are <strong>not</strong> the most efficient device for conveying exact values anyhow. Text, tables, and sharing of raw data files are all superior! The adage to remember is that graphs ought to <em>primarily</em> be about “vibes!”<br>
+<br>
+Even when a designer deems gridlines are needed, though, research has shown that they can and should be faint and infrequent to minimize their costs.</p></li>
+<li><p><strong>Incomplete axis labeling</strong>: Axes should generally include tick marks and labels at both ends to align with reader expectations (especially those of more novice readers) and to aid in efficient comprehension. Axes are essentially “number lines,” and they should be consistently and completely graduated by labels, just like number lines are. On the sample graph above, both axes are missing one or more labels near their tips, which makes these axes feel visually “unfinished.”</p></li>
+<li><p><strong>Overplotting</strong>: When data elements partially or wholly overlap, it becomes hard to judge how many elements are present in a location. This limits the reader’s ability to interpret data <strong>density</strong>.</p></li>
+<li><p><strong>Vertical y-axis title</strong>: Text rotated from horizontal (0 degrees) is harder to read and less accessible—especially for dyslexics, non-native readers of the language, users with motor or visual impairments, and those with certain technological limitations, among others. Despite these facts, the y axis title is almost always rotated 90 degrees from horizontal in scientific graphs. The y axis title is also less prominent when placed in the left margin, where it defaults to in <code>ggplot2</code>. Since many graphs are “about” the y-axis variable at a conceptual level, the y axis title likely deserves a more prominent location so that readers will encounter it earlier.</p></li>
+<li><p><strong>Tick marks</strong>: The <strong>tick marks</strong> on the axes are small and easily lost. More prominent ticks improve usability and help distinguish axes from data elements within the plotting region.</p></li>
+<li><p><strong>No axis lines</strong>: To better visually represent “number lines,” and to demarcate the boundary between the plotting area and the axis areas, most graphs feature axis lines. However, <code>ggplot2</code> graphs lack such lines by default.</p></li>
+<li><p><strong>Legend placement</strong>: <code>ggplot2</code>’s default legend location (in the right-hand margin) is space-inefficient. Plus, because most readers scan left to right, top-to-bottom, the legend is often not seen early on by most readers, making it more difficult to integrate its contents with the rest of the plot. Design experts suggest that legend information should either be integrated into the plot directly (e.g., through direct labeling inside the plotting area) or else the legend should be placed somewhere where it can be more prominent and compact.</p></li>
 </ul>
-<p>This list isn’t an exhaustive list of the design aspects of this graph that someone <em>might</em> object to on some grounds or another, but it illustrates how even a simple <code>ggplot()</code> often requires many tweaks to meet accessibility, clarity, and design standards to publication-quality.</p>
+<p>This list isn’t an exhaustive list of the design aspects of this graph that someone <em>might</em> object to on some grounds or another, but it illustrates how even a simple <code>ggplot</code> often requires many tweaks to meet accessibility, clarity, and design standards to bring it up to publication quality. Not everyone has the time, patience, or wherewithal to do that work, hence why we built the <code>ggplot.plus</code> package.</p>
 </section>
 <section id="colorblind-friendly-palettes" class="level2">
 <h2 class="anchored" data-anchor-id="colorblind-friendly-palettes">Colorblind-Friendly Palettes</h2>
-<p>Fortunately, the <code>viridis</code> package—bundled with <code>ggplot2</code>—includes several colorblind-friendly and broadly accessible palettes. These palettes vary not just in <strong>hue</strong> (i.e., the base “color” like red, green, or blue), but also in <strong>luminance</strong> (light vs.&nbsp;dark) and sometimes <strong>saturation</strong> (intensity or “grayness” of the color). This multidimensional variance makes the colors distinguishable across a range of visual impairments and viewing conditions.</p>
-<p>The <code>ggplot.plus</code> package includes a convenience function, <code>palettes_plus()</code>, that activates a carefully chosen default <code>viridis</code> palette for use whenever the <code>color</code> or <code>fill</code> aesthetics are required by your subseqent plots:</p>
+<p>We noted above that the default color palette used by <code>ggplot2</code> is not as accessible as it could be. Fortunately, the <code>viridis</code> package—bundled with <code>ggplot2</code>—includes several broadly accessible palette options. These palettes vary not just in <strong>hue</strong> (i.e., the base “color” like red, green, or blue), but also in <strong>luminance</strong> (light vs.&nbsp;dark). This multidimensional variance makes the colors in these palettes more distinguishable from one another across a range of visual impairments and viewing conditions.</p>
+<p>The <code>ggplot.plus</code> package includes a convenience function, <code>palettes_plus()</code>, that run automatically on package load. It activates carefully chosen default palettes for whenever the <code>color</code> or <code>fill</code> aesthetics are used by your plots:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME GRAPH AS BEFORE, THIS TIME WITH palettes_plus() ON</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -217,13 +260,22 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>By default, <code>viridis</code> spans from dark purple to light yellow, passing through blue, green, and teal. However, <code>palettes_plus()</code> <strong>excludes</strong>, by default, both the darkest purple and the lightest yellow—because these shades can lack contrast against common fore- or background elements that are black and white, respectively. As a result, the remaining palette maintains both accessibility and visual appeal in most contexts.</p>
-<p>However, you can easily adjust this behavior using the <code>begin</code> and <code>end</code> parameters, which both range from 0 to 1:</p>
+<p>This function uses the titular <code>viridis</code> palette for discrete variables and the <code>cividis</code> palette for continuous variables. By default, <code>viridis</code> spans from dark purple to light yellow, passing through blue, green, and teal. This relatively large number of hues makes it easier to find SEVERAL discrete hues that are visually distinct from each other and from whatever background color you use.<br>
+<br>
+However, <code>palettes_plus()</code> excludes, by default, both the darkest purple and the lightest yellow regions of the <code>viridis</code> palette because these shades can lack contrast against elements that are black and white, respectively. As a result, the remaining palette centers the blue/teal/green region of the palette to maintain both accessibility and visual appeal in most contexts.</p>
+<p>However, you can easily adjust this behavior using the <code>begin_discrete</code> and <code>end_discrete</code> parameters, which range from 0 to 1:</p>
 <ul>
-<li><p><code>begin = 0</code> would include the dark purple portion of the color range.</p></li>
-<li><p><code>end = 1</code> would include the light yellow portion.</p></li>
+<li><p><code>begin_discrete = 0</code> would enable the dark purple portion of the color range.</p></li>
+<li><p><code>end_discrete = 1</code> would enable the light yellow portion.</p></li>
 </ul>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palettes_plus</span>(<span class="at">begin_discrete =</span> <span class="dv">0</span>) <span class="co">#&lt;--ALLOW DARK PURPLE RANGE. CALL THIS FUNCTION ONLY WHENEVER YOU WANT TO CHANGE ITS BEHAVIORS.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME GRAPH AS BEFORE</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -232,22 +284,49 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>In this example, we’ve re-enabled the purple end of the palette. This color contrasts well against the light background, unlike the light yellow, which can be harder to distinguish.</p>
+<p>In this example, we’ve re-enabled the purple end of the palette. This color contrasts well against the light background, unlike the light yellow, which would be harder to distinguish from the gray background here.</p>
+<section id="continuous-color-scales" class="level3">
+<h3 class="anchored" data-anchor-id="continuous-color-scales">Continuous color scales</h3>
+<p>To see what the color palette looks like for continuous variables, let’s temporarily map color to a numeric variable in the data set instead:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Petal.Width), <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="co">#&lt;--MAP COLOR TO A CONTINUOUS VARIABLE INSTEAD. WE SUPPRESS THE LEGEND FOR NOW.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/check%20out%20cividis-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In contrast to <code>viridis</code>, the <code>cividis</code> palette has essentially just three hues: blue, gray, and yellow. Because humans like to “chunk” data into discrete groups by hue, this palette’s low number of distinct hues will result in fewer false segmentations of the underlying data, even compared to other accessible palettes. After all, blue, gray, and yellow points here <em>are</em> quite different, so the hue differences many will perceive here map accurately to differences in the underlying data, which isn’t always true when many hues are used.</p>
+</section>
 <section id="other-palette-options" class="level3">
 <h3 class="anchored" data-anchor-id="other-palette-options">Other Palette Options</h3>
-<p><code>viridis</code> isn’t your only option in the <code>viridis</code> package. You can choose from eight palettes, labeled “A” through “H”:</p>
+<p><code>viridis</code> AND <code>cividis</code> aren’t your only options for palettes. You can choose from eight palettes, labeled “A” through “H”:</p>
 <ul>
 <li><p><strong>A</strong> = magma</p></li>
 <li><p><strong>B</strong> = inferno</p></li>
 <li><p><strong>C</strong> = plasma</p></li>
-<li><p><strong>D</strong> = viridis (default)</p></li>
-<li><p><strong>E</strong> = cividis</p></li>
+<li><p><strong>D</strong> = viridis (default for discrete variables)</p></li>
+<li><p><strong>E</strong> = cividis (default for continuous variables)</p></li>
 <li><p><strong>F</strong> = rocket</p></li>
 <li><p><strong>G</strong> = mako</p></li>
 <li><p><strong>H</strong> = turbo</p></li>
 </ul>
-<p>If you want a more vibrant “rainbow-like” palette that’s still relatively accessible, <strong>turbo</strong> (“H”) is a good choice:</p>
+<p>If you want a more vibrant “rainbow-like” palette that’s still relatively accessible, <em>turbo</em> (“H”) is a good choice:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palettes_plus</span>(<span class="at">begin_discrete =</span> <span class="dv">0</span>, </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">end_discrete =</span> <span class="dv">1</span>, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">palette_discrete =</span> <span class="st">"H"</span>) <span class="co">#&lt;--SWITCH TO TURBO PALETTE, ACROSS ITS FULL RANGE. </span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME GRAPH</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -256,14 +335,23 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>Note: <strong>Turbo</strong> has two dark regions (at both ends), which may be indistinguishable to users with total or partial colorblindness (&lt; 1% of the population). To mitigate this, you can trim one half of the palette using <code>begin</code> or <code>end</code> values around 0.5 to include only the “red” or “blue” side.</p>
+<p>Notice that <em>turbo</em> has two dark regions (near both 0 and 1), so colors from these regions may be indistinguishable from each other for users with total or partial colorblindness or limited viewing technology. To mitigate this, you can trim one half of the palette using a <code>begin_*</code> or <code>end_*</code> value around 0.5 to include only the palette’s “red” or “blue” side.</p>
 </section>
-<section id="a-few-usage-tips" class="level3">
-<h3 class="anchored" data-anchor-id="a-few-usage-tips">A Few Usage Tips</h3>
-<p><code>palettes_plus()</code> only needs to be called once per session (unless you want to change the palette again). It sets the default color and fill palettes globally for all <code>ggplot2</code> plots thereafter.</p>
-<p>Let’s now change the palette to a modified <em>viridis</em> with the darkest shades removed:</p>
-<p>This gives us a graph that includes light yellow points on a light gray background, so the contrast is not sufficient—that’s something we’ll fix in the next section.</p>
+<section id="using-palettes_plus" class="level3">
+<h3 class="anchored" data-anchor-id="using-palettes_plus">Using <code>palettes_plus()</code></h3>
+<p><code>palettes_plus()</code> is called automatically when the package is loaded. It sets the default color and fill palettes globally for all <code>ggplot2</code> plots thereafter. It needn’t be called again unless you want to change something. For example, let’s change the palette for discrete variables to a modified <em>viridis</em>, one with the darkest shades removed:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palettes_plus</span>(<span class="at">begin_discrete =</span> <span class="fl">0.28</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">end_discrete =</span> <span class="dv">1</span>, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">palette_discrete =</span> <span class="st">"D"</span>) <span class="co">#&lt;--SET TO VIRIDIS, BUT DON'T INCLUDE THE DARK REGION.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This gives us a graph that includes light yellow points, which will have poor contrast against the light gray background—that’s something we’ll fix in the later section on theming.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME GRAPH</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -277,7 +365,7 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 <section id="geometries-with-improved-defaults" class="level2">
 <h2 class="anchored" data-anchor-id="geometries-with-improved-defaults">Geometries with Improved Defaults</h2>
 <p>One of the core tools in <code>ggplot.plus</code> is <code>geom_plus()</code>. This function is designed to replace most of the standard <code>geom_*()</code> function calls you’d typically use in a <code>ggplot2</code> pipeline.</p>
-<p>It has one required argument: <code>geom</code>, which should be either the first argument or explicitly named. The value corresponds to the portion <em>after</em> the underscore in the <em>geom</em> function you’d normally call. For example:</p>
+<p>It has one required argument: <code>geom</code>, which should be either the first argument provided or explicitly named. The required value should correspond to the portion <em>after</em> the underscore in the name of the <code>geom_*()</code> function from <code>ggplot2</code> you’d otherwise call. For example:</p>
 <ul>
 <li><p><code>"point"</code> for <code>geom_point()</code></p></li>
 <li><p><code>"line"</code> for <code>geom_line()</code></p></li>
@@ -286,6 +374,11 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 <p>And so on.</p>
 <p>So, to recreate our scatterplot using <code>geom_plus()</code>, we simply swap out <code>geom_point()</code> with <code>geom_plus(geom = "point")</code>:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, <span class="co">#&lt;--NEW FUNCTION, NEW GEOM INPUT.</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -294,18 +387,22 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>The primary purpose of <code>geom_plus()</code> is to apply better default parameters that address common design concerns—especially those related to accessibility.</p>
-<p>In this example:</p>
+<p>The primary purpose of <code>geom_plus()</code> is to apply improved default parameters that will hopefully address common design concerns—especially those related to accessibility. In this example:</p>
 <ul>
 <li><p>The points are made <strong>larger</strong> and thus easier to parse.</p></li>
 <li><p>The default <strong>shape</strong> changes from 16 to <strong>21</strong>.</p></li>
 </ul>
-<p>This latter change is important because shape 16 only uses the <code>color</code> aesthetic while shape 21 supports <strong>both</strong> <code>color</code> (for the stroke/outline) and <code>fill</code> (for the interior). This gives us more flexibility in design.</p>
-<p>By default, the interior is set to transparent, resulting in <strong>hollow circles</strong>. This allows <strong>partial overlaps</strong> between points to be visually distinguishable—though, of course, total overlap is still not discernable. We’ll present some ideas for fixing that later on.</p>
+<p>This latter change is important because shape 16 only uses the <code>color</code> aesthetic whereas shape 21 supports <strong>both</strong> <code>color</code> (for the stroke/outline) and <code>fill</code> (for the interior). This gives us more flexibility in design.</p>
+<p>By default, <code>geom_plus()</code> will set the interior color for these points to <code>"transparent"</code>, resulting in <strong>hollow circles</strong>. This allows <strong>partial overlaps</strong> between points to be visually distinguishable—though, of course, total overlap is still not discernible. We’ll present some ideas for fixing that later on.</p>
 <section id="improving-contrast-with-the-fill-aesthetic" class="level3">
 <h3 class="anchored" data-anchor-id="improving-contrast-with-the-fill-aesthetic">Improving Contrast with the Fill Aesthetic</h3>
-<p>If we switch from mapping species to <code>color</code> to instead mapping it to <code>fill</code>, <code>geom_plus()</code> uses a black stroke color by default. This fixes the earlier issue where light yellow points lacked sufficient contrast with the light gray background:</p>
+<p>If we switch from mapping species to <code>color</code> to instead mapping it to <code>fill</code>, <code>geom_plus()</code> will switch to using a black stroke color by default. This fixes the earlier issue of light yellow points lacking sufficient contrast against the light gray background:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species)) <span class="co">#&lt;--CHANGED TO FILL AESTHETIC</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -314,9 +411,17 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>Because the fill colors are now surrounded by <strong>black outlines</strong>, our eyes compare the fill color to the black directly next to it rather than to the background, resolving the contrast issue.</p>
-<p>Even though dark purple can be distinguish from a black stroke, that’s not a problem here, since the stroke doesn’t encode any data. So, if we want more color options, we can restore the full range of the <em>viridis</em> palette:</p>
+<p>Because the fill colors are now surrounded by <strong>black outlines</strong>, our eyes will compare the fill color to the black directly next to it rather than to the background, resolving the contrast issue.</p>
+<p>Even though dark purple can’t be distinguished from a black point stroke, that’s not actually a problem because the point strokes aren’t encoding any information here. As a result, if we wanted more color options, we could restore the full range of the <em>viridis</em> palette:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palettes_plus</span>(<span class="at">begin_discrete =</span> <span class="dv">0</span>, <span class="at">end_discrete =</span> <span class="dv">1</span>) <span class="co">#&lt;--RESTORE PURPLE </span><span class="re">END</span><span class="co"> OF COLOR RANGE AND RETAIN YELLOW RANGE.</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME GRAPH</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -325,25 +430,35 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>There are two broadly effective options for using color with point-based geoms that may feature overplotting:</p>
+<p>Purple points still look purple here, whether we can distinguish their black outlines from their fill colors here or not. Meanwhile, all points are easily distinguished from the background, so we can utilize the entire color space of the palette this way!</p>
+</section>
+<section id="resolving-overplotting" class="level3">
+<h3 class="anchored" data-anchor-id="resolving-overplotting">Resolving overplotting</h3>
+<p>There are two broadly effective options for addressing overplotting in graphs like this one:</p>
 <ol type="1">
 <li><strong>Transparent fill + stroke color</strong></li>
 </ol>
-<pre><code>-   Map the discrete variable (e.g., species) to `color`.
-
--   Use a transparent fill and dark stroke colors for contrast.
-
--   Advantage: overlapping points are visually distinguishable due to the hollow centers.</code></pre>
+<ul>
+<li><p>Map the discrete variable (e.g., <code>Species</code>) to <code>color</code>.</p></li>
+<li><p>Use a transparent fill and dark stroke colors for contrast against light backgrounds.</p></li>
+<li><p>Advantage: Partially overlapping points are visually distinguishable due to the hollow centers.</p></li>
+</ul>
 <ol start="2" type="1">
 <li><strong>Dark stroke + colored fill</strong></li>
 </ol>
-<pre><code>-   Map the discrete variable to `fill`.
-
--   Use a consistent dark stroke to improve contrast between fill and background.
-
--   Advantage: strong contrast, especially on light backgrounds.</code></pre>
-<p>In the latter case, overplotting will still be an issue without one more tweak: We can make the points semi-transparent so that points that stack on top of one another “bleed through” each other and result in a darker point (colors will “blend” as well, if applicable):</p>
+<ul>
+<li><p>Map the discrete variable to <code>fill</code>.</p></li>
+<li><p>Use a consistent dark stroke to improve contrast between fill and background.</p></li>
+<li><p>Advantage: Strong contrast, especially on light backgrounds.</p></li>
+</ul>
+<p>In the latter case, overplotting will still be an issue without one more tweak: We can make the points <em>semi-transparent</em> so that points that stack on top of one another “bleed through” each other and result in a darker region (colors will “blend” as well, if applicable):</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="co">#&lt;--MAKE POINTS SEMI-TRANSPARENT. 0 IS TOTALLY CLEAR, 1 IS TOTALLY OPAQUE.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -352,20 +467,28 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>Setting <code>alpha = 0</code> would make points fully transparent (invisible), while <code>alpha = 1</code> makes them fully opaque. At <code>alpha = 0.3</code>, points remain sufficiently visible but points in dense regions layer on top of each other and become darker, indicating density.</p>
-<p>Note: this approach also dims the <strong>black strokes</strong>, so contrast could still be a concern for low-vision readers. Always consider the balance between legibility and density encoding and consider whether a scatterplot is the best way to represent your data!</p>
+<p>At <code>alpha = 0.3</code>, points remain sufficiently visible but points in dense regions layer on top of each other and result in darker colors, indicating density.</p>
+<p>Note: This approach also dims the <strong>black point strokes</strong>, so contrast could still be a concern for low-vision readers. Always consider the balance between legibility and density encoding. If you can’t strike a good balance, consider whether a scatterplot is the best way to represent your data!</p>
 </section>
 <section id="detour-mapping-visual-channels-in-ggplot2-a-review" class="level3">
-<h3 class="anchored" data-anchor-id="detour-mapping-visual-channels-in-ggplot2-a-review">Detour: Mapping Visual Channels in <code>ggplot2</code> (A Review)</h3>
-<p>In <code>ggplot2</code>, you can control the visual appearance of your graph using <strong>aesthetics</strong>, which connect <strong>visual channels</strong> (like position, color, size, or fill) to either data variables or fixed values.</p>
+<h3 class="anchored" data-anchor-id="detour-mapping-visual-channels-in-ggplot2-a-review">Detour: Mapping Visual Channels in <code>ggplot2</code> (a Review)</h3>
+<p>In <code>ggplot2</code>, you can control the visual appearance of your graph using <strong>aesthetics</strong>, which connect <strong>visual channels</strong> (like position, color, size, or fill) to either variables variables in your data set or to fixed values.</p>
 <p>There are three (partially overlapping) ways to assign aesthetics:</p>
 <ol type="1">
 <li><p><strong>Global mapping</strong>: Inside <code>aes()</code> in the main <code>ggplot()</code> call. These mappings apply to <em>all</em> layers (geoms) by default.</p></li>
-<li><p><strong>Local mapping</strong>: Inside <code>aes()</code> within a specific <code>geom_*()</code> function. These only apply to that one layer.</p></li>
-<li><p><strong>Constant values</strong>: Set inside or outside <code>aes()</code> within a geom or inside of <code>aes()</code> within <code>ggplot()</code>. These are fixed and override any mapping at or above their same level.</p></li>
+<li><p><strong>Local mapping</strong>: Inside <code>aes()</code> within a specific <code>geom_*()</code> function. These <em>only</em> apply to the one layer they are included within.</p></li>
+<li><p><strong>Constant values</strong>: Set inside or outside <code>aes()</code> within a geom or inside of <code>aes()</code> within <code>ggplot()</code>. These are fixed values, like setting all colors to “red,” that will override any mapping at or above their same level.</p></li>
 </ol>
-<p>This system gives you flexibility, but it can be confusing—especially for new users. Let’s clarify with an example that uses two geoms: a boxplot overlaid with <strong>jittered</strong> points (jittering randomly shuffles their location):</p>
+<p>This system gives you flexibility, but it can be confusing—especially for new users. Let’s clarify with an example that uses two geoms: a boxplot overlaid with <strong>jittered</strong> points (jittering randomly shuffles a point’s location data):</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#NEW PLOT</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Species, <span class="co">#&lt;--NOW, SPECIES, A DISCRETE VARIABLE </span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"boxplot"</span>) <span class="sc">+</span> <span class="co">#&lt;--A NEW GEOM OF BOXPLOT</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"jitter"</span>, <span class="co">#&lt;--SAME POINTS AS BEFORE EXCEPT JITTERED.</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -378,20 +501,28 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 <ul>
 <li><p><strong>Global mappings</strong> of <code>x = Species</code> and <code>y = Sepal.Length</code> apply to <em>both</em> the boxplot and the jittered points.</p></li>
 <li><p>The <strong>fill aesthetic</strong> is mapped to <code>Species</code>, but <strong>only locally</strong> within the jittered points layer, so the boxplot is unaffected.</p></li>
-<li><p>The <strong>alpha aesthetic</strong> is set to a constant value (0.3), again <strong>only locally</strong> for the jittered points.</p></li>
+<li><p>The <strong>alpha aesthetic</strong> is set to a constant (0.3), again <strong>only locally</strong> for the jittered points. This means all points get this value, regardless of what values they have for variables in your data set.</p></li>
 </ul>
 <p>If you map the <em>same aesthetic</em> in multiple places (e.g., globally and locally), the <strong>local mapping always wins</strong>—it overrides any global specification for that layer. Also, if you try to map an aesthetic to both a variable <em>and</em> a constant, the constant usually takes precedence.</p>
 </section>
 <section id="how-this-applies-to-ggplot.plus" class="level3">
 <h3 class="anchored" data-anchor-id="how-this-applies-to-ggplot.plus">How This Applies to <code>ggplot.plus</code></h3>
-<p>All of the same rules apply when using <code>ggplot.plus</code> tools. You can:</p>
+<p>We bring all this up mostly just to say that all of the same rules apply when using <code>ggplot.plus</code> tools. You can:</p>
 <ul>
-<li><p>Map aesthetics globally or locally</p></li>
-<li><p>Use aesthetics to variables in your data set or to constant values</p></li>
+<li><p>Map aesthetics globally or locally.</p></li>
+<li><p>Map aesthetics to variables in your data set or to constant values.</p></li>
 <li><p>Combine the approaches as needed–conflicts will resolve as they normally do in <code>ggplot2</code>.</p></li>
 </ul>
 <p>Here’s a similar plot with a few tweaks to illustrate this further:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Species, </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length, </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> Species, <span class="co">#&lt;-- WE CAN SWITCH TO MAPPING FILL GLOBALLY SO IT APPLIES TO BOTH GEOMS. </span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> Petal.Length)) <span class="sc">+</span> <span class="co">#&lt;--NOW ALSO MAPPING COLOR</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"boxplot"</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span> <span class="co">#&lt;--WE LOCALLY OVERRIDE COLOR, SO IT'LL BE BLUE FOR ALL BOXES INSTEAD OF LINKED TO PETAL.LENGTH </span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"jitter"</span>) <span class="sc">+</span> <span class="co">#&lt;--WE NO LONGER MAP FILL LOCALLY OR SET ALPHA TO A CONSTANT.</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">'none'</span>) <span class="co">#&lt;--SUPPRESS THE LEGENDS FOR NOW.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -405,23 +536,33 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 <li><p><strong>Fill</strong> is now applied to <em>both</em> geoms, since it’s mapped globally.</p></li>
 <li><p><strong>Color</strong> is also mapped globally but overridden locally in the boxplot layer (so boxplot outlines are blue, regardless of <code>Petal.Length</code>).</p></li>
 </ul>
-<p>Many common base geoms are already implemented in <code>geom_plus()</code>. To see a list of those currently available:</p>
+</section>
+<section id="geom-availability" class="level3">
+<h3 class="anchored" data-anchor-id="geom-availability">Geom Availability</h3>
+<p>Many common base geoms are already implemented in <code>geom_plus()</code>. To see a list of those currently available, run:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(<span class="fu">names</span>(geom_plus_defaults))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] "point"      "jitter"     "count"      "boxplot"    "violin"    
- [6] "bar"        "col"        "histogram"  "line"       "freqpoly"  
-[11] "segment"    "abline"     "hline"      "vline"      "curve"     
-[16] "smooth"     "area"       "ribbon"     "crossbar"   "errorbar"  
-[21] "linerange"  "pointrange" "density"    "dotplot"   </code></pre>
+<pre><code> [1] "abline"     "area"       "bar"        "boxplot"    "col"       
+ [6] "count"      "crossbar"   "curve"      "density"    "dotplot"   
+[11] "errorbar"   "freqpoly"   "histogram"  "hline"      "jitter"    
+[16] "line"       "linerange"  "point"      "pointrange" "ribbon"    
+[21] "segment"    "smooth"     "violin"     "vline"     </code></pre>
 </div>
 </div>
-<p>If you’d like to see additional geoms supported, you can request them using the Issues feature on the package’s Github page.</p>
+<p>If you’d like to see additional geoms supported, you can request them using the Issues feature on the package’s Github page. However, we tried to implement all the most commonly used geoms that we felt we could improve on the defaults of already.</p>
 </section>
 </section>
-<section id="improving-axes" class="level2">
-<h2 class="anchored" data-anchor-id="improving-axes">Improving Axes</h2>
+<section id="improving-axes-breaks-and-labels" class="level2">
+<h2 class="anchored" data-anchor-id="improving-axes-breaks-and-labels">Improving Axes Breaks and Labels</h2>
 <p>Let’s return to our earlier scatterplot:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -432,6 +573,13 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 <p>There’s still room for improvement, including with the axis titles and labels. A key first step is to make the axis titles more human-readable, intuitive, and complete by including units. You can do this using the <code>scale_*_*()</code> family of functions in <code>ggplot2</code>:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>) <span class="co">#&lt;-- THE STANDARD WAY TO CHANGE THE X AXIS TITLE FOR A NUMERIC VARIABLE.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -440,8 +588,15 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>This works, but the x-axis still lacks labels near its endpoints—a common issue with <code>ggplot2</code>’s default breaks determination. You can fix this using <code>scale_x_continuous_plus()</code>, which automatically adjusts breaks and limits to ensure label coverage near the extremes:</p>
+<p>This works, but the x-axis still lacks labels near its endpoints—a common issue with <code>ggplot2</code>’s default breaks determination process. How close are the purple points to 0? The yellow points to 8? It’s hard to tell without anchors on both sides to guide you. You can fix this using <code>scale_x_continuous_plus()</code>, which automatically adjusts breaks and limits to ensure label coverage near the ends of the axis scale:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>) <span class="co">#&lt;--SWITCH TO PLUS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -450,10 +605,18 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>The axis is now expanded to start at 1 and end at 7, with breaks still chosen to be regular and “pretty,” as in <code>ggplot2</code>.</p>
-<p>As with the base function, you can still pass arguments like <code>name</code>, <code>expand</code>, <code>transform</code>, or <code>labels</code> to the <code>_plus()</code> version. However, you <em>cannot</em> manually set <code>breaks</code> or <code>limits</code>, since those are managed internally by the function. If you need full control over those, revert to <code>scale_x_continuous()</code> instead.</p>
-<p>If the resulting labels feel too frequent, here’s a trick: You can suppress some of them by setting custom label text—for instance, removing every other label while keeping the tick marks:</p>
+<p>The axis is now expanded to start with a break at 1 and an end break at 7, with breaks in between still chosen to be regular and “pretty,” as in <code>ggplot2</code>.</p>
+<p>As with the base <code>scale</code> function, you can pass arguments like <code>name</code>, <code>expand</code>, <code>transform</code>, or <code>labels</code> to the <code>_plus()</code> version. However, you <em>cannot</em> manually set <code>breaks</code> or <code>limits</code>, since those are managed internally by the function. If you want to specify those yourself, use the base <code>scale_x_continuous()</code> instead.</p>
+<p>If the resulting labels feel a little too frequent, here’s a trick: You can suppress some of them by setting custom label text—for instance, removing every other label using empty strings (<code>""</code>) while keeping the tick marks in those spots:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="co">#&lt;--SPECIFYING A VECTOR OF CUSTOM LABELS THAT INCLUDES EMPTY STRINGS FOR EVERY OTHER VALUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -462,9 +625,18 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>This reduces cognitive load while preserving the visual scaffolding the ticks provide. Optional, but a nice touch!</p>
-<p>Unsurprisingly, there’s a matching function for the y-axis:</p>
+<p>This reduces cognitive load and increases void space while preserving the visual scaffolding the ticks provide. Optional, but a nice touch!</p>
+<p>There’s a matching function for the y-axis:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="co">#&lt;--ADDED Y EQUIVALENT.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -474,12 +646,23 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 <p>Here, the y-axis expands downward to include a break at 4, making the axis appear more complete and aiding interpretation.</p>
+<p>There are also functions for <code>fill</code> and <code>color</code> for when these are mapped to continuous variables: <code>scale_fill_continuous_plus()</code> and <code>scale_color_continuous_plus()</code>. But we’ll see those in the next section.</p>
 </section>
 <section id="improving-the-theme" class="level2">
 <h2 class="anchored" data-anchor-id="improving-the-theme">Improving the Theme</h2>
 <p>Much of <code>ggplot2</code>’s visual styling is governed by the <code>theme()</code> function, which controls over 100 parameters affecting how a plot looks and feels. That flexibility is powerful—but also overwhelming for beginners.</p>
-<p>To help with this, <code>ggplot.plus</code> includes <code>theme_plus()</code>, a custom version of <code>ggplot2</code>’s <code>theme()</code> function that sets more publication- and accessibility-friendly defaults out of the box:</p>
+<p>To help with this, <code>ggplot.plus</code> includes <code>theme_plus()</code>, a custom version of <code>ggplot2</code>’s <code>theme()</code> function that overrides many of <code>ggplot2</code>’s default theme settings to be more publication- and accessibility-minded:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="co">#&lt;--ADD PLUS THEME TO OVERRIDE THE DEFAULT.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -488,19 +671,29 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>This version of the theme makes a number of visual improvements:</p>
+<p>This version of the theme makes a number of adjustments to the graph’s visual design:</p>
 <ul>
 <li><p><strong>Larger text</strong> for better readability.</p></li>
-<li><p><strong>Increased spacing</strong> between key elements (like legend keys and axis titles and labels).</p></li>
-<li><p><strong>Thicker axis ticks</strong> for greater visibility and distinguishing.</p></li>
+<li><p><strong>Increased spacing</strong> between key elements (like legend keys and axis titles and their labels).</p></li>
+<li><p><strong>Thicker axis ticks</strong> for greater visibility and easier distinguishing from data elements and axis lines.</p></li>
 <li><p><strong>Removes gridlines</strong> by default (but see next section for how to selectively reintroduce them).</p></li>
-<li><p><strong>White background</strong> for high contrast (though note this can increase eye strain in some cases).</p></li>
-<li><p><strong>Black axis lines</strong> at the bottom and left (but no top or right borders, which typically carry no data).</p></li>
-<li><p><strong>Legend moved above the plot</strong> as a horizontal strip—space-efficient and more likely to be seen early by the reader.</p></li>
+<li><p><strong>White background</strong> for highest contrast against most foreground elements (though note that a lot of whitespace can increase eye strain over prolonged viewing).</p></li>
+<li><p><strong>Black axis lines</strong> at the bottom and left for visual anchoring (but no top or right borders, which typically carry no data and thus are usually extraneous).</p></li>
+<li><p><strong>Legend moved above the plot</strong> as a horizontal strip, which is more space-efficient and increases the likelihood it will be encountered early on by readers.</p></li>
 <li><p><strong>All text rendered in black</strong>, rather than the default dark gray for some elements, to maximize contrast.</p></li>
 </ul>
 <p>Of course, everything is still customizable. If you don’t love a particular choice—say, the thickness of the axis lines or the legend’s location—you can adjust them, same as you normally would:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">linewidth =</span> <span class="fl">0.75</span>)) <span class="co">#&lt;--WE CAN MAKE THE AXIS LINES A LITTLE THINNER IF WE WANT. DEFAULT = 1.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -509,8 +702,24 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>You can even restore the right-side legend if you prefer—but it’s wise to adjust spacing too if you do:</p>
+<p>Here’s how you’d relocate the legend to its normal position. But, if you do this, I’d adjust some of its spacing settings also, as the defaults are built for horizontal rather than vertical orientation:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">linewidth =</span> <span class="fl">0.75</span>),</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">legend.position =</span> <span class="st">"right"</span>,<span class="co">#&lt;-- RESTORE RIGHT-SIDE LEGEND. </span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">legend.direction =</span> <span class="st">"vertical"</span>, <span class="co">#&lt;-RE-ORIENT VERTICAL</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">15</span>, <span class="at">r =</span> <span class="dv">0</span>)), <span class="co">#&lt;--ADD SPACE BELOW RATHER THAN TO THE RIGHT OF LEGEND TITLE</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">legend.key.spacing.y =</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">"cm"</span>), <span class="co">#&lt;--INCREASE THE VERTICAL SPACE BTW. KEYS</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">legend.key.spacing.x =</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">"lines"</span>) <span class="co">#&lt;--RESTORE THE DEFAULT SPACING</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>             ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -519,13 +728,65 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>Like the rest of the toolkit, <code>theme_plus()</code> is meant to be a smart starting point—not a final destination. It won’t be ideal for every plot or context, but it’s designed to save you time and steer your design toward best practices from the start.</p>
+<p>Personally, I don’t really like this…it feels a bit wasteful in terms of space. But if you like it, that’s ultimately what matters! Like the rest of the <code>ggplot.plus</code> toolkit, <code>theme_plus()</code> is meant to be a smart starting point, <strong>not</strong> a “final destination.” Its outputs won’t be ideal for every plot, person, or context (I don’t think that’s even remotely possible!), but it’s designed to save you time by making it so there are at least <em>fewer</em> adjustments you need to make to get your graphs up to modern design standards.</p>
+<p>There are a few theme considerations that apply only to color bars, which are the legend components you see when you map <code>color</code> or <code>fill</code> to a continuous variable. Let’s map a continuous variable to <code>fill</code> to get such a legend:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Petal.Width), <span class="co">#&lt;--MAP A CONTINUOUS VARIABLE.</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/cont%20color%20bar%20theme-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The changes here include longer and fatter tick marks of pure white for maximum contrast against the colors within, a black border to prevent any contrast issues with the background, and larger dimensions for easier reading and enhanced visibility.</p>
+<p>Note that color bars can have the same issue as axes, where the ends don’t necessarily get labels at or near them. As alluded to earlier, there’s a <code>scale_fill_continuous_plus()</code> function to help with that:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Petal.Width)) <span class="sc">+</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal width (cm)"</span>) <span class="co">#&lt;--GET BETTER AXIS BREAKS AND PROVIDE CUSTOM TITLE.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/fill%20plus%20scale-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The left-hand side of the scale has expanded to include 0 so that it is clear to the reader exactly which color would correspond to a value of <code>0</code>.</p>
 </section>
 <section id="y-axis-title-orientation-and-location" class="level2">
 <h2 class="anchored" data-anchor-id="y-axis-title-orientation-and-location">Y Axis Title Orientation and Location</h2>
-<p>Our graph is nearly there—but one issue remains: the <strong>y axis title</strong> is still vertically oriented and tucked away in the left margin. Let’s fix that.</p>
-<p>In base <code>ggplot2</code>, you <em>can</em> reorient the title using hacky adjustments like line breaks and theme tweaks:</p>
+<p>Our graph is nearly there (at least in our estimation!)—but one issue remains: the <strong>y axis title</strong> is still vertically oriented and tucked away in the plot’s left margin. Let’s change that.</p>
+<p>In base <code>ggplot2</code>, you <em>can</em> reorient the title to be horizontal, at least, using a few hacky adjustments like line breaks and theme tweaks:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal</span><span class="sc">\n</span><span class="st">length</span><span class="sc">\n</span><span class="st">(cm)"</span>) <span class="sc">+</span> <span class="co">#&lt;--INSERT SOME LINE BREAKS USING \n TO BREAK THE TITLE ONTO MANY LINES FOR MAX SPACE EFFICIENCY. </span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">angle =</span> <span class="dv">0</span>)) <span class="co">#&lt;--CHANGE THE Y AXIS TITLE TO BE VERTICALLY JUSTIFIED AND HORIZONTAL (UNANGLED).</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -534,14 +795,25 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>This works reasonably well—it’s readable and relatively simple to implement, if you know how (a big if for many beginning <code>ggplot2</code> users!). But it has limitations:</p>
+<p>This works reasonably well, to be honest. It’s readable, and it’s <em>relatively</em> simple to implement, if you know how (a <strong>big</strong> if for many <code>ggplot2</code> beginners!). But it has limitations:</p>
 <ul>
-<li><p>It steals horizontal space from your data.</p></li>
-<li><p>It keeps the label in a relatively unprominent location.</p></li>
+<li><p>It steals horizontal space in the graph’s “center row” from your data in the plotting area, much as a right-hand legend does.</p></li>
+<li><p>It keeps the label in a <em>relatively</em> unprominent location, where readers may not necessarily encounter it early.</p></li>
 <li><p>It doesn’t scale up well to longer axis titles or those with long, unbreakable words.</p></li>
 </ul>
-<p>To get around these challenges, <code>ggplot.plus</code> includes <code>yaxis_title_plus()</code>, which repositions the y axis title to the <strong>top left corner of the plotting area</strong>, aligned above the y axis and left-justified:</p>
+<p>To get around these challenges, <code>ggplot.plus</code> includes <code>yaxis_title_plus()</code>, which repositions the y axis title to the top left corner of the plotting area, above the y axis and left-justified to the edges of the y-axis labels:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> <span class="co">#&lt;--NO ADJUSTMENTS TO TITLE NEEDED NOW.</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--NO THEME ADJUSTMENTS EITHER.</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="co">#&lt;--THIS FUNCTION HANDLES EVERYTHING!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -550,20 +822,55 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>This small adjustment brings a number of benefits:</p>
+<p>This small adjustment brings a number of potential benefits:</p>
 <ul>
-<li><p><strong>Prominence</strong>: Readers of left-to-right, top-to-bottom languages naturally start in the upper-left, so the y axis title now gets seen early.</p></li>
+<li><p><strong>Prominence</strong>: Readers of left-to-right, top-to-bottom languages naturally start in the upper-left (we read in what’s called a <strong>“Z reading frame,”</strong> which is to say we read in a pattern that traces one or more Z shapes, starting at the top left of an element), so the y axis title is now one of the very first components of our graph many readers will encounter.</p></li>
 <li><p><strong>Readability</strong>: The title is horizontal, making it easier and faster to read for all kinds of people in all kinds of contexts.</p></li>
-<li><p><strong>Space efficiency</strong>: Instead of taking up horizontal room, the title sits in a narrow horizontal band above the plot, freeing up the core of the graphing area for your data to shine.</p></li>
-<li><p><strong>Title dual-purpose</strong>: For graphs that don’t have a main title (which many design experts recommend omitting because, at best, titles tend to do what y axis titles and captions already do but worse), this functions sort of like one but with a much tighter focus, which can be beneficial for novice graph readers.</p></li>
+<li><p><strong>Space efficiency</strong>: Instead of taking up horizontal room in the “data row” of the graph, the title sits in a narrow horizontal band <em>above</em> the plot, freeing up the core of the graphing area for your data to spread out.</p></li>
+<li><p><strong>Pseudo-title element</strong>: Many design experts recommend against giving your plots a title. The reason is that, at best, titles tend to do what y axis titles and captions already do, only worse. However, research suggests novice graph readers, especially, find titles helpful. By moving the y axis title to where a plot title might reasonably go, we allow it to serve a similar purpose but without any risk of repetition.</p></li>
+<li><p><strong>No ambiguity</strong>: One hazard with moving the y axis title is that it may become unclear what it refers to. By anchoring it above the y axis line and left-justified to the left edge of the y axis labels, there’s little ambiguity as to its purpose compared to just about any other potential placement.</p></li>
 </ul>
-<p>Some may find this placement unconventional, but it’s backed by <strong>decades of advocacy</strong> from the data visualization community (dating back to at least the 1990s). So while it’s optional, it’s not a fringe or new idea! Give it a try–you might just like it better.</p>
+<p>Some may find this placement unconventional at first, but it’s backed by <strong>decades of advocacy</strong> from the data visualization community (dating back to at least the 1990s). So while it’s optional, it’s not a fringe or new idea! Give it a try–you just might find that you like it better too!</p>
+<p>One neat feature: No matter how long your y axis labels get, <code>yaxis_title_plus()</code> will ensure the title stays left-justified to their left edge, wherever that is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>, </span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="st">"7.0000000"</span>, <span class="dv">8</span>)) <span class="sc">+</span> <span class="co">#&lt;--ONE OBNOXIOUS LABEL IN LENGTH. </span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/stay%20left%20justified-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="thoughtful-gridlines" class="level2">
 <h2 class="anchored" data-anchor-id="thoughtful-gridlines">Thoughtful Gridlines</h2>
-<p>One potentially controversial design choice in <code>ggplot.plus</code>’s <code>theme_plus()</code> is the <strong>removal of gridlines</strong>. While some readers rely on them or expect them, many others find them distracting or visually cluttering.</p>
-<p>If you’d like to restore them, you <em>could</em> manually add them back using <code>theme()</code> or <code>theme_plus()</code>. But there’s a better option: <code>gridlines_plus()</code>. This function selectively reintroduces only the <strong>major gridlines</strong> (not minor ones), in directions mapped to <strong>numeric</strong> variables (not discrete ones), and renders them faintly:</p>
+<p>One (arguably) controversial design choice in <code>ggplot.plus</code>’s <code>theme_plus()</code> is the complete removal of gridlines. While some readers rely on them or expect them, many find them distracting or visually cluttering in most situations, and data viz experts often advise that they be removed entirely as a general rule.</p>
+<p>If you’d like to restore them, however, you can: you <em>could</em> manually add them back using <code>theme()</code> or <code>theme_plus()</code>. But there’s an easier and more thoughtful option: <code>gridlines_plus()</code>. This function <em>selectively</em> reintroduces only the major gridlines (and not also minor ones) in only directions mapped to numeric variables (and not also discrete ones) and only renders them very faintly:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="co">#&lt;--REINTRODUCE SOME GRIDLINES</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -572,18 +879,49 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>These gridlines default to <code>color = "gray90"</code>, offering a <strong>low-contrast, high-compromise solution</strong>:</p>
-<ul>
-<li><p>They’re just visible enough for those who need help estimating values or otherwise want to use them, according to empirical research.</p></li>
-<li><p>But they’re light enough to fade into the background for everyone else.</p></li>
-</ul>
-<p>Research has shown that <strong>faint and infrequent gridlines</strong> can improve comprehension for some readers without drawing undue attention or degrading visual contrast. That’s what we’re aiming for here.</p>
-<p>Want to customize them? <code>gridlines_plus()</code> allows adjustments to <code>linetype</code>, <code>color</code>, and <code>linewidth</code>. This flexibility ensures you can match gridlines to your graph’s tone and complexity without sacrificing readability.</p>
+<p>These gridlines default to <code>"gray90"</code>. Prior research suggests that gridlines of this faint color will be <em>just</em> visible enough (against a white background) for those who need help estimating values or otherwise want to use them but light enough to easily fade into the background for everyone else.</p>
+<p>Research has shown that faint, thin, and infrequent gridlines like these can improve comprehension for some readers without drawing undue attention or degrading visual contrast. That’s what we’re aiming for here.</p>
+<p>However, if you want to tweak them in some respect or another, <code>gridlines_plus()</code> allows adjustments to <code>linetype</code>, <code>color</code>, and <code>linewidth</code>.</p>
+<p>If we had just one continuous axis, <code>gridlines_plus()</code> would automatically detect this and draw the gridlines in only one direction:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Species)) <span class="sc">+</span> <span class="co">#&lt;--MAKE DISCRETE</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"boxplot"</span>) <span class="sc">+</span> <span class="co">#&lt;--CHANGE GEOM TYPE. </span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span> <span class="co">#&lt;--NO CONTINUOUS Y ANY MORE TO IMPROVE.</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/one%20one%20gridlines-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Because gridlines are primarily designed for helping read exact values, there’s no need for them when an axis is discrete and thus has no exact values to read! Thus, we can simplify the presentation by omitting them in that direction.</p>
 </section>
 <section id="faceting-with-ggplot.plus" class="level2">
 <h2 class="anchored" data-anchor-id="faceting-with-ggplot.plus">Faceting With <code>ggplot.plus</code></h2>
-<p>Faceting—splitting a plot into <strong>small multiples</strong> based on one or more discrete variables—is a core feature of <code>ggplot2</code>, and it works with the tools provided by <code>ggplot.plus</code>:</p>
+<p>Faceting—splitting a plot into <strong>small multiples</strong> based on one or more discrete variables—is a core <code>ggplot2</code> feature, and it works with the tools provided by <code>ggplot.plus</code>:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#EXAMPLE GRAPH TO SHOW FACETING FEATURES:</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="co">#&lt;--SUPPRESS THE REDUNDANT LEGEND.</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species) <span class="co">#&lt;--MAKE ONE SMALL MULTIPLE (PANEL) PER SPECIES (ACROSS COLUMNS)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -592,20 +930,24 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>As this example shows, <strong>most features in <code>ggplot.plus</code> are compatible with faceting</strong>, though a few require some extra thought.</p>
-<p>For example, using <code>yaxis_title_plus()</code> with facets technically works, but the result may not look ideal:</p>
+<p>As this example shows, <strong>most features in <code>ggplot.plus</code> are compatible with faceting</strong>, though a few may require some extra thought.</p>
+<p>For example, using <code>yaxis_title_plus()</code> with facets works—the function automatically shuffles where facet strip labels go to ensure that they go <em>above</em> the top y axis title, as shown above, so the latter stays close to the axis it labels. However, for some, this could look a little confusing or awkward.</p>
+<p>There are three potential workarounds here. The first is to facet by rows instead of columns:</p>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="README_files/figure-html/facets%20and%20y%20axis%20title-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Here, the y-axis title ends up <em>above</em> the facet labels, where it’s disconnected from the axis it describes.</p>
-<p>There are two potential workarounds to this. The first would be to facet by rows instead of columns. This restores a more natural association between the y-axis title and the data:</p>
-<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Species <span class="sc">~</span> .) <span class="co">#&lt;--FACET ACROSS ROWS INSTEAD</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -614,8 +956,24 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>Another option would be to relocate the facet labels to the bottom of the graph so they aren’t competing with the relocated y axis title:</p>
+<p>Another option would be to relocate the facet strip labels to the bottom of the graph so they aren’t competing with the relocated y axis title:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species, </span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">switch =</span> <span class="st">"x"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE TOP STRIP LABELS TO BOTTOM.</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"segment"</span>, <span class="at">x =</span> <span class="cn">Inf</span>, <span class="at">xend =</span> <span class="sc">-</span><span class="cn">Inf</span>,<span class="at">y =</span> <span class="sc">-</span><span class="cn">Inf</span>,<span class="at">yend =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="co">#&lt;--A TRICK: ADD A FAKE TOP BORDER LINE TO THE STRIP LAVEL FOR BETTER VISUAL DEMARCATION.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -624,8 +982,23 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>This also works, but a third option would be to suppress the facet strip labels entirely and instead retain the legend:</p>
+<p>A third option would be to suppress the facet strip labels and instead retain the legend:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">show.legend =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--KEEP LEGEND. </span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">strip.text =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span> <span class="co">#&lt;--SUPPRESS STRIP TEXT AND BACKGROUND.</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -634,12 +1007,27 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>Of all the core features of <code>ggplot.plus</code> that are likely to intersect strangely with faceting, <code>yaxis_title_plus()</code> probably tops the list. But, even then, you’ve got many options available to choose from.</p>
+<p>Faceting is a relatively complex operation that <code>ggplot2</code> performs. <code>ggplot.plus</code>’s features are designed to work nicely with it, but that doesn’t mean some creativity won’t still be involved!</p>
 <section id="side-note-transparency-in-the-legend-keys" class="level3">
 <h3 class="anchored" data-anchor-id="side-note-transparency-in-the-legend-keys">Side-note: Transparency in the Legend Keys</h3>
-<p>You may have noticed that the <strong>legend keys</strong>—the little circles in the legend that explain fill color—are also <strong>semi-transparent</strong>, just like the plotted points. That’s because the <code>alpha</code> value is being applied to both the points and their legend representations.</p>
-<p>This behavior isn’t specific to <code>ggplot.plus</code>. In base <code>ggplot2</code>, legend keys inherit aesthetics unless you override those aesthetics. Here’s one clean way to make the <strong>legend keys opaque</strong> while keeping transparency in the plot itself:</p>
+<p>You may have noticed that the <strong>legend keys</strong>—the circles in the legend that clarify fill color—have also been semi-transparent, just like the plotted points. That’s because the <code>alpha</code> value we’ve applied to the points is being applied to their legend representations as well.</p>
+<p>This behavior isn’t specific to <code>ggplot.plus</code>; in base <code>ggplot2</code>, legend keys inherit aesthetics from the data elements they clarify <em>unless</em> you override those aesthetics. Here’s a way to make the legend keys opaque while keeping transparency for the points:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>)) <span class="sc">+</span> <span class="co">#&lt;--MAP FILL TO CONSTANT INSIDE AES INSTEAD OF OUTSIDE IT.</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">strip.text =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span> </span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species) <span class="sc">+</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>) <span class="co">#&lt;--SUPPRESS GUIDE FOR ALPHA SCALE.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -648,13 +1036,130 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>Placing <code>alpha = 0.3</code> <strong>inside</strong> <code>aes()</code> helps ggplot handle alpha in the legend differently. Then, <code>scale_alpha(guide = "none")</code> removes the alpha guide from the legend to prevent it from being confusing.</p>
+<p>Placing <code>alpha = 0.3</code> inside <code>aes()</code> forces ggplot to treat it as a “scale,” which means it’d normally get its own legend, separate from the one for <code>fill</code>. We can then suppress that (unhelpful) legend using <code>scale_alpha()</code>. It’s a bit of a hack, but it makes sense given how <code>ggplot2</code>’s scale system works.</p>
 </section>
+</section>
+<section id="more-unusual-interactions" class="level2">
+<h2 class="anchored" data-anchor-id="more-unusual-interactions">More Unusual Interactions</h2>
+<p>One sort of strange function in <code>ggplot2</code> is <code>coord_flip()</code>, which will flip the graph’s coordinate system so that the x axis runs vertically and the y axis runs horizontally. <code>ggplot.plus</code>’s tools will work with this function, if used:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palettes_plus</span>(<span class="at">begin_discrete =</span> <span class="dv">0</span>, </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">end_discrete =</span> <span class="dv">1</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>)) <span class="sc">+</span> </span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="co">#&lt;--</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/coord%20flip-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="warnings-aimed-at-best-practice-adoption" class="level2">
+<h2 class="anchored" data-anchor-id="warnings-aimed-at-best-practice-adoption">Warnings Aimed at Best Practice Adoption</h2>
+<p>There are some aspects of suboptimal graph design that <code>ggplot.plus</code> can’t (currently) help you implement directly (yet). However, it tries to at least <em>detect</em> these circumstances and give you informative messages about what has been detected and what you can do about it.</p>
+<p>For example, by default, <code>ggplot2</code> will make your axis titles the column names of the variables in the data set you’ve mapped to those axes. So, if we map <code>x</code> to <code>Petal.Length</code> in our data set, our axis title will say <code>Petal.Length</code> unless we change it.</p>
+<p>Most column names are not designed to be human-readable and intuitive. Instead, they are designed to be short, computer-readable, and easy to type. They may feature unusual capitalization and punctuation, lack spaces, include cryptic abbreviations, and lack units.</p>
+<p>If <code>geom_plus()</code> can detect you have not specified custom axis titles for your scales (because the titles being rendered match the column names of the mapped variables exactly), it will flag this with a message:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>)) <span class="sc">+</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--NO NAME SPECIFIED.</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--NO NAME SPECIFIED. </span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: It looks like you haven't provided a custom title for variable(s)
+Petal.Length, Sepal.Length, mapped to the following aesthetic(s), respectively:
+x, y. This means the title(s) are probably still the column name(s) from your
+data set, which may not be human-readable, nicely formatted, and intuitive and
+contain units (if any). We recommend using a scale*() function to specify a
+custom title for each such scale. Set silence_warnings inside geom_plus() to
+TRUE to hide this and other messages.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/message%20no%20custom%20titles-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The idea here is to flag an issue that someone who might be new to making graphics in <code>ggplot2</code> (or in general) might not otherwise immediately notice or think of and to move them more quickly towards best practices.</p>
+<p>Another example: The number of distinct colors that the human eye can successfully distinguish from each other is relatively small. Most research puts this number at 12 (at maximum) but closer to 8 in most contexts. As such, if you attempt to request a discrete color palette requiring more than 8 colors, you will get a warning about a likely loss of sufficient contrast:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> <span class="fu">as.factor</span>(Petal.Width))) <span class="sc">+</span> <span class="co">#&lt;--MAKE THIS VARIABLE A FACTOR--IT HAS MANY LEVELS</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Petal.Width, the variable you mapped to fill, has 22 unique levels.
+Even with a high-quality palette, it's difficult to ensure all colors chosen
+will be clearly distinguishable when the number of categories exceeds ~8. In
+such cases, consider using a different visual channel, intersecting another
+visual channel (e.g., shape) with color, or reducing the number of groups
+shown.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="README_files/figure-html/warning%20about%20less%20contrast-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Of courses, users who are already familiar with these graph-design issues and concepts may find these warnings distracting or repetitive. They can all be disabled by setting <code>silence_warnings</code> inside <code>geom_plus()</code> to <code>TRUE</code>.</p>
 </section>
 <section id="known-issues" class="level2">
 <h2 class="anchored" data-anchor-id="known-issues">Known Issues</h2>
 <p>There’s a known limitation when using <code>yaxis_title_plus()</code> alongside a <strong>top-positioned x-axis</strong>. The relocated y-axis title will end up in the same horizontal “row” as the top x axis labels, causing them to clip into each other:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>),</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE X AXIS TO TOP OF THE GRAPH</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Heads-up: The top y axis title is likely to clip overtop of the x axis
+labels if your graph features a top x axis. Move the x axis to the bottom using
+"position = 'top'" in scale_x_*() (or remove the secondary x axis).
+Alternatively, set "location = 'bottom'" in switch_y_axis().</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -663,8 +1168,21 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>If a top x-axis is important for your graph, you can use the <code>location = "bottom"</code> option in <code>yaxis_title_plus()</code> to relocate the y title beneath the plot instead:</p>
+<p>You’ll notice that <code>yaxis_title_plus()</code> provides a warning in this case and gives you a suggestion as to how to work around it: you can use the <code>location = "bottom"</code> option in <code>yaxis_title_plus()</code> to relocate the y title beneath the plot instead:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>),</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> </span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>(<span class="at">location =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE  Y AXIS TITLE TO BOTTOM INSTEAD</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -673,11 +1191,28 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
-<p>It’s a bit unorthodox visually, but it works! If you duplicate the x-axis on <strong>both top and bottom</strong> or have a secondary x axis on the top, however, you won’t be able to relocate the y-axis title easily. In that case, the best fallback may be to stick with the horizontal y-axis title broken across as many lines as possible using line breaks (<code>\n</code>).</p>
+<p>This feels a little “backwards” to me at first, but it works!</p>
+<p>Now, if you instead <em>duplicate</em> the x-axis on <strong>both top and bottom</strong> or have a secondary x axis on the top, you won’t be able to relocate the y-axis title easily. In that case, the best fallback is probably to stick with the horizontal y-axis title broken across as many lines as possible using line breaks (<code>\n</code>), as shown earlier.</p>
 <section id="idealized-scatterplot-for-reference" class="level3">
 <h3 class="anchored" data-anchor-id="idealized-scatterplot-for-reference">Idealized scatterplot for reference</h3>
-<p>Here’s the final, <strong>cleaned-up version</strong> of our scatterplot using most of <code>ggplot.plus</code>’s tools together:</p>
+<p>Here’s a “final” version of our scatterplot using all of <code>ggplot.plus</code>’s tools together:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palettes_plus</span>(<span class="at">begin_discrete =</span> <span class="dv">0</span>, </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">end_discrete =</span> <span class="dv">1</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>),</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">silence_warnings =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--OTHERWISE, Species WILL TRIGGER A </span><span class="al">WARNING</span><span class="co">.</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -686,6 +1221,7 @@ Each tool in <code>ggplot.plus</code> is designed to be additive. You can use ju
 </div>
 </div>
 </div>
+<p>I’d say that looks pretty nice, but it’s, at <em>worst</em>, an evidence-based starting point upon which to build something truly impactful and distinctive.</p>
 </section>
 </section>
 

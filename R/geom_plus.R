@@ -335,7 +335,9 @@ ggplot_build.geom_plus_warnings = function(plot) {
             n_levels = length(unique(plot$data[[color_var]])) #GET NUM LEVELS
             #FLAG IF THE NUM LEVELS IS > X
             if(n_levels > 8) {
-              warning(sprintf("%s, the variable you mapped to color, has %d unique levels. Even with a high-quality palette, it's difficult to ensure all colors chosen will be clearly distinguishable when the number of categories exceeds ~8. In such cases, consider using a different visual channel, intersecting another visual channel (e.g., shape) with color, or reducing the number of groups shown.", color_var, n_levels), call. = FALSE)
+              warning_text = sprintf("%s, the variable you mapped to color, has %d unique levels. Even with a high-quality palette, it's difficult to ensure all colors chosen will be clearly distinguishable when the number of categories exceeds ~8. In such cases, consider using a different visual channel, intersecting another visual channel (e.g., shape) with color, or reducing the number of groups shown. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages.", color_var, n_levels)
+
+              warning(warning_text, call. = FALSE)
             }
           }
 
@@ -347,7 +349,9 @@ ggplot_build.geom_plus_warnings = function(plot) {
 
             n_levels = length(unique(plot$data[[fill_var]]))
             if(n_levels > 8) {
-              warning(sprintf("%s, the variable you mapped to fill, has %d unique levels. Even with a high-quality palette, it's difficult to ensure all colors chosen will be clearly distinguishable when the number of categories exceeds ~8. In such cases, consider using a different visual channel, intersecting another visual channel (e.g., shape) with color, or reducing the number of groups shown.", fill_var, n_levels), call. = FALSE)
+              warning_text = sprintf("%s, the variable you mapped to fill, has %d unique levels. Even with a high-quality palette, it's difficult to ensure all colors chosen will be clearly distinguishable when the number of categories exceeds ~8. In such cases, consider using a different visual channel, intersecting another visual channel (e.g., shape) with color, or reducing the number of groups shown. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages.", fill_var, n_levels)
+
+              warning(warning_text, call. = FALSE)
             }
           }
 
@@ -402,9 +406,11 @@ ggplot_build.geom_plus_warnings = function(plot) {
 
     #TRIGGER THE WARNING IF ANY SCALES VIOLATE.
     if(length(bad_scales) > 0) {
-      warning(sprintf("It looks like you haven't provided a custom title for variable(s) [%s], mapped to the [%s] aesthetic(s). This means the title(s) might still be the column name(s) from your data set, which may not be human-readable, nicely formatted, and intuitive and contain units (if any). We recommend using, e.g., a scale*() function to specify a custom title for each such scale.",
-                      paste0(bad_vars, collapse = ", "),
-                      paste0(bad_scales, collapse = ", ")),
+      bad_vars = paste0(bad_vars, collapse = ", ")
+      bad_scales = paste0(bad_scales, collapse = ", ")
+      warning_text = sprintf("It looks like you haven't provided a custom title for variable(s) %s, mapped to the following aesthetic(s), respectively: %s. This means the title(s) are probably still the column name(s) from your data set, which may not be human-readable, nicely formatted, and intuitive and contain units (if any). We recommend using a scale*() function to specify a custom title for each such scale. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages.", bad_vars, bad_scales)
+
+      warning(warning_text,
               call. = FALSE)
 
     }
