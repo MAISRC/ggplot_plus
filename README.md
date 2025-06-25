@@ -69,7 +69,7 @@ ggplot(iris,
   scale_y_continuous_plus("Sepal length (cm)") + #<--SAME FOR Y AXIS.
   yaxis_title_plus() + #<--RELOCATES AND RE-ORIENTS Y AXIS TITLE.
   gridlines_plus() + #<--ADDS THOUGHTFUL GRIDLINES, IF YOU *REALLY* WANT THEM.
-  labs(color = expression(italic("Iris")*"species")) #<--THIS IS BASE GGPLOT2, BUT A NICE TOUCH!
+  labs(color = expression(italic("Iris")*" species")) #<--THIS IS BASE GGPLOT2, BUT A NICE TOUCH!
 ```
 
 ![](README_files/figure-commonmark/quick%20start%20use-1.png)

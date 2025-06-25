@@ -24,7 +24,7 @@ date: today
 
 To begin using the `ggplot.plus` package, you’ll first need to install it from GitHub using the devtools package:
 
-```{r load package, message=FALSE, echo=FALSE}
+```{r load package, include=FALSE}
 # install.packages("devtools")  # if not already installed
 devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _ INSTEAD OF THE . IN THE NAME.
 ```
@@ -77,7 +77,7 @@ ggplot(iris,
   scale_y_continuous_plus("Sepal length (cm)") + #<--SAME FOR Y AXIS.
   yaxis_title_plus() + #<--RELOCATES AND RE-ORIENTS Y AXIS TITLE.
   gridlines_plus() + #<--ADDS THOUGHTFUL GRIDLINES, IF YOU *REALLY* WANT THEM.
-  labs(color = expression(italic("Iris")*"species")) #<--THIS IS BASE GGPLOT2, BUT A NICE TOUCH!
+  labs(color = expression(italic("Iris")*" species")) #<--THIS IS BASE GGPLOT2, BUT A NICE TOUCH!
 ```
 
 The above graphs demonstrates how `ggplot.plus`'s tools rethink the default design features of `ggplot2`. The intention is to yield a cleaner, more accessible, and more modern baseline more quickly so that you need to spend less time fine-tuning and polishing your graphs for publication than you might otherwise need to.
