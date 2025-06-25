@@ -8,6 +8,11 @@ Species Research Center
 To begin using the `ggplot.plus` package, you’ll first need to install
 it from GitHub using the devtools package:
 
+``` r
+# install.packages("devtools")  # if not already installed
+devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _ INSTEAD OF THE . IN THE NAME.
+```
+
 Then, load it alongside `ggplot2`:
 
 ``` r

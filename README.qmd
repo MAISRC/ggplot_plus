@@ -24,7 +24,7 @@ date: today
 
 To begin using the `ggplot.plus` package, you’ll first need to install it from GitHub using the devtools package:
 
-```{r load package, include=FALSE}
+```{r load package, message=F}
 # install.packages("devtools")  # if not already installed
 devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _ INSTEAD OF THE . IN THE NAME.
 ```
