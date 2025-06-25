@@ -8,11 +8,6 @@ Species Research Center
 To begin using the `ggplot.plus` package, you’ll first need to install
 it from GitHub using the devtools package:
 
-``` r
-# install.packages("devtools")  # if not already installed
-devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _ INSTEAD OF THE . IN THE NAME.
-```
-
 Then, load it alongside `ggplot2`:
 
 ``` r
@@ -738,7 +733,7 @@ sort(names(geom_plus_defaults))
      [6] "count"      "crossbar"   "curve"      "density"    "dotplot"   
     [11] "errorbar"   "freqpoly"   "histogram"  "hline"      "jitter"    
     [16] "line"       "linerange"  "point"      "pointrange" "ribbon"    
-    [21] "segment"    "smooth"     "violin"     "vline"     
+    [21] "segment"    "smooth"     "tile"       "violin"     "vline"     
 
 If you’d like to see additional geoms supported, you can request them
 using the Issues feature on the package’s Github page. However, we tried
@@ -1443,12 +1438,12 @@ ggplot(iris,
 ```
 
     Warning: It looks like you haven't provided a custom title for variable(s)
-    Petal.Length, Sepal.Length, mapped to the following aesthetic(s), respectively:
-    x, y. This means the title(s) are probably still the column name(s) from your
-    data set, which may not be human-readable, nicely formatted, and intuitive and
-    contain units (if any). We recommend using a scale*() function to specify a
-    custom title for each such scale. Set silence_warnings inside geom_plus() to
-    TRUE to hide this and other messages.
+    Petal.Length, Sepal.Length, Species, mapped to the following aesthetic(s),
+    respectively: x, y, fill. This means the title(s) are probably still the column
+    name(s) from your data set, which may not be human-readable, nicely formatted,
+    and intuitive and contain units (if any). We recommend using a scale*()
+    function to specify a custom title for each such scale. Set silence_warnings
+    inside geom_plus() to TRUE to hide this and other messages.
 
 ![](README_files/figure-commonmark/message%20no%20custom%20titles-1.png)
 
@@ -1487,6 +1482,14 @@ ggplot(iris,
     shown. Set silence_warnings inside geom_plus() to TRUE to hide this and other
     messages.
 
+    Warning: It looks like you haven't provided a custom title for variable(s)
+    Petal.Width, mapped to the following aesthetic(s), respectively: fill. This
+    means the title(s) are probably still the column name(s) from your data set,
+    which may not be human-readable, nicely formatted, and intuitive and contain
+    units (if any). We recommend using a scale*() function to specify a custom
+    title for each such scale. Set silence_warnings inside geom_plus() to TRUE to
+    hide this and other messages.
+
 ![](README_files/figure-commonmark/warning%20about%20less%20contrast-1.png)
 
 Of courses, users who are already familiar with these graph-design
@@ -1516,6 +1519,14 @@ ggplot(iris,
   yaxis_title_plus() +
   gridlines_plus()
 ```
+
+    Warning: It looks like you haven't provided a custom title for variable(s)
+    Species, mapped to the following aesthetic(s), respectively: fill. This means
+    the title(s) are probably still the column name(s) from your data set, which
+    may not be human-readable, nicely formatted, and intuitive and contain units
+    (if any). We recommend using a scale*() function to specify a custom title for
+    each such scale. Set silence_warnings inside geom_plus() to TRUE to hide this
+    and other messages.
 
     Warning: Heads-up: The top y axis title is likely to clip overtop of the x axis
     labels if your graph features a top x axis. Move the x axis to the bottom using
