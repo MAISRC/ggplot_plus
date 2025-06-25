@@ -4,10 +4,12 @@
 \alias{theme_plus}
 \title{Add a New Base Theme to ggplots With Elevated Defaults}
 \usage{
-theme_plus(...)
+theme_plus(..., legend_pos = "top")
 }
 \arguments{
 \item{...}{Other arguments to be passed along to the \code{theme()} (optional).}
+
+\item{legend_pos}{Where should the legend(s) be? Defaults to "top", which will make the legend a horizontal stripe at the top of the graph. Any other value will move the legend to a vertical stripe to the right of the plot (its usual position in \code{ggplot2}).}
 }
 \value{
 List with the class "theme_plus", which will trigger the theme_plus method in ggplot_add.

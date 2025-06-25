@@ -1,9 +1,94 @@
 # README
 Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive
 Species Research Center
-2025-06-19
+2025-06-25
 
-## Preface
+## Quick Start Guide
+
+To begin using the `ggplot.plus` package, you’ll first need to install
+it from GitHub using the devtools package:
+
+``` r
+# install.packages("devtools")  # if not already installed
+devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _ INSTEAD OF THE . IN THE NAME.
+```
+
+Then, load it alongside `ggplot2`:
+
+``` r
+# install.packages("ggplot2")  # if not already installed
+library(ggplot2)
+library(ggplot.plus)
+```
+
+Once loaded, you can start layering in the “plus” tools to improve your
+plot design with minimal effort.
+
+### Using the tools
+
+Just by loading `ggplot.plus`, you will switch your session’s default
+color palette to one that is more broadly accessible–there’s no need to
+call `palettes_plus()` to alter this palette unless you want to (see the
+“Colorblind-Friendly Palettes” section for details):
+
+``` r
+#A BASIC GGPLOT SCATTERPLOT, EXCEPT USING ggplot.plus's DEFAULT COLOR PALETTE INSTEAD.
+ggplot(iris, 
+       mapping = aes(x = Petal.Length, 
+                     y = Sepal.Length)) +
+  geom_point(mapping = aes(color = Species))
+```
+
+![](README_files/figure-commonmark/auto%20new%20palette-1.png)
+
+To access the tweaks the package makes to `ggplot2`’s common geometries
+(“geoms”), convert your `geom_*()` calls into `geom_plus()` calls,
+including the name of the `geom` for the `geom` argument:
+
+``` r
+ggplot(iris, 
+       mapping = aes(x = Petal.Length, 
+                     y = Sepal.Length)) +
+  geom_plus(geom = "point", #<--DIFF FUNCTION, NEW GEOM INPUT.
+            mapping = aes(color = Species))
+```
+
+![](README_files/figure-commonmark/showing%20geom_plus-1.png)
+
+You can already see that this is a very different graph than what
+`ggplot2` would produce by default!
+
+Everything else the package offers gets turned on when you add (using
+`ggplot2`’s usual `+` operator) the associated function to your
+`ggplot()` command:
+
+``` r
+ggplot(iris, 
+       mapping = aes(x = Petal.Length, 
+                     y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(color = Species)) + 
+  theme_plus() + #<-OVERHAULS VISUAL THEME
+  scale_x_continuous_plus("Petal length (cm)") +
+  #OVERHAULS AXIS BREAKS AND LIMITS (FOR CONTINUOUS AXES ONLY!) 
+  scale_y_continuous_plus("Sepal length (cm)") + #<--SAME FOR Y AXIS.
+  yaxis_title_plus() + #<--RELOCATES AND RE-ORIENTS Y AXIS TITLE.
+  gridlines_plus() + #<--ADDS THOUGHTFUL GRIDLINES, IF YOU *REALLY* WANT THEM.
+  labs(color = expression(italic("Iris")*"species")) #<--THIS IS BASE GGPLOT2, BUT A NICE TOUCH!
+```
+
+![](README_files/figure-commonmark/quick%20start%20use-1.png)
+
+The above graphs demonstrates how `ggplot.plus`’s tools rethink the
+default design features of `ggplot2`. The intention is to yield a
+cleaner, more accessible, and more modern baseline more quickly so that
+you need to spend less time fine-tuning and polishing your graphs for
+publication than you might otherwise need to.
+
+However, there’s a *lot* more to know–if you’re interested, keep
+reading!
+
+## Motivation
 
 This guide introduces the `ggplot.plus` package—a collection of tools
 developed by Dr. Alex Bajcz, Quantitative Ecologist at the Minnesota
@@ -55,27 +140,6 @@ opinions about good graph design (though they also do!).
 
 Without further ado, let’s see the tools contained within this
 collection in action!
-
-## Getting Started
-
-To begin using the `ggplot.plus` package, you’ll first need to install
-it from GitHub using the devtools package:
-
-``` r
-# install.packages("devtools")  # if not already installed
-devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _ INSTEAD OF THE . IN THE NAME.
-```
-
-Then, load it alongside `ggplot2`:
-
-``` r
-# install.packages("ggplot2")  # if not already installed
-library(ggplot2)
-library(ggplot.plus)
-```
-
-Once loaded, you can start layering in the “plus” tools to improve your
-plot design with minimal effort.
 
 ## Overview of the Package Philosophy
 
@@ -338,7 +402,7 @@ temporarily map color to a numeric variable in the data set instead:
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
-  geom_point(mapping = aes(color = Petal.Width), show.legend = FALSE) #<--MAP COLOR TO A CONTINUOUS VARIABLE INSTEAD. WE SUPPRESS THE LEGEND FOR NOW.
+  geom_point(mapping = aes(color = Petal.Width)) #<--MAP COLOR TO A CONTINUOUS VARIABLE INSTEAD.
 ```
 
 ![](README_files/figure-commonmark/check%20out%20cividis-1.png)
@@ -648,8 +712,7 @@ ggplot(iris,
            fill = Species, #<-- WE CAN SWITCH TO MAPPING FILL GLOBALLY SO IT APPLIES TO BOTH GEOMS. 
            color = Petal.Length)) + #<--NOW ALSO MAPPING COLOR
   geom_plus(geom = "boxplot", color = "blue") + #<--WE LOCALLY OVERRIDE COLOR, SO IT'LL BE BLUE FOR ALL BOXES INSTEAD OF LINKED TO PETAL.LENGTH 
-  geom_plus(geom = "jitter") + #<--WE NO LONGER MAP FILL LOCALLY OR SET ALPHA TO A CONSTANT.
-  theme(legend.position = 'none') #<--SUPPRESS THE LEGENDS FOR NOW.
+  geom_plus(geom = "jitter") #<--WE NO LONGER MAP FILL LOCALLY OR SET ALPHA TO A CONSTANT.
 ```
 
 ![](README_files/figure-commonmark/same%20plot%20diff%20map-1.png)
@@ -877,13 +940,7 @@ ggplot(iris,
   scale_x_continuous_plus(name = "Petal length (cm)", 
                           labels = c(1, "", 3, "", 5, "", 7)) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
-  theme_plus(axis.line = element_line(linewidth = 0.75),
-             legend.position = "right",#<-- RESTORE RIGHT-SIDE LEGEND. 
-             legend.direction = "vertical", #<-RE-ORIENT VERTICAL
-             legend.title = element_text(margin = margin(b = 15, r = 0)), #<--ADD SPACE BELOW RATHER THAN TO THE RIGHT OF LEGEND TITLE
-             legend.key.spacing.y = unit(0.5, "cm"), #<--INCREASE THE VERTICAL SPACE BTW. KEYS
-             legend.key.spacing.x = unit(0.5, "lines") #<--RESTORE THE DEFAULT SPACING
-             ) 
+  theme_plus(legend_pos = FALSE) #<--ANY VALUE OTHER THAN THE DEFAULT "top" RESTORES ENSURES RIGHT-HAND LEGEND. 
 ```
 
 ![](README_files/figure-commonmark/adj%20theme%202-1.png)
@@ -1129,6 +1186,50 @@ Because gridlines are primarily designed for helping read exact values,
 there’s no need for them when an axis is discrete and thus has no exact
 values to read! Thus, we can simplify the presentation by omitting them
 in that direction.
+
+## Shortcuts
+
+As the above examples have demonstrated, `ggplot.plus`’s core functions
+are designed to be used *ala carte*, if that’s your preference. However,
+`geom_plus()` can also include the operations of other functions in the
+package if you use its optional arguments.
+
+For example, our previous scatterplot from above could also have been
+generated this way:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.3, 
+            include_gridlines = TRUE, #<--TURNS ON gridlines_plus()
+            include_yscale_plus = TRUE, #<--TURNS ON scale_y_continuous_plus()
+            include_theme = TRUE, #<--TURNS ON theme_plus()
+            new_y_title = "Sepal length (cm)" #<--SETS Y AXIS TITLE.
+            ) +
+  scale_x_continuous_plus("Petal length (cm)", labels = c(1, "", 3, "", 5, "", 7)) + #<--WE STILL SPECIFY CUSTOM LABELS THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().
+  yaxis_title_plus() #<--THIS STILL NEEDS TO BE ADDED SEPARATELY.
+```
+
+![](README_files/figure-commonmark/shortcuts-1.png)
+
+In this example, we were able to call `scale_y_continuous_plus()`,
+`theme_plus()`, and `gridlines_plus()` with their default parameters by
+setting their corresponding arguments inside `geom_plus()` to `TRUE`.
+
+If we *don’t* want to accept the defaults for these, though, we need to
+call them separately, which is why we do not set `include_xscale_plus`
+to `TRUE`; we want to set its labels, so we call
+`scale_x_continuous_plus()` separately instead.
+
+Note that we can also specify new axis/scale titles inside `geom_plus`
+if we want (so long as we are not subsequently calling their associated
+`scale_*continuous_plus()` function!).
+
+Also note that `yaxis_title_plus()` must still be called separately, if
+you wish to use it.
 
 ## Faceting With `ggplot.plus`
 

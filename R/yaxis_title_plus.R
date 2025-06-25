@@ -59,6 +59,7 @@ ggplot_build.switcher = function(plot) {
 #' @return A ggplot object compatible with `ggplot2`'s + command structure.
 #' @export
 ggplot_gtable.switched = function(plot) {
+
   loc = ifelse(!is.null(plot$plot$y_axis_switch_location),
                 plot$plot$y_axis_switch_location,
                 "top") #IF USER DIDN'T SPECIFY DIFFERENT, MOVE THE Y AXIS TITLE TO THE TOP.

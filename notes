@@ -4,6 +4,3 @@ quarto::quarto_render("README.qmd")
 
 AT THE CONSOLE--DON'T HIT THE RENDER BUTTON!
 
-THEN, RUN THIS IF COMMIT FAILS
-
-file.copy("README.md", "README.rmd", overwrite = TRUE)

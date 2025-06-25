@@ -20,23 +20,7 @@ palettes_plus = function(palette_discrete = "D",
 options(
   ggplot2.discrete.fill = function(...) { ggplot2::scale_fill_viridis_d(begin = begin_discrete, end = end_discrete, option = palette_discrete,  ...) },
   ggplot2.discrete.colour = function(...) { ggplot2::scale_colour_viridis_d(begin = begin_discrete, end = end_discrete, option = palette_discrete, ...) },
-  ggplot2.continuous.fill = function(...) { ggplot2::scale_fill_viridis_c(begin = begin_continuous, end = end_continuous, option = palette_continuous,
-                                                                          guide = guide_colorbar(
-                                                                            theme = theme(legend.ticks.length = ggplot2::unit(0.2, "cm"),
-                                                                                  legend.frame = ggplot2::element_rect(color = "black", linewidth = 1.2), #MAKE SOLID BLACK LINES FOR THE LEGEND BORDER FOR CONTINUOUS SCALES.
-                                                                                  legend.ticks = ggplot2::element_line(color = "white", linewidth = 1.2, linetype = "solid"), #MAKE THE TICKS WHITE
-                                                                                  legend.key.width = unit(10, "cm"), #GREATLY EXPAND THE WIDTH
-                                                                                  legend.key.height = unit(1, "cm"), #EXPAND THE HEIGHT A BIT ALSO.)
-                                                                            )),
-                                                                          ...) },
-  ggplot2.continuous.colour = function(...) { ggplot2::scale_colour_viridis_c(begin = begin_continuous, end = end_continuous, option = palette_continuous,
-                                                                              guide = guide_colorbar(
-                                                                               theme = theme(legend.ticks.length = ggplot2::unit(0.2, "cm"),
-                                                                                        legend.frame = ggplot2::element_rect(color = "black", linewidth = 1.2), #MAKE SOLID BLACK LINES FOR THE LEGEND BORDER FOR CONTINUOUS SCALES.
-                                                                                        legend.ticks = ggplot2::element_line(color = "white", linewidth = 1.2, linetype = "solid"), #MAKE THE TICKS WHITE
-                                                                                        legend.key.width = unit(10, "cm"), #GREATLY EXPAND THE WIDTH
-                                                                                        legend.key.height = unit(1, "cm"), #EXPAND THE HEIGHT A BIT ALSO.)
-                                                                              )),
-                                                                              ...) }
+  ggplot2.continuous.fill = function(...) { ggplot2::scale_fill_viridis_c(begin = begin_continuous, end = end_continuous, option = palette_continuous, ...) },
+  ggplot2.continuous.colour = function(...) { ggplot2::scale_colour_viridis_c(begin = begin_continuous, end = end_continuous, option = palette_continuous, ...) }
 )
 }

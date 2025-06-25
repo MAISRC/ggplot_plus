@@ -235,7 +235,7 @@ ggplot_add.scale_x_cont_plus = function(object, plot, name) {
   }
 
   #GATE TO ENSURE THE VARIABLE IS ACTUALLY NUMERIC--OTHERWISE, RETURN AN APPROPRIATE WARNING AND ABORT. THIS HAS THE ADDED BENEFIT OF PROTECTING AGAINST coord_flip() AS WELL AND IS MORE DEFENSIVE OVERALL.
-  if(is.numeric(x_data)) {
+  if(is.numeric(x_data) || inherits(x_data, "Date")) {
 
   res = cont_breaks_plus(x_data,
                        n = object$n,
@@ -310,7 +310,7 @@ ggplot_add.scale_y_cont_plus = function(object, plot, name) {
   }
 
   #GATE TO ENSURE THE VARIABLE IS ACTUALLY NUMERIC--OTHERWISE, RETURN AN APPROPRIATE WARNING AND ABORT.
-  if(is.numeric(y_data)) {
+  if(is.numeric(y_data) || inherits(y_data, "Date")) {
 
   #CONTINUE ON TO CALCULATE NEW LIMITS AND BREAK.
   res = cont_breaks_plus(y_data,
@@ -387,7 +387,7 @@ ggplot_add.scale_fill_cont_plus = function(object, plot, name) {
   }
 
   #GATE TO ENSURE THE VARIABLE IS ACTUALLY NUMERIC--OTHERWISE, RETURN AN APPROPRIATE WARNING AND ABORT.
-  if(is.numeric(fill_data)) {
+  if(is.numeric(fill_data) || inherits(fill_data, "Date")) {
 
   res = cont_breaks_plus(fill_data,
                          n = object$n,
@@ -464,7 +464,7 @@ ggplot_add.scale_color_cont_plus = function(object, plot, name) {
   }
 
   #GATE TO ENSURE THE VARIABLE IS ACTUALLY NUMERIC--OTHERWISE, RETURN AN APPROPRIATE WARNING AND ABORT.
-  if(is.numeric(colour_data)) {
+  if(is.numeric(colour_data) || inherits(colour_data, "Date")) {
 
   res = cont_breaks_plus(colour_data,
                          n = object$n,

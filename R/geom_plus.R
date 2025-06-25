@@ -35,7 +35,8 @@ geom_plus_defaults = list(
   violin = list(linewidth = 1.2,
                 linetype = "solid",
                 colour = "black",
-                fill = "white"),
+                fill = "white",
+                draw_quantiles = c(0.25, 0.5, 0.75)), #THIS WAY, THE MEDIAN AND Q1/Q3 ARE SHOWN BY DEFAULT.
   bar = list(fill = "transparent",
              colour = "black",
              linewidth = 1.2),
@@ -46,7 +47,7 @@ geom_plus_defaults = list(
                    colour = "black",
                    linewidth = 1.2,
                    linetype = "solid"),
-  line = list(linewidth = 1.2,
+  line = list(linewidth = 1.5, #MAKE IT THICKER STILL TO POP OUT AGAINST OTHER LINE ELEMENTS.
               colour = "black",
               linetype = "solid",
               alpha = 1),
@@ -109,7 +110,10 @@ geom_plus_defaults = list(
   dotplot = list(stroke = 1.2,
                  colour = "black",
                  fill = "transparent",
-                 linetype = "solid")
+                 linetype = "solid"),
+  tile = list(alpha = 1, #DON'T WEAKEN CONTRAST AGAINST BACKGROUND
+              height = 0.85, #TO AVOID SIMULTANEOUS CONTRAST ILLUSION CAUSED BY COMPARING NEIGHBORING COLORS RELATIVELY TO EACH OTHER RATHER THAN TO AN IMMEDIATE ABSOLUTE. THIS CAUSES BLEEDTHROUGH OF THE BACKGROUND BETWEEN TILES.
+              width = 0.85)
 )
 
 
@@ -118,19 +122,59 @@ geom_plus_defaults = list(
 #' Maps inputs to a base ggplot geom (e.g., geom_point or geom_line) but provides default values more likely to adhere to best practices around usability, design aesthetics, and accessibility.
 #'
 #' @param geom The name of the geom being drawn. Corresponds to the portion of the geom_ function after the _, e.g., "point" for geom_point, "line" for geom_line, etc. Must be a length one character string, and must match an implemented geom. See names(geom_plus_defaults) for a list of these. Required input.
-#' #' @param silence_warnings `geom_plus()` triggers some checks for aspects of good graph design and, if any of these checks fail, a warning is triggered to direct the user towards better practices. Set this parameter to `FALSE` to silence these warnings.
 #' @param ... Other arguments to be passed along to the geom_ function being called.
+#' @param include_theme Should a call to `theme_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
+#' @param include_gridlines Should a call to `gridlines_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
+#' @param include_xscale_plus Should a call to `scale_x_continuous_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
+#' @param include_yscale_plus Should a call to `scale_y_continuous_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
+#' @param include_fillscale_plus Should a call to `scale_fill_continuous_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
+#' @param include_colorscale_plus Should a call to `scale_color_continuous_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
+#' @param new_x_title A string to use for the graph's x axis title. Defaults to `NULL` and will be ignored unless a length-1 string.
+#' @param new_y_title A string to use for the graph's y axis title. Defaults to `NULL` and will be ignored unless a length-1 string.
+#' #' @param new_fill_title A string to use for the graph's fill legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
+#' @param new_color_title A string to use for the graph's color legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
+#' @param new_size_title A string to use for the graph's size legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
+#' @param new_shape_title A string to use for the graph's shape legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
+#' @param new_alpha_title A string to use for the graph's alpha legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
+#' @param silence_warnings `geom_plus()` triggers some checks for aspects of good graph design and, if any of these checks fail, a warning is triggered to direct the user towards better practices. Set this parameter to `FALSE` to silence these warnings.
 #' @return List with the class "geom_plus", which will trigger the geom_plus method in ggplot_add.
 #' @examples
 #' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point")
 #' @export
-geom_plus = function(geom, silence_warnings = FALSE, ...) {
+geom_plus = function(geom, ...,
+                    include_theme = FALSE,
+                    include_gridlines = FALSE,
+                    include_xscale_plus = FALSE,
+                    include_yscale_plus = FALSE,
+                    include_fillscale_plus = FALSE,
+                    include_colorscale_plus = FALSE,
+                    new_x_title = NULL,
+                    new_y_title = NULL,
+                    new_color_title = NULL,
+                    new_fill_title = NULL,
+                    new_size_title = NULL,
+                    new_shape_title = NULL,
+                    new_alpha_title = NULL,
+                    silence_warnings = FALSE) {
   if(is.null(geom)) { stop("A geom must be specified!") } #MUST SPECIFY A GEOM
   if(!geom %in% names(geom_plus_defaults)) { stop("The geom you've specified either doesn't exist or hasn't been implemented yet. Please double-check your code for typos. Note that this function only needs the part following the _ in the geom's name. For a complete list of implemented geoms, run names(geom_plus_defaults). ") }
 
   structure(
     list(geom = geom,
+         include_theme = include_theme,
          silence_warnings = silence_warnings,
+         include_gridlines = include_gridlines,
+         include_xscale_plus = include_xscale_plus,
+         include_yscale_plus = include_yscale_plus,
+         include_fillscale_plus = include_fillscale_plus,
+         include_colorscale_plus = include_colorscale_plus,
+         new_x_title = new_x_title,
+         new_y_title = new_y_title,
+         new_fill_title = new_fill_title,
+         new_color_title = new_color_title,
+         new_size_title = new_size_title,
+         new_shape_title = new_shape_title,
+         new_alpha_title = new_alpha_title,
          user_args = list(...)),
     class = "geom_plus"
   )
@@ -152,6 +196,19 @@ ggplot_add.geom_plus = function(object, plot, name) {
   user_args = object$user_args #LOCALLY PROVIDED USER ARGUMENTS.
   geom_name = object$geom #UNPACK THE GEOM CHOSEN
   silence_warnings = object$silence_warnings #UNPACK USER DESIRES FOR WARNINGS.
+  include_theme = object$include_theme #UNPACK USER DESIRES FOR THEME.
+  include_gridlines = object$include_gridlines #UNPACK USER DESIRES AROUND GRIDLINES.
+  include_xscale_plus = object$include_xscale_plus #UNPACK USER DESIRES AROUND X SCALE ADJUSTMENT.
+  include_yscale_plus = object$include_yscale_plus #UNPACK USER DESIRES AROUND Y SCALE ADJUSTMENT.
+  include_fillscale_plus = object$include_fillscale_plus #UNPACK USER DESIRES AROUND FILL SCALE ADJUSTMENT.
+  include_colorscale_plus = object$include_colorscale_plus #UNPACK USER DESIRES AROUND COLOR SCALE ADJUSTMENT.
+  new_x_title = object$new_x_title
+  new_y_title = object$new_y_title
+  new_fill_title = object$new_fill_title
+  new_color_title = object$new_color_title
+  new_size_title = object$new_size_title
+  new_shape_title = object$new_shape_title
+  new_alpha_title = object$new_alpha_title
 
   #IF THE USER PROVIDED LOCAL MAPPINGS, WE GRAB THOSE HERE.
   aes_local = NULL #STORAGE OBJ.
@@ -267,6 +324,70 @@ ggplot_add.geom_plus = function(object, plot, name) {
   } else {
     plot = plot + layer + ggplot2::scale_shape_manual(values = shape_pal)
   }
+
+
+  ##IN THE INTERESTS OF TRYING TO BUNDLE AS MUCH GGPLOT_PLUS FUNCTIONALITY INTO THE GEOM_PLUS() FUNCTION AS WE CAN, WE'RE INCLUDING TOGGLES THAT WILL JUST APPLY SOME OF THE DEFAULT FUNCTIONS AUTOMATICALLY UNLESS TOGGLED OFF.
+  if(include_theme == TRUE) {
+    plot = plot + theme_plus() #INCLUDE A VANILLA theme_plus() CALL IF THIS IS TRUE. OTHERWISE OMIT.
+  }
+  if(include_gridlines == TRUE) {
+    plot = plot + gridlines_plus() #INCLUDE A VANILLA gridlines_plus() CALL IF THIS IS TRUE. OTHERWISE OMIT.
+  }
+  if(include_xscale_plus == TRUE) {
+    plot = plot + scale_x_continuous_plus() #INCLUDE A VANILLA scale_x_continuous_plus() CALL IF THIS IS TRUE. OTHERWISE OMIT.
+  }
+  if(include_yscale_plus == TRUE) {
+    plot = plot + scale_y_continuous_plus() #INCLUDE A VANILLA scale_y_continuous_plus() CALL IF THIS IS TRUE. OTHERWISE OMIT.
+  }
+  if(include_fillscale_plus == TRUE) {
+    plot = plot + scale_fill_continuous_plus() #INCLUDE A VANILLA scale_fill_continuous_plus() CALL IF THIS IS TRUE. OTHERWISE OMIT.
+  }
+  if(include_colorscale_plus == TRUE) {
+    plot = plot + scale_color_continuous_plus() #INCLUDE A VANILLA scale_color_continuous_plus() CALL IF THIS IS TRUE. OTHERWISE OMIT.
+  }
+
+  #FOR SHORTCUTS TO RENAMING AXIS/LEGEND TITLES:
+  if(exists("new_x_title") &&
+     is.character(new_x_title) &&
+     length(new_x_title) == 1) {
+    plot = plot + xlab(new_x_title)
+  }
+  if(exists("new_y_title") &&
+     is.character(new_y_title) &&
+     length(new_y_title) == 1) {
+    plot = plot + ylab(new_y_title)
+  }
+  if(exists("new_fill_title") &&
+     is.character(new_fill_title) &&
+     length(new_fill_title) == 1) {
+    plot = plot + labs(fill = new_fill_title)
+  }
+  if(exists("new_color_title") &&
+     is.character(new_color_title) &&
+     length(new_color_title) == 1) {
+    plot = plot + labs(colour = new_color_title)
+  }
+  if(exists("new_size_title") &&
+     is.character(new_size_title) &&
+     length(new_size_title) == 1) {
+    plot = plot + labs(size = new_size_title)
+  }
+  if(exists("new_shape_title") &&
+     is.character(new_shape_title) &&
+     length(new_shape_title) == 1) {
+    plot = plot + labs(shape = new_shape_title)
+  }
+  if(exists("new_alpha_title") &&
+     is.character(new_alpha_title) &&
+     length(new_alpha_title) == 1) {
+    plot = plot + labs(alpha = new_alpha_title)
+  }
+
+  # #IF A BAR OR COLUMN PLOT IS BEING USED, WE SHOULD ELIMINATE EXPANSION IN THE PROPER DIRECTION TO KEEP THE BOTTOMS OF THE BARS NEAR TO THE AXIS LINE.
+  # if(geom_name %in% c('bar')) {
+  #   plot = plot + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+  # }
+
   #ONLY APPLY WARNINGS RELATED CLASS IF USER WANTS WARNINGS ON.
   if(silence_warnings == FALSE) {
   class(plot) = c("geom_plus_warnings", class(plot))
@@ -366,42 +487,47 @@ ggplot_build.geom_plus_warnings = function(plot) {
     bad_scales = c() #STORAGE OBJS.
     bad_vars = c()
 
-    #GO THRU ALL THE MAPPINGS IN THE PLOT.
-    for(m in 1:length(built$plot$mapping)) {
+    #GO THRU ALL LAYERS IN THE PLOT:
+    for(l in 1:length(built$plot$layers)) {
+    #GO THRU ALL THE MAPPINGS IN THE CURRENT LAYER
+    for(m in 1:length(built$plot$layers[[l]]$mapping)) {
 
-      aes_name = names(built$plot$mapping)[m] #WHICH AESTHETIC ARE WE ON?
+      curr_aes = built$plot$layers[[l]]$mapping[m]
+
+      aes_name = names(curr_aes) #WHICH AESTHETIC ARE WE ON?
 
       #WHAT VARIABLE WAS THAT MAPPED TO? (MUST CLEAN OF EXPRESSION GUNK)
-      var_dirty = rlang::as_label(built$plot$mapping[[m]])
+      var_dirty = rlang::as_label(curr_aes[[1]]) #GET THE NAME OF WHATEVER VARIABLE IS MAPPED TO THIS AESTHETIC.
       default_var = sub(".*\\(([^()]+)\\).*", "\\1", var_dirty)
 
       #USERS CAN SPECIFY CUSTOM NAMES 3 WAYS--VIA LABS(), VIA *LAB(), AND VIA SCALE_*(). THIS CHECKS FOR THE FIRST TWO. ALSO NEEDS CLEANING.
       label_from_labs = built$plot$labels[[aes_name]]
-      label_clean = if (length(label_from_labs) > 0) {
-        sub(".*\\(([^()]+)\\).*", "\\1", label_from_labs)
+      if (length(label_from_labs) > 0) {
+        label_clean = sub(".*\\(([^()]+)\\).*", "\\1", label_from_labs)
       } else {
-        NULL #WILL NULL OUT IF THERE'S NOTHING HERE.
+        label_clean = NULL #WILL NULL OUT IF THERE'S NOTHING HERE.
       }
 
       #IF THE USER USED A SCALE FUNCTION INSTEAD, LABEL_CLEAN WILL HAVE FOUND JUST THE DEFAULT VARIABLE NAME HERE, SO WE NULL IT BACK OUT TO CONTINUE.
-      if(label_clean == default_var) {label_clean = NULL }
+      if(label_clean == default_var) { label_clean = NULL }
 
       #NOW, WE CHECK TO SEE IF THEY'VE SPECIFIED IT VIA SCALES.
       if(is.null(label_clean)) {
         scale_obj = built$plot$scales$get_scales(aes_name)
-        label_clean = if (!is.null(scale_obj$name) &&
+        if (!is.null(scale_obj$name) &&
                           !inherits(scale_obj$name, "waiver")) {
-          sub(".*\\(([^()]+)\\).*", "\\1", scale_obj$name)
+         label_clean = sub(".*\\(([^()]+)\\).*", "\\1", scale_obj$name)
         } else {
-          NULL #WILL AGAIN NULL OUT IF WE FAIL TO FIND ONE.
+         label_clean = NULL #WILL AGAIN NULL OUT IF WE FAIL TO FIND ONE.
         }
       }
 
       #IF THERE IS NO USER PROVIDED NAME, OR THE CLEANED SCALE NAME MATCHES THE CLEANED COLUMN NAME OF THE ORIGINAL DATA, STORE THIS AS A VIOLATION.
       if(is.null(label_clean) || label_clean == default_var) {
-        bad_scales = c(bad_scales, aes_name)
-        bad_vars = c(bad_vars, default_var)
+        bad_scales = unique(c(bad_scales, aes_name)) #WRAP IN UNIQUE TO PREVENT CATCHING THIS MULTIPLE TIMES.
+        bad_vars = unique(c(bad_vars, default_var))
       }
+     }
     }
 
     #TRIGGER THE WARNING IF ANY SCALES VIOLATE.

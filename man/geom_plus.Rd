@@ -4,12 +4,56 @@
 \alias{geom_plus}
 \title{Generates Base Geoms With Elevated Defaults}
 \usage{
-geom_plus(geom, ...)
+geom_plus(
+  geom,
+  ...,
+  include_theme = FALSE,
+  include_gridlines = FALSE,
+  include_xscale_plus = FALSE,
+  include_yscale_plus = FALSE,
+  include_fillscale_plus = FALSE,
+  include_colorscale_plus = FALSE,
+  new_x_title = NULL,
+  new_y_title = NULL,
+  new_color_title = NULL,
+  new_fill_title = NULL,
+  new_size_title = NULL,
+  new_shape_title = NULL,
+  new_alpha_title = NULL,
+  silence_warnings = FALSE
+)
 }
 \arguments{
 \item{geom}{The name of the geom being drawn. Corresponds to the portion of the geom_ function after the _, e.g., "point" for geom_point, "line" for geom_line, etc. Must be a length one character string, and must match an implemented geom. See names(geom_plus_defaults) for a list of these. Required input.}
 
 \item{...}{Other arguments to be passed along to the geom_ function being called.}
+
+\item{include_theme}{Should a call to \code{theme_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
+
+\item{include_gridlines}{Should a call to \code{gridlines_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
+
+\item{include_xscale_plus}{Should a call to \code{scale_x_continuous_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
+
+\item{include_yscale_plus}{Should a call to \code{scale_y_continuous_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
+
+\item{include_fillscale_plus}{Should a call to \code{scale_fill_continuous_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
+
+\item{include_colorscale_plus}{Should a call to \code{scale_color_continuous_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
+
+\item{new_x_title}{A string to use for the graph's x axis title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
+
+\item{new_y_title}{A string to use for the graph's y axis title. Defaults to \code{NULL} and will be ignored unless a length-1 string.
+#' @param new_fill_title A string to use for the graph's fill legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
+
+\item{new_color_title}{A string to use for the graph's color legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
+
+\item{new_size_title}{A string to use for the graph's size legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
+
+\item{new_shape_title}{A string to use for the graph's shape legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
+
+\item{new_alpha_title}{A string to use for the graph's alpha legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
+
+\item{silence_warnings}{\code{geom_plus()} triggers some checks for aspects of good graph design and, if any of these checks fail, a warning is triggered to direct the user towards better practices. Set this parameter to \code{FALSE} to silence these warnings.}
 }
 \value{
 List with the class "geom_plus", which will trigger the geom_plus method in ggplot_add.

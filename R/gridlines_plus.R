@@ -33,21 +33,49 @@ gridlines_plus = function(color = "gray90",
 #' @export
 ggplot_add.gridlines_plus = function(object, plot, name) {
 
-  #STEP 1: GET THE MAPPING FOR THE PROVIDED PLOT.
-  mapping = plot$mapping
+  #ASSUME BOTH X AND Y ARE NOT CONTINUOUS TO START.
+  x_is_cont = FALSE
+  y_is_cont = FALSE
 
-  #STEP 2: GET CLASSES OF VARIABLES FOR X AND Y AXES.
-  x_var = if (!is.null(mapping$x)) rlang::as_name(mapping$x) else NULL #RETURN NULL IN CASE THIS IS A GRAPH WITH ONLY ONE MAPPED AESTHETIC, LIKE A HISTOGRAM
-  y_var = if (!is.null(mapping$y)) rlang::as_name(mapping$y) else NULL
+  #BECAUSE USERS COULD SPECIFY X AND Y AESTHETICS LOCALLY AND EVEN PROVIDE DATA LOCALLY, WE NEED TO CYCLE THRU THE LAYERS TO FIGURE OUT IF ANY X/Y AESTHETIC IS MAPPED TO A CONTINUOUS VARIABLE AT ANY POINT.
+  for(layer in plot$layers) {
+    #IF THIS LAYER IS NOT INHERITING DATA FROM GLOBAL, STICK W/ THE LOCAL DATA. OTHERWISE, GO TO GLOBAL.
+    if (!inherits(layer$data, "waiver")) {
+      layer_data = layer$data
+    } else {
+      layer_data = plot$data
+    }
 
-  #STEP 3: DETERMINE IF ANY VARIABLE IS MAPPED, IF THAT VARIABLE IS IN THE DATA, AND IF IT'S NUMERIC.
-  x_is_cont = !is.null(x_var) && x_var %in% names(plot$data) && is.numeric(plot$data[[x_var]])
-  y_is_cont = !is.null(y_var) && y_var %in% names(plot$data) && is.numeric(plot$data[[y_var]])
+    #CUT OUT THE SPECIFIC MAPPINGS FOR X AND Y
+    x_map = layer$mapping[names(layer$mapping) == "x"]
+    y_map = layer$mapping[names(layer$mapping) == "y"]
+
+    #TRY TO GRAB THE VARIABLE LINKED TO EACH MAPPING, ASSUMING THERE IS ONE (THERE MAY NOT BE)
+    if (!is.null(x_map)) {
+      x_var = rlang::as_label(x_map$x)
+    } else {
+      x_var = NULL
+    }
+    if (!is.null(y_map)) {
+      y_var = rlang::as_label(y_map$y)
+    } else {
+      y_var = NULL
+    }
+
+    #NOW, CHECK--WAS THERE A VARIABLE? IS THAT VARIABLE IN THIS LAYER? IS IT NUMERIC? WAS A PREVIOUS X/Y VARIABLE IN A PREVIOUS LAYER NUMERIC? UPDATE X/Y_IS_CONT ACCORDINGLY.
+    if (!is.null(x_var) && x_var %in% names(layer_data)) {
+      x_is_cont = x_is_cont || is.numeric(layer_data[[x_var]])
+    }
+
+    if (!is.null(y_var) && y_var %in% names(layer_data)) {
+      y_is_cont = y_is_cont || is.numeric(layer_data[[y_var]])
+    }
+  }
 
   #STEP 4: IN SOME GRAPH TYPES, A DERIVED NUMERIC AXIS MAY GET BUILT, SUCH AS A HISTOGRAM OR DENSITY PLOT. LET'S CHECK FOR THOSE.
   if (!x_is_cont || !y_is_cont) {
 
-    built = suppressMessages(ggplot2::ggplot_build(plot)) #FAKE-BUILD THE PLOT.
+    built = suppressMessages(ggplot2:::ggplot_build.ggplot(plot)) #FAKE-BUILD THE PLOT.
 
     #LOOK AT THE CLASSES OF ITS SCALES
     x_scales = built$layout$panel_scales_x
