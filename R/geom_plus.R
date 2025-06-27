@@ -388,10 +388,8 @@ ggplot_add.geom_plus = function(object, plot, name) {
   #   plot = plot + scale_y_continuous(expand = expansion(mult = c(0, 0)))
   # }
 
-  #ONLY APPLY WARNINGS RELATED CLASS IF USER WANTS WARNINGS ON.
-  if(silence_warnings == FALSE) {
   class(plot) = c("geom_plus_warnings", class(plot))
-  }
+  plot$silence_warnings = silence_warnings #CARRY THIS THRU ON PLOT
   plot
 
 }
@@ -409,9 +407,46 @@ ggplot_build.geom_plus_warnings = function(plot) {
 
     class(plot) = setdiff(class(plot), "geom_plus_warnings") #REMOVE THE TRIGGERING CLASS TO PREVENT RECURSION.
 
-    built = ggplot2:::ggplot_build.ggplot(plot) #BYPASSES MY METHOD SO IT DOESN'T JUST CALL RECURSIVELY, WHICH IT WOULD BECAUSE THE CLASS CHANGE ABOVE WOULDN'T HAVE TAKEN EFFECT YET.
+    built = ggplot2:::ggplot_build.ggplot(plot) #THEN BUILD THE PLOT. BYPASSES MY METHOD SO IT DOESN'T JUST CALL RECURSIVELY, WHICH IT WOULD BECAUSE THE CLASS CHANGE ABOVE WOULDN'T HAVE TAKEN EFFECT YET.
+
+    #HERE, WE PAUSE TO ASK--IS ALPHA MAPPED TO A CONSTANT < 1? IS THERE A POTENTIAL LEGEND? IF SO, WE SHOULD OVERRIDE THE LEGEND'S ALPHA TO BE 1 FOR EASIER READING.
+    global_aes = names(built$plot$mapping) #GLOBAL MAPPINGS
+    layer_aes = unlist(lapply(built$plot$layers, function(l) names(l$mapping))) #LOCAL MAPPINGS
+    present_aes = unique(c(global_aes, layer_aes)) #ALL MAPPINGS
+
+    aesthetics_to_override = intersect(present_aes,
+                                       c("colour", "fill", "shape", "linetype", "size")) #THE MAPPINGS MOST LIKELY TO HAVE LEGENDS OF CONCERN HERE.
+
+    #FOR EACH POTENTIAL GUIDE, BUILD A LIST OF AESTHETICS OVERRIDES, INCLUDING AN ALPHA OF 1 AND, SO LONG AS IT'S NOT A SIZE LEGEND, SIZE.
+    guide_overrides = lapply(aesthetics_to_override, function(aes) {
+      override = list(alpha = 1)
+      if (aes != "size") override$size = 5
+      guide_legend(override.aes = override)
+    })
+    names(guide_overrides) = aesthetics_to_override
+
+    for(layer_data in built$data) { #GO LAYER BY LAYER.
+      if(any(c("alpha", "size") %in% names(layer_data))) { #IF THIS LAYER'S DATA CONTAINS AN ALPHA OR SIZE COLUMN...
+        unique_alpha = unique(layer_data$alpha) #DETERMINE IF IT'S A CONSTANT.
+        unique_size = unique(layer_data$size)
+
+        if((length(unique_alpha) == 1 &&
+            !is.na(unique_alpha) &&
+            is.numeric(unique_alpha) &&
+            unique_alpha < 1 ) ||
+           (length(unique_size) == 1 && unique_size < 5)) { #IF IT IS AND IT'S LESS THAN 1 OR THE DEFAULT SIZE...
+
+          #ATTEMPT TO OVERRIDE THE ALPHA AND SIZE VALUES OF JUST THE LEGEND.
+          rebuild = built$plot + do.call(guides, guide_overrides)
+          built = ggplot2:::ggplot_build.ggplot(rebuild) #REBUILD FROM HERE.
+          break #NO NEED TO DO THIS MORE THAN ONCE PER LAYER...
+        }
+       }
+      }
 
     all_layers = built$plot$layers
+
+    if(plot$silence_warnings == FALSE) {
 
   #WARNING CHECKS #1--SEE IF USERS ARE SPECIFYING COLOR/FILL AS A MAPPING. IF SO, SEE IF IT'S FOR A DISCRETE VARIABLE. IF SO, SEE HOW MANY LEVELS ARE BEING GENERATED. IF IT'S MORE THAN X, TRIGGER A WARNING ABOUT POTENTIAL LOSS OF CONTRAST.
   #FIRST, CHECK TO SEE IF FILL AND/OR COLOR ARE MAPPED IN ANY OF THE PLOT'S LAYERS.
@@ -539,6 +574,7 @@ ggplot_build.geom_plus_warnings = function(plot) {
       warning(warning_text,
               call. = FALSE)
 
+     }
     }
 
     return(built)

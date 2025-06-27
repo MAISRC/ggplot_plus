@@ -43,6 +43,7 @@ ggplot_add.axis_switcher = function(object, plot, name = "switcher") {
 #' @return A ggplot with the class of "switched" to trigger the ggplot_gtable method of the same name and also with the `y_axis_switch_location` attribute set by the call to `y_axis_title_plus()`.
 #' @export
 ggplot_build.switcher = function(plot) {
+
   class(plot) = setdiff(class(plot), "switcher")
   output = suppressMessages(ggplot2::ggplot_build(plot))
   class(output) = c("switched", class(output))
@@ -63,8 +64,9 @@ ggplot_gtable.switched = function(plot) {
   loc = ifelse(!is.null(plot$plot$y_axis_switch_location),
                 plot$plot$y_axis_switch_location,
                 "top") #IF USER DIDN'T SPECIFY DIFFERENT, MOVE THE Y AXIS TITLE TO THE TOP.
-  plot = switch_axis_label(plot$plot, location = loc)
-  plot + ggplot2::theme(axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 0))) #ADD IN A THEME TO SWITCH HOW THE MARGIN IS ADJUSTED.
+  class(plot) = setdiff(class(plot), "switched") #PREVENT RECURSION
+  doneplot = switch_axis_label(plot, location = loc)
+  doneplot + ggplot2::theme(axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 0))) #ADD IN A THEME TO SWITCH HOW THE MARGIN IS ADJUSTED.
 }
 
 #****
@@ -93,7 +95,7 @@ element_to_gpar = function(el) {
 #' This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using `ggplot2`'s default styling tools. This is the main function used by `y_axis_title_plus()` to ultimately accomplish its purpose.
 #' This function is used internally by the `ggplot_gtable.switched()` method and is not intended for separate use.
 #'
-#'#' @param p A ggplot object whose y axis title will be moved.
+#'#' @param p A ggplot object built using ggplot_build whose y axis title will be moved.
 #' @param location A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to `"top"`. Potentially overridden by whatever is specified to `y_axis_title_plus()`'s parameter of the same name when it's called.
 #' @return A ggplot object compatible with `ggplot2`'s + command structure.
 #' @export
@@ -102,7 +104,7 @@ switch_axis_label = function(p, location = "top") {
   #IF A USER USES coord_flip(), I.E., THE WORST GGPLOT2 FUNCTION EVER LOL, THEN WE *REALLY* NEED TO GRAB THE X AXIS TITLE INSTEAD.
   #THE p$coordinates OBJECT WILL HAVE CLASS "CoordFlip" IN THAT INSTANCE.
 
-  if(inherits(p$coordinates, "CoordFlip")) {
+  if(inherits(p$plot$coordinates, "CoordFlip")) {
     real_scale = "x"
     title_element = "axis.title.x"
   } else {
@@ -110,7 +112,7 @@ switch_axis_label = function(p, location = "top") {
     title_element = "axis.title.y"
   }
 
-  y_scale = p$scales$get_scales(real_scale)
+  y_scale = p$plot$scales$get_scales(real_scale)
 
   #DEFAULT TO THE SCALE LABEL, IF ANY, AS THIS WILL BE WHAT THE USER HAS HOPEFULLY SET.
   if (!is.null(y_scale)) {
@@ -123,7 +125,7 @@ switch_axis_label = function(p, location = "top") {
   if(!exists("lab")) { #WE FAILED ABOVE, SO WE ENTER HERE IF SO.
 
   #OTHERWISE, FALL BACK TO THE PLOT LABEL IF ANY, AS THIS WILL GENERALLY BE WHATEVER THE DEFAULT VALUE SET BY GGPLOT WAS.
-  label = p$labels[[real_scale]]
+  label = p$plot$labels[[real_scale]]
   if (!is.null(label) && !inherits(label, "waiver") && nzchar(label)) {
     lab = label
   } else {
@@ -135,30 +137,30 @@ switch_axis_label = function(p, location = "top") {
   # #ALL THEME-RELATED ADJUSTMENTS MUST BE PORTED OVER MANUALLY. HERE, WE PORT OVER SIZE, TAKING EITHER A CUSTOM SIZE FROM THE PROVIDED THEME, IF ANY, OR ELSE THE SIZE FROM THE DEFAULT THEME. A SIMILAR MODEL COULD BE USED FOR CARRYING OVER THINGS LIKE FONT COLOR AND STYLE.
 
   #IF YOU'VE SPECIFIED A NEW Y SCALE TITLE VALUE VIA A SCALE_Y_ FUNCTION, THIS NUKES IT.
-  if(!is.null(p$scales$get_scales(real_scale))) {
-    y = which(unlist(lapply(p$scales$scales, function(x) { real_scale %in% x$aesthetics } )))
-    p$scales$scales[[y]]$name = NULL
+  if(!is.null(p$plot$scales$get_scales(real_scale))) {
+    y = which(unlist(lapply(p$plot$scales$scales, function(x) { real_scale %in% x$aesthetics } )))
+    p$plot$scales$scales[[y]]$name = NULL
   }
 
   #THIS ALSO NUKES THE DEFAULT Y AXIS TITLE STRING.
   if(real_scale == "y") {
-  p = p + ggplot2::labs(y = NULL)
+    p$plot = p$plot + ggplot2::labs(y = NULL)
   } else {
-    p = p + ggplot2::labs(x = NULL)
+    p$plot = p$plot + ggplot2::labs(x = NULL)
   }
 
   #IF A USER IS PLOTTING ON THE BOTTOM INSTEAD OF THE TOP, LET'S AUTO-ADJUST THE VERTICAL ALIGNMENT:
   if(location == "bottom") {
-    p = p + theme(axis.title.y = element_text(vjust = 0.75)) #THE DEFAULT OF VJUST = 0.25 WORKS GREAT FOR THE TOP POSITION ALREADY.
+    p$plot = p$plot + theme(axis.title.y = element_text(vjust = 0.75)) #THE DEFAULT OF VJUST = 0.25 WORKS GREAT FOR THE TOP POSITION ALREADY.
   } else {
-    p = p + theme(axis.title.y = element_text(vjust = 0.25))
+    p$plot = p$plot + theme(axis.title.y = element_text(vjust = 0.25))
   }
 
   #NOW, WE CONVERT THE GGPLOT WE ALREADY HAVE INTO A GTABLE.
-  gt = ggplot2::ggplot_gtable(ggplot2::ggplot_build(p))
+  gt = ggplot2::ggplot_gtable(p)
 
     #HERE, WE ATTEMPT TO PORT OVER ANY THEME-RELATED ADJUSTMENTS TO THE APPEARANCE OF THE Y AXIS TITLE.
-  element = ggplot2::calc_element(title_element, p$theme) #GRAB THE ELEMENT'S CURRENT THEME CHARACTERISTICS
+  element = ggplot2::calc_element(title_element, p$plot$theme) #GRAB THE ELEMENT'S CURRENT THEME CHARACTERISTICS
 
   #USUALLY, WE TARGET ROW [8,6] BUT CAN INSTEAD TARGET [11,6] IF THE USER WANTS AND WE LACK A BOTTOM X AXIS LABEL ROW.
   target_row = ifelse(location == "bottom", 11, 8)

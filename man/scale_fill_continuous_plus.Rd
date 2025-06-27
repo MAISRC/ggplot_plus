@@ -4,7 +4,7 @@
 \alias{scale_fill_continuous_plus}
 \title{Find Pretty Breaks for a Continuous Fill axis in ggplot While Ensuring End Labels}
 \usage{
-scale_fill_continuous_plus(..., n = 5, buffer_frac = 0.05)
+scale_fill_continuous_plus(..., n = 5, buffer_frac = 0.05, thin_labels = FALSE)
 }
 \arguments{
 \item{...}{Standard inputs normally given to \code{scale_fill_continuous()}. Must not include \code{breaks} or \code{limits} or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.}
@@ -12,6 +12,8 @@ scale_fill_continuous_plus(..., n = 5, buffer_frac = 0.05)
 \item{n}{A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to \code{cont_breaks_plus()} internally.}
 
 \item{buffer_frac}{A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5\%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to \code{cont_breaks_plus()} internally.}
+
+\item{thin_labels}{Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "overlabeled" in a way that might contribute to excess cognitive load.}
 }
 \value{
 Returns a list of class \code{"scale_fill_cont_plus"}, which will trigger the \code{ggplot_add} method by the same name to trigger the axis breaks reconfiguration.

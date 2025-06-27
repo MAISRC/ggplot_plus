@@ -61,13 +61,15 @@ cont_breaks_plus = function(data,
 #' @param ... Standard inputs normally given to `scale_x_continuous()`. Must not include `breaks` or `limits` or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.
 #' @param n A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
 #' @param buffer_frac A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
+#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "overlabeled" in a way that might contribute to excess cognitive load.
 #' @return Returns a list of class `"scale_x_cont_plus"`, which will trigger the `ggplot_add` method by the same name to trigger the axis breaks reconfiguration.
 #' @examples
 #' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + scale_x_continuous_plus()
 #' @export
 scale_x_continuous_plus = function(...,
                                  n = 5,
-                                 buffer_frac = 0.05) {
+                                 buffer_frac = 0.05,
+                                 thin_labels = FALSE) {
   extra = list(...)
 
   if(!is.null(extra) && length(extra) > 0 && is.character(extra[[1]]) && is.null(names(extra[[1]]))) {
@@ -84,6 +86,7 @@ scale_x_continuous_plus = function(...,
 
   structure(list(n = n,
                  buffer_frac = buffer_frac,
+                 thin_labels = thin_labels,
                  extra_args = extra),
             class = "scale_x_cont_plus")
 }
@@ -95,13 +98,15 @@ scale_x_continuous_plus = function(...,
 #' @param ... Standard inputs normally given to `scale_y_continuous()`. Must not include `breaks` or `limits` or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.
 #' @param n A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
 #' @param buffer_frac A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
+#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "overlabeled" in a way that might contribute to excess cognitive load.
 #' @return Returns a list of class `"scale_y_cont_plus"`, which will trigger the `ggplot_add` method by the same name to trigger the axis breaks reconfiguration.
 #' @examples
 #' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + scale_y_continuous_plus()
 #' @export
 scale_y_continuous_plus = function(...,
                                  n = 5,
-                                 buffer_frac = 0.05) {
+                                 buffer_frac = 0.05,
+                                 thin_labels = FALSE) {
   extra = list(...)
 
   if(!is.null(extra) && length(extra) > 0 && is.character(extra[[1]]) && is.null(names(extra[[1]]))) {
@@ -118,6 +123,7 @@ scale_y_continuous_plus = function(...,
 
   structure(list(n = n,
                  buffer_frac = buffer_frac,
+                 thin_labels = thin_labels,
                  extra_args = extra),
             class = "scale_y_cont_plus")
 }
@@ -129,13 +135,15 @@ scale_y_continuous_plus = function(...,
 #' @param ... Standard inputs normally given to `scale_fill_continuous()`. Must not include `breaks` or `limits` or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.
 #' @param n A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
 #' @param buffer_frac A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
+#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "overlabeled" in a way that might contribute to excess cognitive load.
 #' @return Returns a list of class `"scale_fill_cont_plus"`, which will trigger the `ggplot_add` method by the same name to trigger the axis breaks reconfiguration.
 #' @examples
 #' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + scale_fill_continuous_plus()
 #' @export
 scale_fill_continuous_plus = function(...,
                                    n = 5,
-                                   buffer_frac = 0.05) {
+                                   buffer_frac = 0.05,
+                                   thin_labels = FALSE) {
   extra = list(...)
 
   if(!is.null(extra) && length(extra) > 0 && is.character(extra[[1]]) && is.null(names(extra[[1]]))) {
@@ -152,6 +160,7 @@ scale_fill_continuous_plus = function(...,
 
   structure(list(n = n,
                  buffer_frac = buffer_frac,
+                 thin_labels = thin_labels,
                  extra_args = extra),
             class = "scale_fill_cont_plus")
 }
@@ -163,13 +172,15 @@ scale_fill_continuous_plus = function(...,
 #' @param ... Standard inputs normally given to `scale_color_continuous()`. Must not include `breaks` or `limits` or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.
 #' @param n A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
 #' @param buffer_frac A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
+#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "overlabeled" in a way that might contribute to excess cognitive load.
 #' @return Returns a list of class `"scale_color_cont_plus"`, which will trigger the `ggplot_add` method by the same name to trigger the axis breaks reconfiguration.
 #' @examples
 #' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + scale_color_continuous_plus()
 #' @export
 scale_color_continuous_plus = function(...,
                                       n = 5,
-                                      buffer_frac = 0.05) {
+                                      buffer_frac = 0.05,
+                                      thin_labels = FALSE) {
   extra = list(...)
 
   if(!is.null(extra) && length(extra) > 0 && is.character(extra[[1]]) && is.null(names(extra[[1]]))) {
@@ -186,6 +197,7 @@ scale_color_continuous_plus = function(...,
 
   structure(list(n = n,
                      buffer_frac = buffer_frac,
+                     thin_labels = thin_labels,
                      extra_args = extra),
                 class = "scale_color_cont_plus")
 }
@@ -259,6 +271,13 @@ ggplot_add.scale_x_cont_plus = function(object, plot, name) {
   #IF ANY ARE BINNED, SUPPRESS THE LIMITS
   breaks_limits = list(breaks = res$breaks, limits = res$limits)
   if(is.binned) { breaks_limits = list(breaks = res$breaks) }
+
+  #IF THE USER HAS REQUESTED THINNED AXIS LABELS, WE SET THOSE TOO BY TAKING THE BREAKS AND REPLACING EVERY EVEN-INDEXED ONE WITH AN EMPTY STRING.
+  if(object$thin_labels == TRUE) {
+    tmp = res$breaks
+    tmp[seq(from = 2, to = length(tmp), by = 2)] = ""
+    breaks_limits$labels = tmp
+  }
 
   plot + do.call(scale_x_continuous,
                c(breaks_limits,
@@ -336,6 +355,13 @@ ggplot_add.scale_y_cont_plus = function(object, plot, name) {
   breaks_limits = list(breaks = res$breaks, limits = res$limits)
   if(is.binned) { breaks_limits = list(breaks = res$breaks) }
 
+  #IF THE USER HAS REQUESTED THINNED AXIS LABELS, WE SET THOSE TOO BY TAKING THE BREAKS AND REPLACING EVERY EVEN-INDEXED ONE WITH AN EMPTY STRING.
+  if(object$thin_labels == TRUE) {
+    tmp = res$breaks
+    tmp[seq(from = 2, to = length(tmp), by = 2)] = ""
+    breaks_limits$labels = tmp
+  }
+
   plot + do.call(scale_y_continuous,
                       c(breaks_limits,
                         object$extra_args)) #CALL SCALE_X_CONTINUOUS AS NORMAL EXCEPT OVERRIDE IN THE NEW BREAKS AND LIMITS.
@@ -411,6 +437,13 @@ ggplot_add.scale_fill_cont_plus = function(object, plot, name) {
   #IF ANY ARE BINNED, SUPPRESS THE LIMITS
   breaks_limits = list(breaks = res$breaks, limits = res$limits)
   if(is.binned) { breaks_limits = list(breaks = res$breaks) }
+
+  #IF THE USER HAS REQUESTED THINNED AXIS LABELS, WE SET THOSE TOO BY TAKING THE BREAKS AND REPLACING EVERY EVEN-INDEXED ONE WITH AN EMPTY STRING.
+  if(object$thin_labels == TRUE) {
+    tmp = res$breaks
+    tmp[seq(from = 2, to = length(tmp), by = 2)] = ""
+    breaks_limits$labels = tmp
+  }
 
   plot + do.call(scale_fill_continuous,
                  c(breaks_limits,
@@ -488,6 +521,13 @@ ggplot_add.scale_color_cont_plus = function(object, plot, name) {
   #IF ANY ARE BINNED, SUPPRESS THE LIMITS
   breaks_limits = list(breaks = res$breaks, limits = res$limits)
   if(is.binned) { breaks_limits = list(breaks = res$breaks) }
+
+  #IF THE USER HAS REQUESTED THINNED AXIS LABELS, WE SET THOSE TOO BY TAKING THE BREAKS AND REPLACING EVERY EVEN-INDEXED ONE WITH AN EMPTY STRING.
+  if(object$thin_labels == TRUE) {
+    tmp = res$breaks
+    tmp[seq(from = 2, to = length(tmp), by = 2)] = ""
+    breaks_limits$labels = tmp
+  }
 
   plot + do.call(scale_colour_continuous,
                  c(breaks_limits,
