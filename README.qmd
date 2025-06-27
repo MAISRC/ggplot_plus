@@ -627,8 +627,7 @@ ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
   geom_plus(geom = "point", 
-            mapping = aes(fill = Petal.Width), #<--MAP A CONTINUOUS VARIABLE.
-            alpha = 0.3) +
+            mapping = aes(fill = Petal.Width), alpha = 0.3) +
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus()

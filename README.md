@@ -1,7 +1,7 @@
 # README
 Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive
 Species Research Center
-2025-06-25
+2025-06-27
 
 ## Quick Start Guide
 
@@ -29,7 +29,7 @@ plot design with minimal effort.
 Just by loading `ggplot.plus`, you will switch your session’s default
 color palette to one that is more broadly accessible–there’s no need to
 call `palettes_plus()` to alter this palette unless you want to (see the
-“Colorblind-Friendly Palettes” section for details):
+“Accessible Color Palettes” section for details):
 
 ``` r
 #A BASIC GGPLOT SCATTERPLOT, EXCEPT USING ggplot.plus's DEFAULT COLOR PALETTE INSTEAD.
@@ -69,8 +69,8 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(color = Species)) + 
   theme_plus() + #<-OVERHAULS VISUAL THEME
-  scale_x_continuous_plus("Petal length (cm)") +
-  #OVERHAULS AXIS BREAKS AND LIMITS (FOR CONTINUOUS AXES ONLY!) 
+  scale_x_continuous_plus("Petal length (cm)",
+                          thin_labels = TRUE) + #<--OVERHAULS AXIS BREAKS AND LIMITS (FOR CONTINUOUS AXES ONLY!) 
   scale_y_continuous_plus("Sepal length (cm)") + #<--SAME FOR Y AXIS.
   yaxis_title_plus() + #<--RELOCATES AND RE-ORIENTS Y AXIS TITLE.
   gridlines_plus() + #<--ADDS THOUGHTFUL GRIDLINES, IF YOU *REALLY* WANT THEM.
@@ -328,7 +328,7 @@ meet accessibility, clarity, and design standards to bring it up to
 publication quality. Not everyone has the time, patience, or wherewithal
 to do that work, hence why we built the `ggplot.plus` package.
 
-## Colorblind-Friendly Palettes
+## Accessible Color Palettes
 
 We noted above that the default color palette used by `ggplot2` is not
 as accessible as it could be. Fortunately, the `viridis` package—bundled
@@ -806,10 +806,11 @@ you *cannot* manually set `breaks` or `limits`, since those are managed
 internally by the function. If you want to specify those yourself, use
 the base `scale_x_continuous()` instead.
 
-If the resulting labels feel a little too frequent, here’s a trick: You
-can suppress some of them by setting custom label text—for instance,
-removing every other label using empty strings (`""`) while keeping the
-tick marks in those spots:
+If the resulting labels feel a little too frequent, the package’s
+`scale_*continuous_plus()` functions contain a trick: You can set their
+`thin_labels` argument to `TRUE` to convert every other label (starting
+with the second) to an empty string (`""`) while retaining the tick
+marks:
 
 ``` r
 ggplot(iris,
@@ -818,8 +819,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) #<--SPECIFYING A VECTOR OF CUSTOM LABELS THAT INCLUDES EMPTY STRINGS FOR EVERY OTHER VALUE
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) #<--WILL CONVERT EVERY OTHER LABEL TO AN EMPTY STRING.
 ```
 
 ![](README_files/figure-commonmark/suppressing%20some%20labels-1.png)
@@ -836,8 +836,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") #<--ADDED Y EQUIVALENT.
 ```
 
@@ -870,8 +869,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() #<--ADD PLUS THEME TO OVERRIDE THE DEFAULT.
 ```
@@ -918,8 +916,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus(axis.line = element_line(linewidth = 0.75)) #<--WE CAN MAKE THE AXIS LINES A LITTLE THINNER IF WE WANT. DEFAULT = 1.2
 ```
@@ -937,8 +934,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus(legend_pos = FALSE) #<--ANY VALUE OTHER THAN THE DEFAULT "top" RESTORES ENSURES RIGHT-HAND LEGEND. 
 ```
@@ -966,8 +962,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Petal.Width), #<--MAP A CONTINUOUS VARIABLE.
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus()
 ```
@@ -989,8 +984,7 @@ ggplot(iris,
            y = Sepal.Length)) +
   geom_plus(geom = "point", 
             mapping = aes(fill = Petal.Width)) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() +
   scale_fill_continuous_plus(name = "Petal width (cm)") #<--GET BETTER AXIS BREAKS AND PROVIDE CUSTOM TITLE.
@@ -1018,8 +1012,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal\nlength\n(cm)") + #<--INSERT SOME LINE BREAKS USING \n TO BREAK THE TITLE ONTO MANY LINES FOR MAX SPACE EFFICIENCY. 
   theme_plus(axis.title.y = element_text(vjust = 0.5, angle = 0)) #<--CHANGE THE Y AXIS TITLE TO BE VERTICALLY JUSTIFIED AND HORIZONTAL (UNANGLED).
 ```
@@ -1051,8 +1044,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + #<--NO ADJUSTMENTS TO TITLE NEEDED NOW.
   theme_plus() + #<--NO THEME ADJUSTMENTS EITHER.
   yaxis_title_plus() #<--THIS FUNCTION HANDLES EVERYTHING!
@@ -1108,8 +1100,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)", 
                           labels = c(4, 5, 6, "7.0000000", 8)) + #<--ONE OBNOXIOUS LABEL IN LENGTH. 
   theme_plus() + 
@@ -1140,8 +1131,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +
@@ -1173,8 +1163,7 @@ ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Species)) + #<--MAKE DISCRETE
   geom_plus(geom = "boxplot") + #<--CHANGE GEOM TYPE. 
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) + #<--NO CONTINUOUS Y ANY MORE TO IMPROVE.
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) + #<--NO CONTINUOUS Y ANY MORE TO IMPROVE.
   theme_plus() + 
   yaxis_title_plus() +
   gridlines_plus()
@@ -1209,7 +1198,7 @@ ggplot(iris,
             include_theme = TRUE, #<--TURNS ON theme_plus()
             new_y_title = "Sepal length (cm)" #<--SETS Y AXIS TITLE.
             ) +
-  scale_x_continuous_plus("Petal length (cm)", labels = c(1, "", 3, "", 5, "", 7)) + #<--WE STILL SPECIFY CUSTOM LABELS THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().
+  scale_x_continuous_plus("Petal length (cm)", thin_labels = TRUE) + #<--WE STILL SPECIFY CUSTOM LABELS AND THE TITLE THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().
   yaxis_title_plus() #<--THIS STILL NEEDS TO BE ADDED SEPARATELY.
 ```
 
@@ -1246,8 +1235,7 @@ ggplot(iris,
             mapping = aes(fill = Species),
             alpha = 0.3, 
             show.legend = FALSE) + #<--SUPPRESS THE REDUNDANT LEGEND.
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +
@@ -1277,8 +1265,7 @@ ggplot(iris,
             mapping = aes(fill = Species),
             alpha = 0.3, 
             show.legend = FALSE) + 
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +  
   theme_plus() + 
   yaxis_title_plus() + 
@@ -1299,8 +1286,7 @@ ggplot(iris,
             mapping = aes(fill = Species),
             alpha = 0.3, 
             show.legend = FALSE) + 
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +  
   theme_plus() + 
   yaxis_title_plus() + 
@@ -1323,8 +1309,7 @@ ggplot(iris,
             mapping = aes(fill = Species),
             alpha = 0.3, 
             show.legend = TRUE) + #<--KEEP LEGEND. 
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +  
   theme_plus(strip.background = element_blank(),
              strip.text = element_blank()) + #<--SUPPRESS STRIP TEXT AND BACKGROUND.
@@ -1357,16 +1342,15 @@ ggplot(iris,
            y = Sepal.Length)) +
   geom_plus(geom = "point", 
             mapping = aes(fill = Species, 
-                          alpha = 0.3)) + #<--MAP FILL TO CONSTANT INSIDE AES INSTEAD OF OUTSIDE IT.
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+                          alpha = 0.3)) + #<--MAP FILL TO CONSTANT INSIDE AES INSTEAD OF OUTSIDE IT. THIS WOULD NORMALLY FORCE A SEPARATE LEGEND FOR ALPHA.
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +  
   theme_plus(strip.background = element_blank(),
              strip.text = element_blank()) + 
   yaxis_title_plus() + 
   gridlines_plus() +
   facet_grid(. ~ Species) +
-  scale_alpha(guide = "none") #<--SUPPRESS GUIDE FOR ALPHA SCALE.
+  scale_alpha(guide = "none") #<--HOWEVER, WE THEN SUPPRESS THAT ALPHA LEGEND.
 ```
 
 ![](README_files/figure-commonmark/override%20aes-1.png)
@@ -1393,8 +1377,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species, 
                           alpha = 0.3)) + 
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +
@@ -1434,7 +1417,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species, 
                           alpha = 0.3)) +
-  scale_x_continuous_plus() + #<--NO NAME SPECIFIED.
+  scale_x_continuous_plus(thin_labels = TRUE) + #<--NO NAME SPECIFIED.
   scale_y_continuous_plus() + #<--NO NAME SPECIFIED. 
   theme_plus() + 
   yaxis_title_plus() +
@@ -1470,8 +1453,7 @@ ggplot(iris,
            y = Sepal.Length)) +
   geom_plus(geom = "point", 
             mapping = aes(fill = as.factor(Petal.Width))) + #<--MAKE THIS VARIABLE A FACTOR--IT HAS MANY LEVELS
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +
@@ -1516,8 +1498,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7),
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE,
                           position = "top") + #<--MOVE X AXIS TO TOP OF THE GRAPH
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
@@ -1552,8 +1533,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7),
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE,
                           position = "top") + 
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() +
@@ -1586,8 +1566,7 @@ ggplot(iris,
             mapping = aes(fill = Species, 
                           alpha = 0.3),
             silence_warnings = TRUE) + #<--OTHERWISE, Species WILL TRIGGER A WARNING.
-  scale_x_continuous_plus(name = "Petal length (cm)", 
-                          labels = c(1, "", 3, "", 5, "", 7)) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +

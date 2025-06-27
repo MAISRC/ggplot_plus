@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center">
-<meta name="dcterms.date" content="2025-06-25">
+<meta name="dcterms.date" content="2025-06-27">
 
 <title>Guide to the ggplot.plus package</title>
 <style>
@@ -99,7 +99,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 25, 2025</p>
+      <p class="date">June 27, 2025</p>
     </div>
   </div>
   
@@ -120,13 +120,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>
 ── R CMD build ─────────────────────────────────────────────────────────────────
-* checking for file 'C:\Users\Bajcz\AppData\Local\Temp\Rtmp2p3lTE\remotes5dac58b771c5\MAISRC-ggplot_plus-3a3a1a2/DESCRIPTION' ... OK
+* checking for file 'C:\Users\Bajcz\AppData\Local\Temp\RtmpO0Y8Id\remotes5f2876d8372\MAISRC-ggplot_plus-465ecf2/DESCRIPTION' ... OK
 * preparing 'ggplot.plus':
 * checking DESCRIPTION meta-information ... OK
 * checking for LF line-endings in source and make files and shell scripts
 * checking for empty or unneeded directories
 Omitted 'LazyData' from DESCRIPTION
-* building 'ggplot.plus_0.1.6.tar.gz'
+* building 'ggplot.plus_0.1.7.tar.gz'
 </code></pre>
 </div>
 </div>
@@ -139,7 +139,7 @@ Omitted 'LazyData' from DESCRIPTION
 <p>Once loaded, you can start layering in the “plus” tools to improve your plot design with minimal effort.</p>
 <section id="using-the-tools" class="level3">
 <h3 class="anchored" data-anchor-id="using-the-tools">Using the tools</h3>
-<p>Just by loading <code>ggplot.plus</code>, you will switch your session’s default color palette to one that is more broadly accessible–there’s no need to call <code>palettes_plus()</code> to alter this palette unless you want to (see the “Colorblind-Friendly Palettes” section for details):</p>
+<p>Just by loading <code>ggplot.plus</code>, you will switch your session’s default color palette to one that is more broadly accessible–there’s no need to call <code>palettes_plus()</code> to alter this palette unless you want to (see the “Accessible Color Palettes” section for details):</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#A BASIC GGPLOT SCATTERPLOT, EXCEPT USING ggplot.plus's DEFAULT COLOR PALETTE INSTEAD.</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, </span>
@@ -178,8 +178,8 @@ Omitted 'LazyData' from DESCRIPTION
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species)) <span class="sc">+</span> </span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> <span class="co">#&lt;-OVERHAULS VISUAL THEME</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="st">"Petal length (cm)"</span>) <span class="sc">+</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#OVERHAULS AXIS BREAKS AND LIMITS (FOR CONTINUOUS AXES ONLY!) </span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="st">"Petal length (cm)"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--OVERHAULS AXIS BREAKS AND LIMITS (FOR CONTINUOUS AXES ONLY!) </span></span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> <span class="co">#&lt;--SAME FOR Y AXIS.</span></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--RELOCATES AND RE-ORIENTS Y AXIS TITLE.</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--ADDS THOUGHTFUL GRIDLINES, IF YOU *REALLY* WANT THEM.</span></span>
@@ -312,8 +312,8 @@ Even when a designer deems gridlines are needed, though, research has shown that
 </ul>
 <p>This list isn’t an exhaustive list of the design aspects of this graph that someone <em>might</em> object to on some grounds or another, but it illustrates how even a simple <code>ggplot</code> often requires many tweaks to meet accessibility, clarity, and design standards to bring it up to publication quality. Not everyone has the time, patience, or wherewithal to do that work, hence why we built the <code>ggplot.plus</code> package.</p>
 </section>
-<section id="colorblind-friendly-palettes" class="level2">
-<h2 class="anchored" data-anchor-id="colorblind-friendly-palettes">Colorblind-Friendly Palettes</h2>
+<section id="accessible-color-palettes" class="level2">
+<h2 class="anchored" data-anchor-id="accessible-color-palettes">Accessible Color Palettes</h2>
 <p>We noted above that the default color palette used by <code>ggplot2</code> is not as accessible as it could be. Fortunately, the <code>viridis</code> package—bundled with <code>ggplot2</code>—includes several broadly accessible palette options. These palettes vary not just in <strong>hue</strong> (i.e., the base “color” like red, green, or blue), but also in <strong>luminance</strong> (light vs.&nbsp;dark). This multidimensional variance makes the colors in these palettes more distinguishable from one another across a range of visual impairments and viewing conditions.</p>
 <p>The <code>ggplot.plus</code> package includes a convenience function, <code>palettes_plus()</code>, that run automatically on package load. It activates carefully chosen default palettes for whenever the <code>color</code> or <code>fill</code> aesthetics are used by your plots:</p>
 <div class="cell">
@@ -676,7 +676,7 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 </div>
 <p>The axis is now expanded to start with a break at 1 and an end break at 7, with breaks in between still chosen to be regular and “pretty,” as in <code>ggplot2</code>.</p>
 <p>As with the base <code>scale</code> function, you can pass arguments like <code>name</code>, <code>expand</code>, <code>transform</code>, or <code>labels</code> to the <code>_plus()</code> version. However, you <em>cannot</em> manually set <code>breaks</code> or <code>limits</code>, since those are managed internally by the function. If you want to specify those yourself, use the base <code>scale_x_continuous()</code> instead.</p>
-<p>If the resulting labels feel a little too frequent, here’s a trick: You can suppress some of them by setting custom label text—for instance, removing every other label using empty strings (<code>""</code>) while keeping the tick marks in those spots:</p>
+<p>If the resulting labels feel a little too frequent, the package’s <code>scale_*continuous_plus()</code> functions contain a trick: You can set their <code>thin_labels</code> argument to <code>TRUE</code> to convert every other label (starting with the second) to an empty string (<code>""</code>) while retaining the tick marks:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
@@ -684,8 +684,7 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="co">#&lt;--SPECIFYING A VECTOR OF CUSTOM LABELS THAT INCLUDES EMPTY STRINGS FOR EVERY OTHER VALUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="co">#&lt;--WILL CONVERT EVERY OTHER LABEL TO AN EMPTY STRING.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -703,9 +702,8 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="co">#&lt;--ADDED Y EQUIVALENT.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="co">#&lt;--ADDED Y EQUIVALENT.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -728,10 +726,9 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="co">#&lt;--ADD PLUS THEME TO OVERRIDE THE DEFAULT.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="co">#&lt;--ADD PLUS THEME TO OVERRIDE THE DEFAULT.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -759,10 +756,9 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">linewidth =</span> <span class="fl">0.75</span>)) <span class="co">#&lt;--WE CAN MAKE THE AXIS LINES A LITTLE THINNER IF WE WANT. DEFAULT = 1.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">linewidth =</span> <span class="fl">0.75</span>)) <span class="co">#&lt;--WE CAN MAKE THE AXIS LINES A LITTLE THINNER IF WE WANT. DEFAULT = 1.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -779,10 +775,9 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">legend_pos =</span> <span class="cn">FALSE</span>) <span class="co">#&lt;--ANY VALUE OTHER THAN THE DEFAULT "top" RESTORES ENSURES RIGHT-HAND LEGEND. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">legend_pos =</span> <span class="cn">FALSE</span>) <span class="co">#&lt;--ANY VALUE OTHER THAN THE DEFAULT "top" RESTORES ENSURES RIGHT-HAND LEGEND. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -800,10 +795,9 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Petal.Width), <span class="co">#&lt;--MAP A CONTINUOUS VARIABLE.</span></span>
 <span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -820,11 +814,10 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Petal.Width)) <span class="sc">+</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal width (cm)"</span>) <span class="co">#&lt;--GET BETTER AXIS BREAKS AND PROVIDE CUSTOM TITLE.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal width (cm)"</span>) <span class="co">#&lt;--GET BETTER AXIS BREAKS AND PROVIDE CUSTOM TITLE.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -846,10 +839,9 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal</span><span class="sc">\n</span><span class="st">length</span><span class="sc">\n</span><span class="st">(cm)"</span>) <span class="sc">+</span> <span class="co">#&lt;--INSERT SOME LINE BREAKS USING \n TO BREAK THE TITLE ONTO MANY LINES FOR MAX SPACE EFFICIENCY. </span></span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">angle =</span> <span class="dv">0</span>)) <span class="co">#&lt;--CHANGE THE Y AXIS TITLE TO BE VERTICALLY JUSTIFIED AND HORIZONTAL (UNANGLED).</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal</span><span class="sc">\n</span><span class="st">length</span><span class="sc">\n</span><span class="st">(cm)"</span>) <span class="sc">+</span> <span class="co">#&lt;--INSERT SOME LINE BREAKS USING \n TO BREAK THE TITLE ONTO MANY LINES FOR MAX SPACE EFFICIENCY. </span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">angle =</span> <span class="dv">0</span>)) <span class="co">#&lt;--CHANGE THE Y AXIS TITLE TO BE VERTICALLY JUSTIFIED AND HORIZONTAL (UNANGLED).</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -872,11 +864,10 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> <span class="co">#&lt;--NO ADJUSTMENTS TO TITLE NEEDED NOW.</span></span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--NO THEME ADJUSTMENTS EITHER.</span></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="co">#&lt;--THIS FUNCTION HANDLES EVERYTHING!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> <span class="co">#&lt;--NO ADJUSTMENTS TO TITLE NEEDED NOW.</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--NO THEME ADJUSTMENTS EITHER.</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="co">#&lt;--THIS FUNCTION HANDLES EVERYTHING!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -902,12 +893,11 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>, </span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="st">"7.0000000"</span>, <span class="dv">8</span>)) <span class="sc">+</span> <span class="co">#&lt;--ONE OBNOXIOUS LABEL IN LENGTH. </span></span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>, </span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="st">"7.0000000"</span>, <span class="dv">8</span>)) <span class="sc">+</span> <span class="co">#&lt;--ONE OBNOXIOUS LABEL IN LENGTH. </span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -928,12 +918,11 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="co">#&lt;--REINTRODUCE SOME GRIDLINES</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="co">#&lt;--REINTRODUCE SOME GRIDLINES</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -951,11 +940,10 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Species)) <span class="sc">+</span> <span class="co">#&lt;--MAKE DISCRETE</span></span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"boxplot"</span>) <span class="sc">+</span> <span class="co">#&lt;--CHANGE GEOM TYPE. </span></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span> <span class="co">#&lt;--NO CONTINUOUS Y ANY MORE TO IMPROVE.</span></span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--NO CONTINUOUS Y ANY MORE TO IMPROVE.</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -982,7 +970,7 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">include_theme =</span> <span class="cn">TRUE</span>, <span class="co">#&lt;--TURNS ON theme_plus()</span></span>
 <span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">new_y_title =</span> <span class="st">"Sepal length (cm)"</span> <span class="co">#&lt;--SETS Y AXIS TITLE.</span></span>
 <span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>            ) <span class="sc">+</span></span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="st">"Petal length (cm)"</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span> <span class="co">#&lt;--WE STILL SPECIFY CUSTOM LABELS THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--WE STILL SPECIFY CUSTOM LABELS AND THE TITLE THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().</span></span>
 <span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="co">#&lt;--THIS STILL NEEDS TO BE ADDED SEPARATELY.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -1009,13 +997,12 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
 <span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="co">#&lt;--SUPPRESS THE REDUNDANT LEGEND.</span></span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species) <span class="co">#&lt;--MAKE ONE SMALL MULTIPLE (PANEL) PER SPECIES (ACROSS COLUMNS)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species) <span class="co">#&lt;--MAKE ONE SMALL MULTIPLE (PANEL) PER SPECIES (ACROSS COLUMNS)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1035,13 +1022,12 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
 <span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Species <span class="sc">~</span> .) <span class="co">#&lt;--FACET ACROSS ROWS INSTEAD</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Species <span class="sc">~</span> .) <span class="co">#&lt;--FACET ACROSS ROWS INSTEAD</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1059,15 +1045,14 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
 <span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
-<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species, </span>
-<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">switch =</span> <span class="st">"x"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE TOP STRIP LABELS TO BOTTOM.</span></span>
-<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"segment"</span>, <span class="at">x =</span> <span class="cn">Inf</span>, <span class="at">xend =</span> <span class="sc">-</span><span class="cn">Inf</span>,<span class="at">y =</span> <span class="sc">-</span><span class="cn">Inf</span>,<span class="at">yend =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="co">#&lt;--A TRICK: ADD A FAKE TOP BORDER LINE TO THE STRIP LAVEL FOR BETTER VISUAL DEMARCATION.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species, </span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">switch =</span> <span class="st">"x"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE TOP STRIP LABELS TO BOTTOM.</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"segment"</span>, <span class="at">x =</span> <span class="cn">Inf</span>, <span class="at">xend =</span> <span class="sc">-</span><span class="cn">Inf</span>,<span class="at">y =</span> <span class="sc">-</span><span class="cn">Inf</span>,<span class="at">yend =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="co">#&lt;--A TRICK: ADD A FAKE TOP BORDER LINE TO THE STRIP LAVEL FOR BETTER VISUAL DEMARCATION.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1085,14 +1070,13 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
 <span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">show.legend =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--KEEP LEGEND. </span></span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
-<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">strip.text =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span> <span class="co">#&lt;--SUPPRESS STRIP TEXT AND BACKGROUND.</span></span>
-<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
-<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">strip.text =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span> <span class="co">#&lt;--SUPPRESS STRIP TEXT AND BACKGROUND.</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1112,16 +1096,15 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>)) <span class="sc">+</span> <span class="co">#&lt;--MAP FILL TO CONSTANT INSIDE AES INSTEAD OF OUTSIDE IT.</span></span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
-<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">strip.text =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span> </span>
-<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
-<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species) <span class="sc">+</span></span>
-<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>) <span class="co">#&lt;--SUPPRESS GUIDE FOR ALPHA SCALE.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>)) <span class="sc">+</span> <span class="co">#&lt;--MAP FILL TO CONSTANT INSIDE AES INSTEAD OF OUTSIDE IT. THIS WOULD NORMALLY FORCE A SEPARATE LEGEND FOR ALPHA.</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span>  </span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">strip.text =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span> </span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> </span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> Species) <span class="sc">+</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>) <span class="co">#&lt;--HOWEVER, WE THEN SUPPRESS THAT ALPHA LEGEND.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1145,14 +1128,13 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
 <span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>)) <span class="sc">+</span> </span>
-<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
-<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="co">#&lt;--</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="co">#&lt;--</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1175,7 +1157,7 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
 <span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>)) <span class="sc">+</span></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--NO NAME SPECIFIED.</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--NO NAME SPECIFIED.</span></span>
 <span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--NO NAME SPECIFIED. </span></span>
 <span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
 <span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
@@ -1206,13 +1188,12 @@ inside geom_plus() to TRUE to hide this and other messages.</code></pre>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
 <span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> <span class="fu">as.factor</span>(Petal.Width))) <span class="sc">+</span> <span class="co">#&lt;--MAKE THIS VARIABLE A FACTOR--IT HAS MANY LEVELS</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
-<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Petal.Width, the variable you mapped to fill, has 22 unique levels.
 Even with a high-quality palette, it's difficult to ensure all colors chosen
@@ -1251,13 +1232,12 @@ hide this and other messages.</code></pre>
 <span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>),</span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE X AXIS TO TOP OF THE GRAPH</span></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE X AXIS TO TOP OF THE GRAPH</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: It looks like you haven't provided a custom title for variable(s)
 Species, mapped to the following aesthetic(s), respectively: fill. This means
@@ -1289,13 +1269,12 @@ Alternatively, set "location = 'bottom'" in switch_y_axis().</code></pre>
 <span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
 <span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
 <span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>),</span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> </span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span></span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>(<span class="at">location =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE  Y AXIS TITLE TO BOTTOM INSTEAD</span></span>
-<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> </span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>(<span class="at">location =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE  Y AXIS TITLE TO BOTTOM INSTEAD</span></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1319,13 +1298,12 @@ Alternatively, set "location = 'bottom'" in switch_y_axis().</code></pre>
 <span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
 <span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>),</span>
 <span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">silence_warnings =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--OTHERWISE, Species WILL TRIGGER A </span><span class="al">WARNING</span><span class="co">.</span></span>
-<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, </span>
-<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="st">""</span>, <span class="dv">3</span>, <span class="st">""</span>, <span class="dv">5</span>, <span class="st">""</span>, <span class="dv">7</span>)) <span class="sc">+</span></span>
-<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
-<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

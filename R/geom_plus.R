@@ -419,9 +419,19 @@ ggplot_build.geom_plus_warnings = function(plot) {
 
     #FOR EACH POTENTIAL GUIDE, BUILD A LIST OF AESTHETICS OVERRIDES, INCLUDING AN ALPHA OF 1 AND, SO LONG AS IT'S NOT A SIZE LEGEND, SIZE.
     guide_overrides = lapply(aesthetics_to_override, function(aes) {
+      #THESE ARE THE OVERRIDE CONDITIONS...
       override = list(alpha = 1)
       if (aes != "size") override$size = 5
-      guide_legend(override.aes = override)
+
+      #HOWEVER, WE ONLY WANT TO USE THEM IF THE LEGEND IS NOT A COLOR BAR, AS SIZE AND ALPHA ARE NOT RELEVANT FOR THOSE.
+      scale_obj = built$plot$scales$get_scales(aes)
+      is_continuous = inherits(scale_obj, "ScaleContinuous")
+
+      if (aes %in% c("fill", "colour", "color") && is_continuous) {
+        guide_colourbar()
+      } else {
+        guide_legend(override.aes = override)
+      }
     })
     names(guide_overrides) = aesthetics_to_override
 
