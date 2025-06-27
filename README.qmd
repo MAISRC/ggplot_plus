@@ -877,30 +877,44 @@ ggplot(iris,
 
 Faceting is a relatively complex operation that `ggplot2` performs. `ggplot.plus`'s features are designed to work nicely with it, but that doesn't mean some creativity won't still be involved!
 
-### Side-note: Transparency in the Legend Keys
+## Transparency in the Legend Keys
 
-You may have noticed that the **legend keys**—the circles in the legend that clarify fill color—have also been semi-transparent, just like the plotted points. That’s because the `alpha` value we've applied to the points is being applied to their legend representations as well.
-
-This behavior isn't specific to `ggplot.plus`; in base `ggplot2`, legend keys inherit aesthetics from the data elements they clarify *unless* you override those aesthetics. Here's a way to make the legend keys opaque while keeping transparency for the points:
+You may have noticed that the **legend keys**—the circles in the legend that clarify fill color—are solid even though the plotted points are semi-transparent. This is not the way things normally work in `ggplot2`; by default, the `alpha` value applied to the points would be applied to their legend representations as well. We can see that behavior
 
 ```{r override aes, warning=F}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
-  geom_plus(geom = "point", 
-            mapping = aes(fill = Species, 
-                          alpha = 0.3)) + #<--MAP FILL TO CONSTANT INSIDE AES INSTEAD OF OUTSIDE IT. THIS WOULD NORMALLY FORCE A SEPARATE LEGEND FOR ALPHA.
+  geom_point(mapping = aes(fill = Species), #<--REVERT TO geom_point, BUT WITH SETTINGS MORE LIKE BEFORE.
+             shape = 21, 
+             size = 5,
+             alpha = 0.3) +
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
-  scale_y_continuous_plus(name = "Sepal length (cm)") +  
-  theme_plus(strip.background = element_blank(),
-             strip.text = element_blank()) + 
-  yaxis_title_plus() + 
-  gridlines_plus() +
-  facet_grid(. ~ Species) +
-  scale_alpha(guide = "none") #<--HOWEVER, WE THEN SUPPRESS THAT ALPHA LEGEND.
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus() + 
+  yaxis_title_plus() +
+  gridlines_plus()
 ```
 
-Placing `alpha = 0.3` inside `aes()` forces ggplot to treat it as a "scale," which means it'd normally get its own legend, separate from the one for `fill`. We can then suppress that (unhelpful) legend using `scale_alpha()`. It's a bit of a hack, but it makes sense given how `ggplot2`'s scale system works.
+As you can see, the legend keys get the same treatment as our points here, which makes the legend keys (arguably) harder to interpret. `ggplot.plus`'s `geom_plus()` function attempts to see if you may have set `size` and/or `alpha` aesthetics that would result in legend keys that might be too faint or too small to easily read and overrides the legend aesthetics accordingly, if so. \
+\
+We can observe this behavior for size as well, then:
+
+```{r see size matters, warning = F}
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            size = 1) + #<--MAKE THE POINTS MUCH SMALLER.
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus() + 
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+Even though the points are smaller here (too small, really!), the legend keys are still large enough to be read.
 
 ## More Unusual Interactions
 
@@ -967,7 +981,9 @@ ggplot(iris,
   scale_alpha(guide = "none")
 ```
 
-Of courses, users who are already familiar with these graph-design issues and concepts may find these warnings distracting or repetitive. They can all be disabled by setting `silence_warnings` inside `geom_plus()` to `TRUE`.
+It's hard to even keep the legend "in bounds" here, since it's so big! But it's also nigh-impossible to distinguish neighboring colors here in the legend.
+
+Of course, users who are already familiar with these graph-design issues and concepts may find these warnings distracting or repetitive. They can all be disabled by setting `silence_warnings` inside `geom_plus()` to `TRUE`.
 
 ## Known Issues
 
