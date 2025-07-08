@@ -243,7 +243,7 @@ triangles = lapply(seq_along(angles), function(i) {
 sunburst = do.call(rbind, triangles)
 }
 
-#SHAPE 4: EGG OF LIFE. THIS SHAPE IS OPEN, ROUNDED, AND INTERSECTIONAL.
+#SHAPE 4: LOTUS (ALSO CALLED THE "EGG OF LIFE"). THIS SHAPE IS OPEN, ROUNDED, AND INTERSECTIONAL.
 {
   outer_r  = 0.40        # radius of big disk
   inner_r  = 0.09        # radius of each hole
@@ -402,7 +402,7 @@ octagon = data.frame(
 #' @export
 shapes.list = list(
   squircle = squircle,
-  eggoflife = egg_of_life,
+  lotus = egg_of_life,
   flower = flower,
   oval = oval,
   octagon = octagon,
@@ -433,7 +433,7 @@ shapes.list = list(
 #' @return A ggplot2 layer object.
 #' @examples
 #' ggplot(mtcars, aes(wt, mpg, fill = drat)) + geom_point_plus(aes(shape = factor(gear)), size = 5)
-#' ggplot(mtcars, aes(wt, mpg, fill = factor(cyl))) + geom_point_plus(aes(shape = factor(carb)), shape_values = c("squircle", "eggoflife", "sunburst", "octagon", "cross", "oval"), size = 5, stroke = 0.4)
+#' ggplot(mtcars, aes(wt, mpg, fill = factor(cyl))) + geom_point_plus(aes(shape = factor(carb)), shape_values = c("squircle", "lotus", "sunburst", "octagon", "cross", "oval"), size = 5, stroke = 0.4)
 #' ggplot(iris, aes(Petal.Width, Petal.Length, fill = Species)) + geom_point_plus(aes(shape = Species), size = 5, alpha = 0.7)
 #'
 #' @export
@@ -495,7 +495,7 @@ geom_point_plus = function(mapping = NULL,
 geom_point_plus_shapes = ggplot2::ggplot(data = data.frame(x = rep(c(0.5,1.5,2.5), each = 3),
                          y = rep(c(1,2,3), times = 3),
                          shape = factor(1:9))) +
-  geom_point_plus(ggplot2::aes(x = x, y = y, shape = shape, fill = shape), shape_values = c("squircle", "octagon", "flower", "economy", "cross", "waffle", "oval", "sunburst", "eggoflife"),
+  geom_point_plus(ggplot2::aes(x = x, y = y, shape = shape, fill = shape), shape_values = c("squircle", "octagon", "flower", "economy", "cross", "waffle", "oval", "sunburst", "lotus"),
                   size = 10, stroke = 1)+
   ggplot2::theme_minimal() +
   ggplot2::lims(y=c(0.5, 3.5), x = c(0.4, 3)) +
@@ -524,4 +524,4 @@ geom_point_plus_shapes = ggplot2::ggplot(data = data.frame(x = rep(c(0.5,1.5,2.5
   ggplot2::annotate("text", x = 1.5, y = 2.75, label = "waffle", size = 5, fontface = 'bold') +
   ggplot2::annotate("text", x = 2.5, y = 0.75, label = "oval", size = 5, fontface = 'bold') +
   ggplot2::annotate("text", x = 2.5, y = 1.75, label = "sunburst", size = 5, fontface = 'bold') +
-  ggplot2::annotate("text", x = 2.5, y = 2.75, label = "eggoflife", size = 5, fontface = 'bold')
+  ggplot2::annotate("text", x = 2.5, y = 2.75, label = "lotus", size = 5, fontface = 'bold')

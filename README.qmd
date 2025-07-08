@@ -122,6 +122,7 @@ The package introduces several new functions to add to your base `ggplot2` arsen
 | Function | Purpose |
 |------------------------------------|------------------------------------|
 | `geom_plus()` | A general wrapper for geoms with improved default aesthetics |
+| `geom_point_plus()` | An alternative version to `geom_point()` that introduces a new palette of shapes designed to be more readily distinguishable from each other. |
 | `theme_plus()` | A better base theme with improved default settings for size, spacing, legend placement, and much more. |
 | `scale_x/y/color/fill_continuous_plus()` | Drop-in replacements for `scale_x/y/color/fill_continuous()` that will attempt to ensure axis breakpoints and limits are appropriate for fully labeling these axes, especially their ends. |
 | `yaxis_title_plus()` | A function for relocating the y axis title from its normal, less accessible location and orientation to the top of the graph. |
@@ -981,7 +982,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
        mapping = aes(x = Petal.Length, y = Sepal.Length)) +
   geom_point_plus(mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "eggoflife", "cross", "flower", "octagon", "economy", "waffle")) + #<--SPECIFY THE SPECIFIC SHAPES YOU WANT TO USE.
+                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + #<--SPECIFY THE SPECIFIC SHAPES YOU WANT TO USE.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
   theme_plus() +
@@ -1002,7 +1003,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
   geom_plus(geom = "point_plus", #<--EASIER WAY TO ACCESS THESE FEATURES
             mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "eggoflife", "cross", "flower", "octagon", "economy", "waffle")) + 
+                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
   theme_plus() +
@@ -1023,7 +1024,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
   geom_plus(geom = "point_plus", 
             mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "eggoflife", "cross", "flower", "octagon", "economy", "waffle"),
+                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle"),
             fill = viridis::viridis(1,0.5,0.5)) + #<--BOTH COLOR AND FILL CAN BE MAPPED TO CONSTANTS OR TO VARIABLES 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +

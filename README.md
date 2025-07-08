@@ -170,6 +170,7 @@ The package introduces several new functions to add to your base
 | Function | Purpose |
 |----|----|
 | `geom_plus()` | A general wrapper for geoms with improved default aesthetics |
+| `geom_point_plus()` | An alternative version to `geom_point()` that introduces a new palette of shapes designed to be more readily distinguishable from each other. |
 | `theme_plus()` | A better base theme with improved default settings for size, spacing, legend placement, and much more. |
 | `scale_x/y/color/fill_continuous_plus()` | Drop-in replacements for `scale_x/y/color/fill_continuous()` that will attempt to ensure axis breakpoints and limits are appropriate for fully labeling these axes, especially their ends. |
 | `yaxis_title_plus()` | A function for relocating the y axis title from its normal, less accessible location and orientation to the top of the graph. |
