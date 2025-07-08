@@ -1,7 +1,7 @@
 # README
 Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive
 Species Research Center
-2025-06-27
+2025-07-08
 
 ## Quick Start Guide
 
@@ -737,8 +737,9 @@ sort(names(geom_plus_defaults))
      [1] "abline"     "area"       "bar"        "boxplot"    "col"       
      [6] "count"      "crossbar"   "curve"      "density"    "dotplot"   
     [11] "errorbar"   "freqpoly"   "histogram"  "hline"      "jitter"    
-    [16] "line"       "linerange"  "point"      "pointrange" "ribbon"    
-    [21] "segment"    "smooth"     "tile"       "violin"     "vline"     
+    [16] "line"       "linerange"  "point"      "point_plus" "pointrange"
+    [21] "ribbon"     "segment"    "smooth"     "tile"       "violin"    
+    [26] "vline"     
 
 If you’d like to see additional geoms supported, you can request them
 using the Issues feature on the package’s Github page. However, we tried
@@ -1329,7 +1330,8 @@ You may have noticed that the **legend keys**—the circles in the legend
 that clarify fill color—are solid even though the plotted points are
 semi-transparent. This is not the way things normally work in `ggplot2`;
 by default, the `alpha` value applied to the points would be applied to
-their legend representations as well. We can see that behavior
+their legend representations as well. We can see that behavior by using
+`geom_point()`:
 
 ``` r
 ggplot(iris,
@@ -1375,6 +1377,189 @@ ggplot(iris,
 
 Even though the points are smaller here (too small, really!), the legend
 keys are still large enough to be read.
+
+## Color Isn’t Everything–Incorporating Distinctive Shapes Into Scatterplots
+
+Thus far, we’ve mostly focused on graphs using color (hue, luminance,
+and saturation) to communicate differences in the data. `ggplot.plus` is
+designed to revamp how `ggplot2` approaches color to yield graphs that
+are more accessible and interpretable.
+
+However, *any* graph that uses color to communicate difference can only
+be *so* accessible and interpretable. A small but sizable number of
+humans are completely colorblind, and color perception weakens as we
+age. Additionally, many people still read and/or view scientific
+publications in gray scale, wherein colors may not be as readily
+distinguished (unless they vary a lot in luminance).
+
+As such, data viz experts would remind us that there are many other
+visual channels (ways of communicating difference) out there! One of
+these, shape, is a useful and classic channel for communicating
+difference in scatterplots like those we’ve made so far. However,
+`ggplot2` only makes available the same 26 shapes for points that are
+available in base R:
+
+``` r
+pch_values = 0:25
+
+#THE SHAPES AVAILABLE IN R/GGPLOT2
+plot(pch_values,
+     rep(1, length(pch_values)), 
+     pch = 0:25, cex = 2)
+```
+
+![](README_files/figure-commonmark/Rs%20base%20shapes-1.png)
+
+While there is certainly *some* variation between these shapes , many
+are perceptually very similar, making them difficult to distinguish
+quickly \[research has suggested that humans more readily distinguish
+shapes when they vary from each other along three axes: 1) Openness, 2)
+Spikiness, and 3) Intersectionality\].
+
+In addition, only the last five of these shapes have separate outline
+(stroke) and interior (fill) portions, allowing them to bear separate
+outline and fill colors, and these five shapes are very similar with
+respect to openness and intersectionality, making them harder to
+distinguish from each other at a glance. This limits their versatility.
+
+As such, we designed a custom version of `geom_point()`,
+`geom_point_plus()`, that introduces the ability to access nine new and
+thoughtfully crafted shapes that:
+
+- Intentionally vary along the three axes described above as much as
+  possible and
+
+- Can bear separate stroke and fill colors:
+
+``` r
+geom_point_plus_shapes
+```
+
+![](README_files/figure-commonmark/shape%20palette-1.png)
+
+These more distinctive shapes can be used to communicate difference
+whenever using color to do so might be undesirable or otherwise viewed
+as unnecessary:
+
+``` r
+set.seed(123)
+
+ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ], #<--RESTRICT DATA VOLUME TO REDUCE OVERPLOTTING FOR ILLUSTRATION.
+       mapping = aes(x = Petal.Length, y = Sepal.Length)) +
+  geom_point_plus(mapping = aes(shape = factor(round(Petal.Length))), #<--MAP SHAPE TO A FACTOR WITH 9 OR FEWER LEVELS.
+                  legend_title = "Petal length (binned)") + #<--SPECIFY A NEW LEGEND TITLE.
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") +
+  theme_plus() +
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+![](README_files/figure-commonmark/shape%20scatter1-1.png)
+
+As the example above shows, you can specify a new shape legend title
+right inside `geom_point_plus()` using the `legend_title` parameter. You
+can also use the `shape_values` parameter to specify which specific
+shapes you want to use:
+
+``` r
+set.seed(123)
+
+ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
+       mapping = aes(x = Petal.Length, y = Sepal.Length)) +
+  geom_point_plus(mapping = aes(shape = factor(round(Petal.Length))), 
+                  legend_title = "Petal length (binned)",
+                  shape_values = c("oval", "eggoflife", "cross", "flower", "octagon", "economy", "waffle")) + #<--SPECIFY THE SPECIFIC SHAPES YOU WANT TO USE.
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") +
+  theme_plus() +
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+![](README_files/figure-commonmark/choosing%20shapes-1.png)
+
+As you might hopefully expect, you can also access these features using
+`geom_plus(geom = "point_plus")` instead:
+
+``` r
+set.seed(123)
+
+ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
+       mapping = aes(x = Petal.Length, y = Sepal.Length)) +
+  geom_plus(geom = "point_plus", #<--EASIER WAY TO ACCESS THESE FEATURES
+            mapping = aes(shape = factor(round(Petal.Length))), 
+                  legend_title = "Petal length (binned)",
+                  shape_values = c("oval", "eggoflife", "cross", "flower", "octagon", "economy", "waffle")) + 
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") +
+  theme_plus() +
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+![](README_files/figure-commonmark/geom_plus%20access-1.png)
+
+As previously noted, all these shapes have separate fill and color
+aesthetics, so these aesthetics can be set to constants or even mapped
+to variables (although we wouldn’t necessarily recommend it):
+
+``` r
+set.seed(123)
+
+ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
+       mapping = aes(x = Petal.Length, y = Sepal.Length)) +
+  geom_plus(geom = "point_plus", 
+            mapping = aes(shape = factor(round(Petal.Length))), 
+                  legend_title = "Petal length (binned)",
+                  shape_values = c("oval", "eggoflife", "cross", "flower", "octagon", "economy", "waffle"),
+            fill = viridis::viridis(1,0.5,0.5)) + #<--BOTH COLOR AND FILL CAN BE MAPPED TO CONSTANTS OR TO VARIABLES 
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") +
+  theme_plus() +
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+![](README_files/figure-commonmark/unnamed-chunk-1-1.png)
+
+These shapes are specifically designed for use via `geom_point_plus()`
+for when you want to map a variable to shape. However, you could use
+them in “regular” scatterplots (i.e., those that don’t map shape to
+data) too, if you want! To do this (at present), you must:
+
+1.  Use `geom_point_plus()` rather than `geom_point()` (directly or
+    indirectly).
+
+2.  Set `shape` to a constant *inside* of `aes()`, not outside of it.
+
+3.  Specify the specific shape(s) you want via `shape_values`.
+
+It’s not required, but you may also want to suppress the shape legend by
+setting `include_shape_legend` to `FALSE` if you’re not mapping shape,
+as a legend will be automatically generated otherwise:
+
+``` r
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point_plus", #<--MUST USE GEOM_POINT_PLUS, NOT GEOM_POINT
+            mapping = aes(fill = Species, 
+                          shape = factor(1)), #<--MAP SHAPE TO A DISCRETE CONSTANT.
+            size = 2.5,
+            alpha = 0.5,
+            shape_values = "waffle", #<--PICK THE EXACT SHAPE(S) YOU WANT.
+            include_shape_legend = FALSE) + #<--OPTIONALLY, SUPPRESS THE SHAPE LEGEND.
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus() + 
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+![](README_files/figure-commonmark/using%20custom%20shapes%20on%20their%20own-1.png)
+
+We’ll try to make this less cumbersome in future versions.
 
 ## More Unusual Interactions
 
