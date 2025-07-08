@@ -1470,7 +1470,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
        mapping = aes(x = Petal.Length, y = Sepal.Length)) +
   geom_point_plus(mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "eggoflife", "cross", "flower", "octagon", "economy", "waffle")) + #<--SPECIFY THE SPECIFIC SHAPES YOU WANT TO USE.
+                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + #<--SPECIFY THE SPECIFIC SHAPES YOU WANT TO USE.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
   theme_plus() +
@@ -1491,7 +1491,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
   geom_plus(geom = "point_plus", #<--EASIER WAY TO ACCESS THESE FEATURES
             mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "eggoflife", "cross", "flower", "octagon", "economy", "waffle")) + 
+                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
   theme_plus() +
@@ -1513,7 +1513,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
   geom_plus(geom = "point_plus", 
             mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "eggoflife", "cross", "flower", "octagon", "economy", "waffle"),
+                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle"),
             fill = viridis::viridis(1,0.5,0.5)) + #<--BOTH COLOR AND FILL CAN BE MAPPED TO CONSTANTS OR TO VARIABLES 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
