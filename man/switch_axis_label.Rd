@@ -17,5 +17,5 @@ This function relocates the y axis title of a ggplot graph to the top of the plo
 This function is used internally by the \code{ggplot_gtable.switched()} method and is not intended for separate use.
 }
 \details{
-#' @param p A ggplot object whose y axis title will be moved.
+#' @param p A ggplot object built using ggplot_build whose y axis title will be moved.
 }

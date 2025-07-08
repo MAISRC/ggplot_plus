@@ -15,6 +15,11 @@ geom_plus_defaults = list(
                stroke = 1.2,
                fill = "transparent",
                colour = "black"),
+  point_plus = list(colour = "black",
+                    fill = NA,
+                    size = 4,
+                    alpha = 1,
+                    stroke = 1.1),
   jitter = list(size = 5,
                 shape = 21,
                 fill = "transparent",
@@ -390,6 +395,7 @@ ggplot_add.geom_plus = function(object, plot, name) {
 
   class(plot) = c("geom_plus_warnings", class(plot))
   plot$silence_warnings = silence_warnings #CARRY THIS THRU ON PLOT
+  plot$custom_shapes = ifelse(geom_name == "point_plus", TRUE, FALSE) #ALSO CARRY THRU A CHECK OF WHETHER WE'RE USING POINT_PLUS
   plot
 
 }
@@ -421,7 +427,9 @@ ggplot_build.geom_plus_warnings = function(plot) {
     guide_overrides = lapply(aesthetics_to_override, function(aes) {
       #THESE ARE THE OVERRIDE CONDITIONS...
       override = list(alpha = 1)
-      if (aes != "size") override$size = 5
+      if (aes != "size") {
+        override$size = ifelse(plot$custom_shapes == TRUE, 10, 5) #MAKES THE KEY TWICE AS BIG FOR THE CUSTOM SHAPES AS FOR GGPLOT'S REGULAR SHAPES.
+      }
 
       #HOWEVER, WE ONLY WANT TO USE THEM IF THE LEGEND IS NOT A COLOR BAR, AS SIZE AND ALPHA ARE NOT RELEVANT FOR THOSE.
       scale_obj = built$plot$scales$get_scales(aes)
