@@ -495,7 +495,7 @@ geom_point_plus = function(mapping = NULL,
 geom_point_plus_shapes = ggplot2::ggplot(data = data.frame(x = rep(c(0.5,1.5,2.5), each = 3),
                          y = rep(c(1,2,3), times = 3),
                          shape = factor(1:9))) +
-  geom_point_plus(aes(x = x, y = y, shape = shape, fill = shape), shape_values = c("squircle", "octagon", "flower", "economy", "cross", "waffle", "oval", "sunburst", "eggoflife"),
+  geom_point_plus(ggplot2::aes(x = x, y = y, shape = shape, fill = shape), shape_values = c("squircle", "octagon", "flower", "economy", "cross", "waffle", "oval", "sunburst", "eggoflife"),
                   size = 10, stroke = 1)+
   ggplot2::theme_minimal() +
   ggplot2::lims(y=c(0.5, 3.5), x = c(0.4, 3)) +
