@@ -942,6 +942,7 @@ As such, we designed a custom version of `geom_point()`, `geom_point_plus()`, th
 ```{r shape palette}
 #| fig-height: 6.5
 #| fig-width: 9
+
 geom_point_plus_shapes
 ```
 

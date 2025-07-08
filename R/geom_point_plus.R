@@ -361,7 +361,7 @@ economy = rbind(outer, diamond)
   tip_sf   = lapply(arm_angles, function(a) {
     sf::st_buffer(sf::st_point(c(offset*cos(a), offset*sin(a))),
               dist = r_tip, nQuadSegs = nSeg)
-  }) %>%
+  }) |>
     sf::st_sfc()
 
   hub_sf = sf::st_sfc(hub)
@@ -372,9 +372,9 @@ economy = rbind(outer, diamond)
   asterisk_union = sf::st_union(all_circles)
 
   #THEN EXTRACT JUST THE EXTERIOR COORDINATES OF THE UNION.
-  flower = sf::st_coordinates(asterisk_union) %>%
-    dplyr::as_tibble() %>%
-    dplyr::mutate(piece = L1) %>%
+  flower = sf::st_coordinates(asterisk_union) |>
+    dplyr::as_tibble() |>
+    dplyr::mutate(piece = L1) |>
     dplyr::transmute(x = X, y = Y, piece)
 }
 
