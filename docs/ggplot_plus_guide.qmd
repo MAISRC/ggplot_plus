@@ -2,11 +2,11 @@
 title: "Complete Guide to the ggplot.plus R Package"
 author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center"
 
-output-dir: docs          
 format:
   html:
     output-file: index.html
     code-overflow: wrap
+
 execute:
   message: false
 ---
