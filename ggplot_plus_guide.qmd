@@ -5,7 +5,7 @@ author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Spec
 output-dir: docs          
 format:
   html:
-    output-file: ggplotplus.html
+    output-file: index.html
     code-overflow: wrap
 execute:
   message: false
