@@ -86,4 +86,5 @@ you need to spend less time fine-tuning and polishing your graphs for
 publication than you might otherwise need to.
 
 However, there’s a *lot* more to know! If you want to dive deeper,
-please check out the full package guide at insert URL here!
+please [check out the full package
+guide](https://maisrc.github.io/ggplot_plus/ "ggplot_plus guide site").

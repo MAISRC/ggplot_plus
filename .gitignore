@@ -4,3 +4,7 @@
 .Ruserdata
 
 /.quarto/
+
+desktop.ini
+notes.txt
+.Rbuildignore
