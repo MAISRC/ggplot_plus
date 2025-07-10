@@ -5,7 +5,7 @@
 \alias{geom_plus_defaults}
 \title{Default settings for geometry layers created by \code{geom_plus()}}
 \format{
-A named list with elements like "point", "jitter", "boxplot", etc., corresponding to commonly used ggplot2 geometries. USe names(geom_plus_defaults) for a full list.
+A named list with elements like "point", "jitter", "boxplot", etc., corresponding to commonly used ggplot2 geometries. Use names(geom_plus_defaults) for a full list.
 }
 \usage{
 geom_plus_defaults

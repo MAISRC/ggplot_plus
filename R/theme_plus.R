@@ -1,5 +1,3 @@
-#' @importFrom ggplot2 ggplot_add
-NULL
 #' Add a New Base Theme to ggplots With Elevated Defaults
 #'
 #' Wrapper function for ggplot2's `theme()` function that still allows users to specify custom values for theme attributes but has default values for many attributes that are more likely to result in a graph that meets best practices for design aesthetics, usability, and accessibility.
@@ -8,7 +6,8 @@ NULL
 #' @param legend_pos Where should the legend(s) be? Defaults to "top", which will make the legend a horizontal stripe at the top of the graph. Any other value will move the legend to a vertical stripe to the right of the plot (its usual position in `ggplot2`).
 #' @return List with the class "theme_plus", which will trigger the theme_plus method in ggplot_add.
 #' @examples
-#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + theme_plus()
+#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+#' geom_plus(geom = "point") + theme_plus()
 #' @export
 theme_plus = function(..., legend_pos = "top") {
 
@@ -24,22 +23,22 @@ theme_plus = function(..., legend_pos = "top") {
 #' It applies user-specified overrides to sensible default values and ensures compatibility with ggplot2 layering.
 #'
 #' @param object An object of class `theme_plus`, created by `theme_plus()`, containing user-provided arguments (if any) and otherwise default values for many theme attributes.
-#' @param plot A ggplot object to which the new thene will be applied
-#' @param name Internal name used by ggplot2 when adding the theme.
+#' @param plot A ggplot object to which the new theme will be applied
+#' @param object_name Internal name used by ggplot2 when adding the theme.
 #'
 #' @return A ggplot object with the new theme applied.
 #' @export
-ggplot_add.theme_plus = function(object, plot, name) {
+ggplot_add.theme_plus = function(object, plot, object_name) {
 
   user_args = object$user_args #EXTRACT THE USER'S ARGUMENTS
   legend_pos = object$legend_pos #EXTRACT LEGEND POS DESIRES.
 
   if(!is.null(legend_pos) &&
      legend_pos == "top") {
-    theme2add = theme(
-      legend.key.width = unit(1.5, "cm"),
+    theme2add = ggplot2::theme(
+      legend.key.width = ggplot2::unit(1.5, "cm"),
       #GREATLY EXPAND THE WIDTH
-      legend.key.height = unit(0.75, "cm"),
+      legend.key.height = ggplot2::unit(0.75, "cm"),
       #EXPAND THE HEIGHT A BIT ALSO.)
       legend.title = ggplot2::element_text(margin = ggplot2::margin(r = 15), vjust = 0.5),
       legend.box.just = "bottom",
@@ -49,8 +48,8 @@ ggplot_add.theme_plus = function(object, plot, name) {
       legend.direction = "horizontal"
     )
   } else {
-    theme2add = theme(legend.key.height = unit(1.5, "cm"),
-                      legend.key.width = unit(0.75, "cm"),
+    theme2add = ggplot2::theme(legend.key.height = ggplot2::unit(1.5, "cm"),
+                      legend.key.width = ggplot2::unit(0.75, "cm"),
                       legend.title = ggplot2::element_text(margin = ggplot2::margin(b = 15), hjust = 0.5),
                       legend.box.just = "right",
                       legend.justification = "right",
@@ -67,7 +66,7 @@ ggplot_add.theme_plus = function(object, plot, name) {
   axis.title.x = ggplot2::element_text(color = "black", size = 18, margin = ggplot2::margin(t = 10)), #ADD TOP MARGIN TO X AXIS TITLE.
   axis.title.y = ggplot2::element_text(color = "black", size = 18, vjust = 0.25, margin = ggplot2::margin(r  = 15)),
   axis.text = ggplot2::element_text(size = 16, color = "black"), #ENSURE AXIS LABELS ARE BLACK AND SIZE 16
-  axis.ticks.length = unit(0.3, "cm"), #INCREASE SIZE OF AXIS TICK MARKS TO BE MORE NOTICEABLE.
+  axis.ticks.length = ggplot2::unit(0.3, "cm"), #INCREASE SIZE OF AXIS TICK MARKS TO BE MORE NOTICEABLE.
   legend.title = ggplot2::element_text(color = "black", size = 18),
   legend.text = ggplot2::element_text(size = 16, color = "black"),
   legend.key = ggplot2::element_rect(fill = "transparent", color = "white"),
@@ -87,5 +86,5 @@ ggplot_add.theme_plus = function(object, plot, name) {
 )
 
   #ADD THE THEMES TO THE PLOT, WITH THE USER'S PROVIDED SPECIFICATIONS SECOND SO THEY OVERRIDE ANY RELEVANT DEFAULTS.
-  plot + default_theme + theme2add + do.call(theme, user_args)
+  plot + default_theme + theme2add + do.call(ggplot2::theme, user_args)
 }

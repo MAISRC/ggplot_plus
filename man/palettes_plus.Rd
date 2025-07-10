@@ -14,19 +14,26 @@ palettes_plus(
 )
 }
 \arguments{
-\item{palette_discrete}{The viridis-family color palette to use for discrete variables. Defaults to "D", which corresponds to the viridis color palette. Must be a length-1 character string from "A" to "H" corresponding to the same codes used by \code{scale_color_viridis_d()} and similar functions to refer to the eight color families available in the viridis package.
-#' @param palette_continuous The viridis-family color palette to use for continuous variables. Defaults to "E", which corresponds to the cividis color palette, which has fewer distinct hues, resulting in fewer false segmentations of the underlying data driven by hue transitions. Must be a length-1 character string from "A" to "H" corresponding to the same codes used by \code{scale_color_viridis_d()} and similar functions to refer to the eight color families available in the viridis package.}
+\item{palette_discrete}{The viridis-family color palette to use for discrete variables. Defaults to "D", which corresponds to the viridis color palette. Must be a length-1 character string from "A" to "H" corresponding to the same codes used by \code{scale_color_viridis_d()} and similar functions to refer to the eight color families available in the viridis package.}
 
-\item{begin}{The color value of the "low" end of the color palette. Defaults to 0.28, which is a medium-dark blue in the viridis palette. Must be a single numeric value between 0 and 1.}
+\item{palette_continuous}{The viridis-family color palette to use for continuous variables. Defaults to "E", which corresponds to the cividis color palette, which has fewer distinct hues, resulting in less false segmenting of the underlying data driven by hue transitions. Must be a length-1 character string from "A" to "H" corresponding to the same codes used by \code{scale_color_viridis_d()} and similar functions to refer to the eight color families available in the viridis package.}
 
-\item{end}{The color value of the "high" end of the color palette. Defaults to 0.72, which is a medium-light green in the viridis palette. Must be a single numeric value between 0 and 1.}
+\item{begin_discrete}{The color value of the "low" end of the color palette for a discrete scale. Defaults to 0.28, which is a medium-dark blue in the viridis palette. Must be a single numeric value between 0 and 1.}
+
+\item{end_discrete}{The color value of the "high" end of the color palette for a discrete scale. Defaults to 0.72, which is a medium-light green in the viridis palette. Must be a single numeric value between 0 and 1.}
+
+\item{begin_continuous}{The color value of the "low" end of the color palette for a continuous scale. Defaults to 0, which is a dark blue. Must be a single numeric value between 0 and 1.}
+
+\item{end_continuous}{The color value of the "high" end of the color palette For a continuous scale. Defaults to 1, which is a light yellow. Must be a single numeric value between 0 and 1.}
 }
 \value{
 Does not return an object.
 }
 \description{
-This function coerces the default color palettes for the fill and color aesthetics of ggplots to be the \code{viridis} family of color palettes for the rest of the session by overriding defaults set inside of options(). This ensures the color palettes used with be accessible for those with diverse technological and occular needs.
+This function coerces the default color palettes for the fill and color aesthetics of ggplots to be the \code{viridis} family of color palettes for the rest of the session by overriding defaults set inside of options(). This ensures the color palettes used with be accessible for those with diverse technological and ocular needs.
 }
 \examples{
-palettes_plus(); ggplot(iris, aes(x=Sepal.Length, y=Petal.Length, fill=Species)) + geom_plus(geom = "point")
+palettes_plus()
+ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length, fill=Species)) +
+geom_plus(geom = "point")
 }

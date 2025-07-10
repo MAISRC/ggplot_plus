@@ -16,5 +16,7 @@ Returns a list of class "axis_switcher", which will trigger the ggplot_add metho
 This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using \code{ggplot2}'s default styling tools.
 }
 \examples{
-ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + y_axis_title_plus()
+ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+geom_plus(geom = "point") +
+yaxis_title_plus()
 }

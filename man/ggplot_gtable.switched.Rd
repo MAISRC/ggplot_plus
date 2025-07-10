@@ -4,10 +4,10 @@
 \alias{ggplot_gtable.switched}
 \title{Finish a ggplot With the Class "switched".}
 \usage{
-\method{ggplot_gtable}{switched}(plot)
+\method{ggplot_gtable}{switched}(data)
 }
 \arguments{
-\item{plot}{A ggplot object with the class of "switched" for which the y axis title should be moved.}
+\item{data}{A ggplot object with the class of "switched" for which the y axis title should be moved.}
 }
 \value{
 A ggplot object compatible with \code{ggplot2}'s + command structure.

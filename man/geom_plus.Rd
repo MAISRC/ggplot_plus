@@ -42,10 +42,11 @@ geom_plus(
 
 \item{new_x_title}{A string to use for the graph's x axis title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
 
-\item{new_y_title}{A string to use for the graph's y axis title. Defaults to \code{NULL} and will be ignored unless a length-1 string.
-#' @param new_fill_title A string to use for the graph's fill legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
+\item{new_y_title}{A string to use for the graph's y axis title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
 
 \item{new_color_title}{A string to use for the graph's color legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
+
+\item{new_fill_title}{A string to use for the graph's fill legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
 
 \item{new_size_title}{A string to use for the graph's size legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
 
@@ -62,5 +63,6 @@ List with the class "geom_plus", which will trigger the geom_plus method in ggpl
 Maps inputs to a base ggplot geom (e.g., geom_point or geom_line) but provides default values more likely to adhere to best practices around usability, design aesthetics, and accessibility.
 }
 \examples{
-ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point")
+ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+geom_plus(geom = "point")
 }

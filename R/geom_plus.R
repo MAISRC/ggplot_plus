@@ -1,13 +1,8 @@
-#ENHANCED VERSIONS OF EACH COMMON GEOM SO AS TO HAVE IMPROVED DEFAULTS (THAT ARE STILL OVERRIDABLE)
-
-#' @importFrom ggplot2 ggplot_add
-NULL
-
 #' Default settings for geometry layers created by `geom_plus()`
 #'
 #' A named list of default aesthetics used by `geom_plus()` to control styling of the resulting geometry layers.
 #'
-#' @format A named list with elements like "point", "jitter", "boxplot", etc., corresponding to commonly used ggplot2 geometries. USe names(geom_plus_defaults) for a full list.
+#' @format A named list with elements like "point", "jitter", "boxplot", etc., corresponding to commonly used ggplot2 geometries. Use names(geom_plus_defaults) for a full list.
 #' @export
 geom_plus_defaults = list(
   point = list(size = 5,
@@ -121,7 +116,6 @@ geom_plus_defaults = list(
               width = 0.85)
 )
 
-
 #' Generates Base Geoms With Elevated Defaults
 #'
 #' Maps inputs to a base ggplot geom (e.g., geom_point or geom_line) but provides default values more likely to adhere to best practices around usability, design aesthetics, and accessibility.
@@ -136,17 +130,19 @@ geom_plus_defaults = list(
 #' @param include_colorscale_plus Should a call to `scale_color_continuous_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
 #' @param new_x_title A string to use for the graph's x axis title. Defaults to `NULL` and will be ignored unless a length-1 string.
 #' @param new_y_title A string to use for the graph's y axis title. Defaults to `NULL` and will be ignored unless a length-1 string.
-#' #' @param new_fill_title A string to use for the graph's fill legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
 #' @param new_color_title A string to use for the graph's color legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
+#' @param new_fill_title A string to use for the graph's fill legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
 #' @param new_size_title A string to use for the graph's size legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
 #' @param new_shape_title A string to use for the graph's shape legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
 #' @param new_alpha_title A string to use for the graph's alpha legend title. Defaults to `NULL` and will be ignored unless a length-1 string.
 #' @param silence_warnings `geom_plus()` triggers some checks for aspects of good graph design and, if any of these checks fail, a warning is triggered to direct the user towards better practices. Set this parameter to `FALSE` to silence these warnings.
 #' @return List with the class "geom_plus", which will trigger the geom_plus method in ggplot_add.
 #' @examples
-#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point")
+#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+#' geom_plus(geom = "point")
 #' @export
-geom_plus = function(geom, ...,
+geom_plus = function(geom,
+                     ...,
                     include_theme = FALSE,
                     include_gridlines = FALSE,
                     include_xscale_plus = FALSE,
@@ -192,11 +188,11 @@ geom_plus = function(geom, ...,
 #'
 #' @param object An object of class `geom_plus`, created by `geom_plus()`, containing user-provided arguments (if any).
 #' @param plot A ggplot object to which the new geometry layer should be added.
-#' @param name Internal name used by ggplot2 when adding the layer.
+#' @param object_name Internal name used by ggplot2 when adding the layer.
 #'
 #' @return A ggplot object with the new geometry layer added.
 #' @export
-ggplot_add.geom_plus = function(object, plot, name) {
+ggplot_add.geom_plus = function(object, plot, object_name) {
 
   user_args = object$user_args #LOCALLY PROVIDED USER ARGUMENTS.
   geom_name = object$geom #UNPACK THE GEOM CHOSEN
@@ -320,8 +316,16 @@ ggplot_add.geom_plus = function(object, plot, name) {
     }
   }
 
-  geom_fn = get(paste0("geom_", geom_name), mode = "function") #GET THE ACTUAL FUNCTION THAT THE USER IS HOPING WE'LL USE HERE.
-  layer = do.call(geom_fn, use_these_args)
+  geom_str = paste0("geom_", geom_name)
+
+  #THE IF/ELSE LOGIC HERE ALLOWS US TO NAMESPACE GGPLOT2 SAFELY BUT AVOID DOING SO WITH MY CUSTOM GEOMS.
+  if(geom_name == "geom_point_plus") {
+    layer = do.call(geom_point_plus, use_these_args)
+  } else {
+    geom_fn = getExportedValue("ggplot2", geom_str) #GET THE ACTUAL FUNCTION THAT THE USER IS HOPING WE'LL USE HERE.
+    layer = do.call(geom_fn, use_these_args)
+  }
+
 
   #WE DO THINGS JUST A LITTLE DIFFERENTLY IF SHAPE WAS MAPPED AND WE HAVE TO ADJUST THE PALETTE.
   if(!exists("shape_pal")) { #THIS IS A SAFE CONSTRUCTION THAT PREVENTS ERRORS WHEN shape_pal IS NULL.
@@ -355,37 +359,37 @@ ggplot_add.geom_plus = function(object, plot, name) {
   if(exists("new_x_title") &&
      is.character(new_x_title) &&
      length(new_x_title) == 1) {
-    plot = plot + xlab(new_x_title)
+    plot = plot + ggplot2::xlab(new_x_title)
   }
   if(exists("new_y_title") &&
      is.character(new_y_title) &&
      length(new_y_title) == 1) {
-    plot = plot + ylab(new_y_title)
+    plot = plot + ggplot2::ylab(new_y_title)
   }
   if(exists("new_fill_title") &&
      is.character(new_fill_title) &&
      length(new_fill_title) == 1) {
-    plot = plot + labs(fill = new_fill_title)
+    plot = plot + ggplot2::labs(fill = new_fill_title)
   }
   if(exists("new_color_title") &&
      is.character(new_color_title) &&
      length(new_color_title) == 1) {
-    plot = plot + labs(colour = new_color_title)
+    plot = plot + ggplot2::labs(colour = new_color_title)
   }
   if(exists("new_size_title") &&
      is.character(new_size_title) &&
      length(new_size_title) == 1) {
-    plot = plot + labs(size = new_size_title)
+    plot = plot + ggplot2::labs(size = new_size_title)
   }
   if(exists("new_shape_title") &&
      is.character(new_shape_title) &&
      length(new_shape_title) == 1) {
-    plot = plot + labs(shape = new_shape_title)
+    plot = plot + ggplot2::labs(shape = new_shape_title)
   }
   if(exists("new_alpha_title") &&
      is.character(new_alpha_title) &&
      length(new_alpha_title) == 1) {
-    plot = plot + labs(alpha = new_alpha_title)
+    plot = plot + ggplot2::labs(alpha = new_alpha_title)
   }
 
   # #IF A BAR OR COLUMN PLOT IS BEING USED, WE SHOULD ELIMINATE EXPANSION IN THE PROPER DIRECTION TO KEEP THE BOTTOMS OF THE BARS NEAR TO THE AXIS LINE.
@@ -403,7 +407,7 @@ ggplot_add.geom_plus = function(object, plot, name) {
 #' Build a ggplot With the Class "geom_plus_warnings".
 #'
 #' This method defines how objects of class `geom_plus_warnings`, created by the `ggplot_add.geom_plus()` function, are built into a ggplot2 plot.
-#' The method is where various checks are performed to see if the user may be doing something "suboptimal" design-wise that could be used to trigger an informative warning to steer better behaviors.
+#' The method is where various checks are performed to see if the user may be doing something "sub-optimal" design-wise that could be used to trigger an informative warning to steer better behaviors.
 #'
 #' @param plot A ggplot object for which the checks should be performed.
 #'
@@ -413,7 +417,7 @@ ggplot_build.geom_plus_warnings = function(plot) {
 
     class(plot) = setdiff(class(plot), "geom_plus_warnings") #REMOVE THE TRIGGERING CLASS TO PREVENT RECURSION.
 
-    built = ggplot2:::ggplot_build.ggplot(plot) #THEN BUILD THE PLOT. BYPASSES MY METHOD SO IT DOESN'T JUST CALL RECURSIVELY, WHICH IT WOULD BECAUSE THE CLASS CHANGE ABOVE WOULDN'T HAVE TAKEN EFFECT YET.
+    built = ggbuild_ggplot(plot) #THEN BUILD THE PLOT. BYPASSES MY METHOD SO IT DOESN'T JUST CALL RECURSIVELY, WHICH IT WOULD BECAUSE THE CLASS CHANGE ABOVE WOULDN'T HAVE TAKEN EFFECT YET.
 
     #HERE, WE PAUSE TO ASK--IS ALPHA MAPPED TO A CONSTANT < 1? IS THERE A POTENTIAL LEGEND? IF SO, WE SHOULD OVERRIDE THE LEGEND'S ALPHA TO BE 1 FOR EASIER READING.
     global_aes = names(built$plot$mapping) #GLOBAL MAPPINGS
@@ -436,9 +440,9 @@ ggplot_build.geom_plus_warnings = function(plot) {
       is_continuous = inherits(scale_obj, "ScaleContinuous")
 
       if (aes %in% c("fill", "colour", "color") && is_continuous) {
-        guide_colourbar()
+        ggplot2::guide_colourbar()
       } else {
-        guide_legend(override.aes = override)
+        ggplot2::guide_legend(override.aes = override)
       }
     })
     names(guide_overrides) = aesthetics_to_override
@@ -455,8 +459,8 @@ ggplot_build.geom_plus_warnings = function(plot) {
            (length(unique_size) == 1 && unique_size < 5)) { #IF IT IS AND IT'S LESS THAN 1 OR THE DEFAULT SIZE...
 
           #ATTEMPT TO OVERRIDE THE ALPHA AND SIZE VALUES OF JUST THE LEGEND.
-          rebuild = built$plot + do.call(guides, guide_overrides)
-          built = ggplot2:::ggplot_build.ggplot(rebuild) #REBUILD FROM HERE.
+          rebuild = built$plot + do.call(ggplot2::guides, guide_overrides)
+          built = ggbuild_ggplot(rebuild) #REBUILD FROM HERE.
           break #NO NEED TO DO THIS MORE THAN ONCE PER LAYER...
         }
        }

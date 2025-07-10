@@ -20,5 +20,7 @@ List with the class "gridlines_plus", which will trigger the gridlines_plus meth
 This function adds, by default, subtle, light gray major gridlines to a ggplot graph only in directions mapped to continuous (and not discrete) variables.
 }
 \examples{
-ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + gridlines_plus()
+ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+geom_plus(geom = "point") +
+gridlines_plus()
 }

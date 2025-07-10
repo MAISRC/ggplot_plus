@@ -1,5 +1,3 @@
-#' @importFrom ggplot2 ggplot_add
-NULL
 #' Generates Subtle and Choice Gridlines on a ggplot
 #'
 #' This function adds, by default, subtle, light gray major gridlines to a ggplot graph only in directions mapped to continuous (and not discrete) variables.
@@ -9,7 +7,9 @@ NULL
 #' @param linetype Line type for the gridlines. Defaults to "solid." Must be a single character string value corresponding to an accepted linetype, such as "dotted" or "dashed".
 #' @return List with the class "gridlines_plus", which will trigger the gridlines_plus method in ggplot::ggplot_add.
 #' @examples
-#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + gridlines_plus()
+#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+#' geom_plus(geom = "point") +
+#' gridlines_plus()
 #' @export
 gridlines_plus = function(color = "gray90",
                    linewidth = 1.2,
@@ -27,11 +27,11 @@ gridlines_plus = function(color = "gray90",
 #'
 #' @param object An object of class `gridlines_plus`, created by `gridlines_plus()`, containing user-provided arguments (if any) or else pre-defined default values.
 #' @param plot A ggplot object to which the new gridlines should be added.
-#' @param name Internal name used by ggplot2 when adding the layer.
+#' @param object_name Internal name used by ggplot2 when adding the layer.
 #'
 #' @return A ggplot object with the new gridlines added.
 #' @export
-ggplot_add.gridlines_plus = function(object, plot, name) {
+ggplot_add.gridlines_plus = function(object, plot, object_name) {
 
   #ASSUME BOTH X AND Y ARE NOT CONTINUOUS TO START.
   x_is_cont = FALSE
@@ -75,7 +75,7 @@ ggplot_add.gridlines_plus = function(object, plot, name) {
   #STEP 4: IN SOME GRAPH TYPES, A DERIVED NUMERIC AXIS MAY GET BUILT, SUCH AS A HISTOGRAM OR DENSITY PLOT. LET'S CHECK FOR THOSE.
   if (!x_is_cont || !y_is_cont) {
 
-    built = suppressMessages(ggplot2:::ggplot_build.ggplot(plot)) #FAKE-BUILD THE PLOT.
+    built = suppressMessages(ggbuild_ggplot(plot)) #FAKE-BUILD THE PLOT.
 
     #LOOK AT THE CLASSES OF ITS SCALES
     x_scales = built$layout$panel_scales_x

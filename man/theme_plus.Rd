@@ -18,5 +18,6 @@ List with the class "theme_plus", which will trigger the theme_plus method in gg
 Wrapper function for ggplot2's \code{theme()} function that still allows users to specify custom values for theme attributes but has default values for many attributes that are more likely to result in a graph that meets best practices for design aesthetics, usability, and accessibility.
 }
 \examples{
-ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + theme_plus()
+ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+geom_plus(geom = "point") + theme_plus()
 }

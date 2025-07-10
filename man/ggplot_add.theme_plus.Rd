@@ -4,14 +4,14 @@
 \alias{ggplot_add.theme_plus}
 \title{Add A theme_plus-generated theme to a ggplot}
 \usage{
-\method{ggplot_add}{theme_plus}(object, plot, name)
+\method{ggplot_add}{theme_plus}(object, plot, object_name)
 }
 \arguments{
 \item{object}{An object of class \code{theme_plus}, created by \code{theme_plus()}, containing user-provided arguments (if any) and otherwise default values for many theme attributes.}
 
-\item{plot}{A ggplot object to which the new thene will be applied}
+\item{plot}{A ggplot object to which the new theme will be applied}
 
-\item{name}{Internal name used by ggplot2 when adding the theme.}
+\item{object_name}{Internal name used by ggplot2 when adding the theme.}
 }
 \value{
 A ggplot object with the new theme applied.

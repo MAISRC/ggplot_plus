@@ -14,5 +14,5 @@ A built ggplot.
 }
 \description{
 This method defines how objects of class \code{geom_plus_warnings}, created by the \code{ggplot_add.geom_plus()} function, are built into a ggplot2 plot.
-The method is where various checks are performed to see if the user may be doing something "suboptimal" design-wise that could be used to trigger an informative warning to steer better behaviors.
+The method is where various checks are performed to see if the user may be doing something "sub-optimal" design-wise that could be used to trigger an informative warning to steer better behaviors.
 }

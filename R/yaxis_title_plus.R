@@ -1,5 +1,3 @@
-#' @importFrom ggplot2 ggplot_add ggplot_build ggplot_gtable
-NULL
 #' Relocate a Y Axis Title to Above the Y Axis on a ggplot and Turn it Horizontal.
 #'
 #' This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using `ggplot2`'s default styling tools.
@@ -7,7 +5,9 @@ NULL
 #' @param location A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to `"top"`. `"bottom"` should generally only be used when the x axis labels (which would occupy the same row as the new y axis title) have been moved to the top of the graph.
 #' @return Returns a list of class "axis_switcher", which will trigger the ggplot_add method by the same name.
 #' @examples
-#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + y_axis_title_plus()
+#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+#' geom_plus(geom = "point") +
+#' yaxis_title_plus()
 #' @export
 yaxis_title_plus = function(location = "top") {
   structure(
@@ -23,11 +23,11 @@ yaxis_title_plus = function(location = "top") {
 #'
 #' @param object An object of class `axis_switcher`, created by `y_axis_title_plus()`, containing user-provided arguments (if any) or else pre-defined default values that determine where to move the y axis title to.
 #' @param plot A ggplot object for which the y axis title should be moved.
-#' @param name Internal name used by ggplot2 when adding the layer. Defaults to "switcher" so that this class is added to the resulting object.
+#' @param object_name Internal name used by ggplot2 when adding the layer. Defaults to "switcher" so that this class is added to the resulting object.
 #'
 #' @return A ggplot with the class of "switcher" to trigger the ggplot_build method of the same name and also with the `y_axis_switch_location` attribute set by the call to `y_axis_title_plus()`.
 #' @export
-ggplot_add.axis_switcher = function(object, plot, name = "switcher") {
+ggplot_add.axis_switcher = function(object, plot, object_name) {
   plot$y_axis_switch_location = object$location
   class(plot) = c("switcher", class(plot))
   plot
@@ -55,21 +55,29 @@ ggplot_build.switcher = function(plot) {
 #' This method defines how objects of class `switched`, created by the `ggplot_build.switcher()` function, are finalized into a ggplot2 plot.
 #' The method finishes the process of rebuilding the ggplot with the y axis title moved to its new location within the gtable.
 #'
-#' @param plot A ggplot object with the class of "switched" for which the y axis title should be moved.
+#' @param data A ggplot object with the class of "switched" for which the y axis title should be moved.
 #'
 #' @return A ggplot object compatible with `ggplot2`'s + command structure.
 #' @export
-ggplot_gtable.switched = function(plot) {
+ggplot_gtable.switched = function(data) {
 
-  loc = ifelse(!is.null(plot$plot$y_axis_switch_location),
-                plot$plot$y_axis_switch_location,
+  loc = ifelse(!is.null(data$plot$y_axis_switch_location),
+               data$plot$y_axis_switch_location,
                 "top") #IF USER DIDN'T SPECIFY DIFFERENT, MOVE THE Y AXIS TITLE TO THE TOP.
-  class(plot) = setdiff(class(plot), "switched") #PREVENT RECURSION
-  doneplot = switch_axis_label(plot, location = loc)
+  class(data) = setdiff(class(data), "switched") #PREVENT RECURSION
+  doneplot = switch_axis_label(data, location = loc)
   doneplot + ggplot2::theme(axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 0))) #ADD IN A THEME TO SWITCH HOW THE MARGIN IS ADJUSTED.
 }
 
-#****
+
+#' Convert Between a Couple of Different Ways of Referencing the Same Aesthetic
+#'
+#' This is an internal convenience function that allows translation of the names of aesthetics like "colour" into ones like "col" used by `grid`'s functions.
+#'
+#' @param el A list or list-like object containing the names of elements to be translated.
+#'
+#' @return A list of translated elements.
+#' @export
 translate_element = function(el) {
   el_list = as.list(el)
   #TRANSLATE BETWEEN SOME DIFFERENT AESTHETICS DEPENDING ON HOW EXACTLY THEY ARE CODED.
@@ -80,7 +88,15 @@ translate_element = function(el) {
   return(el_list)
 }
 
-#****
+
+#' Translate Between Ggplot's and Gpar's Attribute Names.
+#'
+#' This is an internal convenience function that matches up `ggplot2`'s aesthetics names with those expected by the `grid::gpar` function so that user-specified aesthetics get properly carried over into the final product.
+#'
+#' @param el A list or list-like object containing the names of elements to be translated.
+#'
+#' @return A list of translated elements.
+#' @export
 element_to_gpar = function(el) {
   el_list = translate_element(el)
   #ATTRIBUTES THAT GPARS NEED TO HAVE--LINE THESE UP WITH THE ATTRIBUTES OF THE ELEMENT BEING PORTED IN.
@@ -95,7 +111,7 @@ element_to_gpar = function(el) {
 #' This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using `ggplot2`'s default styling tools. This is the main function used by `y_axis_title_plus()` to ultimately accomplish its purpose.
 #' This function is used internally by the `ggplot_gtable.switched()` method and is not intended for separate use.
 #'
-#'#' @param p A ggplot object built using ggplot_build whose y axis title will be moved.
+#' @param p A ggplot object built using ggplot_build whose y axis title will be moved.
 #' @param location A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to `"top"`. Potentially overridden by whatever is specified to `y_axis_title_plus()`'s parameter of the same name when it's called.
 #' @return A ggplot object compatible with `ggplot2`'s + command structure.
 #' @export
@@ -151,9 +167,9 @@ switch_axis_label = function(p, location = "top") {
 
   #IF A USER IS PLOTTING ON THE BOTTOM INSTEAD OF THE TOP, LET'S AUTO-ADJUST THE VERTICAL ALIGNMENT:
   if(location == "bottom") {
-    p$plot = p$plot + theme(axis.title.y = element_text(vjust = 0.75)) #THE DEFAULT OF VJUST = 0.25 WORKS GREAT FOR THE TOP POSITION ALREADY.
+    p$plot = p$plot + ggplot2::theme(axis.title.y = ggplot2::element_text(vjust = 0.75)) #THE DEFAULT OF VJUST = 0.25 WORKS GREAT FOR THE TOP POSITION ALREADY.
   } else {
-    p$plot = p$plot + theme(axis.title.y = element_text(vjust = 0.25))
+    p$plot = p$plot + ggplot2::theme(axis.title.y = ggplot2::element_text(vjust = 0.25))
   }
 
   #NOW, WE CONVERT THE GGPLOT WE ALREADY HAVE INTO A GTABLE.

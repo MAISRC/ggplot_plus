@@ -4,14 +4,14 @@
 \alias{ggplot_add.scale_y_cont_plus}
 \title{Add A scale_y_cont_plus-generated Y axis Gradation to a ggplot}
 \usage{
-\method{ggplot_add}{scale_y_cont_plus}(object, plot, name)
+\method{ggplot_add}{scale_y_cont_plus}(object, plot, object_name)
 }
 \arguments{
 \item{object}{An object of class \code{scale_y_continuous_plus}, created by \code{scale_y_continuous_plus()}, containing user-provided arguments (if any) or else pre-defined default values that find a set of "pretty" breaks that encompass the full range of values on the axis and that expand the limits of the axis slightly, if needed, to accomplish this.}
 
 \item{plot}{A ggplot object to which the new y axis scale should be added.}
 
-\item{name}{Internal name used by ggplot2 when adding the layer.}
+\item{object_name}{Internal name used by ggplot2 when adding the layer.}
 }
 \value{
 A ggplot object with the y axis breaks and limits redefined.

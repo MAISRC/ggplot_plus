@@ -7,6 +7,8 @@
 switch_axis_label(p, location = "top")
 }
 \arguments{
+\item{p}{A ggplot object built using ggplot_build whose y axis title will be moved.}
+
 \item{location}{A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to \code{"top"}. Potentially overridden by whatever is specified to \code{y_axis_title_plus()}'s parameter of the same name when it's called.}
 }
 \value{
@@ -15,7 +17,4 @@ A ggplot object compatible with \code{ggplot2}'s + command structure.
 \description{
 This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using \code{ggplot2}'s default styling tools. This is the main function used by \code{y_axis_title_plus()} to ultimately accomplish its purpose.
 This function is used internally by the \code{ggplot_gtable.switched()} method and is not intended for separate use.
-}
-\details{
-#' @param p A ggplot object built using ggplot_build whose y axis title will be moved.
 }

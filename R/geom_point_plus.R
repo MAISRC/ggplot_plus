@@ -351,31 +351,37 @@ economy = rbind(outer, diamond)
   offset = 0.32     # distance from origin to each tip-circle center
   nSeg   = 32
 
-  arm_angles = seq(0, 2*pi - pi/3, length.out = 6)
+  # helper: circle as list(x, y) with *n_seg* distinct vertices
+  circle <- function(cx, cy, r) {
+    t <- seq(0, 2 * pi, length.out = nSeg + 1)[-1L]   # drop 0-rad duplicate
+    list(x = cx + r * cos(t),
+         y = cy + r * sin(t))
+  }
 
-  #MAKING THIS SHAPE IS A BIT MORE INVOLVED AND REQUIRES THE SF PACKAGE TO CREATE SOME FAKE UNIFIED GEOMETRIES.
-  #THE CENTER CIRCLE
-  hub      = sf::st_buffer(sf::st_point(c(0, 0)),
-                            dist = r_hub, nQuadSegs = nSeg)
-  #THE SPOKE CIRCLES
-  tip_sf   = lapply(arm_angles, function(a) {
-    sf::st_buffer(sf::st_point(c(offset*cos(a), offset*sin(a))),
-              dist = r_tip, nQuadSegs = nSeg)
-  }) |>
-    sf::st_sfc()
+  hub <- circle(0, 0, r_hub)
 
-  hub_sf = sf::st_sfc(hub)
+  angles  <- seq(0, 2 * pi - pi / 3, length.out = 6)
+  petals  <- lapply(angles, function(a) { circle(offset * cos(a),
+                                        offset * sin(a),
+                                        r_tip)})
 
-  #UNIFY THESE TOGETHER
-  all_circles = c(hub_sf, tip_sf)
+  union_fun <- function(a, b)
+    polyclip::polyclip(a, b,
+                       op        = "union",
+                       operation = "union")
 
-  asterisk_union = sf::st_union(all_circles)
+  outline <- Reduce(union_fun, petals, init = hub)[[1L]]
 
-  #THEN EXTRACT JUST THE EXTERIOR COORDINATES OF THE UNION.
-  flower = sf::st_coordinates(asterisk_union) |>
-    dplyr::as_tibble() |>
-    dplyr::mutate(piece = L1) |>
-    dplyr::transmute(x = X, y = Y, piece)
+  ## ----- close the ring ----------------------------------------------------
+  if (outline$x[1L] != outline$x[length(outline$x)] ||
+      outline$y[1L] != outline$y[length(outline$y)]) {
+    outline$x <- c(outline$x, outline$x[1L])
+    outline$y <- c(outline$y, outline$y[1L])
+  }
+
+  flower = data.frame(x = outline$x,
+             y = outline$y,
+             piece = 1L)
 }
 
 
@@ -432,9 +438,14 @@ shapes.list = list(
 #' @param inherit.aes Logical for whether the default aesthetics should be overridden rather than combined with the provided aesthetics, as in `ggplot2::geom_point()`.
 #' @return A ggplot2 layer object.
 #' @examples
-#' ggplot(mtcars, aes(wt, mpg, fill = drat)) + geom_point_plus(aes(shape = factor(gear)), size = 5)
-#' ggplot(mtcars, aes(wt, mpg, fill = factor(cyl))) + geom_point_plus(aes(shape = factor(carb)), shape_values = c("squircle", "lotus", "sunburst", "octagon", "cross", "oval"), size = 5, stroke = 0.4)
-#' ggplot(iris, aes(Petal.Width, Petal.Length, fill = Species)) + geom_point_plus(aes(shape = Species), size = 5, alpha = 0.7)
+#' ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg, fill = drat)) +
+#' geom_point_plus(ggplot2::aes(shape = factor(gear)), size = 5)
+#' ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg, fill = factor(cyl))) +
+#' geom_point_plus(ggplot2::aes(shape = factor(carb)),
+#' shape_values = c("squircle", "lotus", "sunburst", "octagon", "cross", "oval"),
+#' size = 5, stroke = 0.4)
+#' ggplot2::ggplot(iris, ggplot2::aes(Petal.Width, Petal.Length, fill = Species)) +
+#' geom_point_plus(ggplot2::aes(shape = Species), size = 5, alpha = 0.7)
 #'
 #' @export
 geom_point_plus = function(mapping = NULL,

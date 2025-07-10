@@ -64,7 +64,7 @@ The `ggplot.plus` package is guided by three core principles:
 The package introduces several new functions to add to your base `ggplot2` arsenal. These include:
 
 | Function | Purpose |
-|------------------------------------|------------------------------------|
+|----|----|
 | `geom_plus()` | A general wrapper for geoms with improved default aesthetics |
 | `geom_point_plus()` | An alternative version to `geom_point()` that introduces a new palette of shapes designed to be more readily distinguishable from each other. |
 | `theme_plus()` | A better base theme with improved default settings for size, spacing, legend placement, and much more. |

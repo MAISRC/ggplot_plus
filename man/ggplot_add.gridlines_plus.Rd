@@ -4,14 +4,14 @@
 \alias{ggplot_add.gridlines_plus}
 \title{Add A gridlines_plus-generated Geometry to a ggplot}
 \usage{
-\method{ggplot_add}{gridlines_plus}(object, plot, name)
+\method{ggplot_add}{gridlines_plus}(object, plot, object_name)
 }
 \arguments{
 \item{object}{An object of class \code{gridlines_plus}, created by \code{gridlines_plus()}, containing user-provided arguments (if any) or else pre-defined default values.}
 
 \item{plot}{A ggplot object to which the new gridlines should be added.}
 
-\item{name}{Internal name used by ggplot2 when adding the layer.}
+\item{object_name}{Internal name used by ggplot2 when adding the layer.}
 }
 \value{
 A ggplot object with the new gridlines added.

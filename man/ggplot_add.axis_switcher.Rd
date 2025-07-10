@@ -4,14 +4,14 @@
 \alias{ggplot_add.axis_switcher}
 \title{Initiate the Process of Moving the Y Axis Title to the Top of a ggplot Graph}
 \usage{
-\method{ggplot_add}{axis_switcher}(object, plot, name = "switcher")
+\method{ggplot_add}{axis_switcher}(object, plot, object_name)
 }
 \arguments{
 \item{object}{An object of class \code{axis_switcher}, created by \code{y_axis_title_plus()}, containing user-provided arguments (if any) or else pre-defined default values that determine where to move the y axis title to.}
 
 \item{plot}{A ggplot object for which the y axis title should be moved.}
 
-\item{name}{Internal name used by ggplot2 when adding the layer. Defaults to "switcher" so that this class is added to the resulting object.}
+\item{object_name}{Internal name used by ggplot2 when adding the layer. Defaults to "switcher" so that this class is added to the resulting object.}
 }
 \value{
 A ggplot with the class of "switcher" to trigger the ggplot_build method of the same name and also with the \code{y_axis_switch_location} attribute set by the call to \code{y_axis_title_plus()}.

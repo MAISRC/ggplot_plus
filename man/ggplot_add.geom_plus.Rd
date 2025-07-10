@@ -4,14 +4,14 @@
 \alias{ggplot_add.geom_plus}
 \title{Add A geom_plus-generated Geometry to a ggplot}
 \usage{
-\method{ggplot_add}{geom_plus}(object, plot, name)
+\method{ggplot_add}{geom_plus}(object, plot, object_name)
 }
 \arguments{
 \item{object}{An object of class \code{geom_plus}, created by \code{geom_plus()}, containing user-provided arguments (if any).}
 
 \item{plot}{A ggplot object to which the new geometry layer should be added.}
 
-\item{name}{Internal name used by ggplot2 when adding the layer.}
+\item{object_name}{Internal name used by ggplot2 when adding the layer.}
 }
 \value{
 A ggplot object with the new geometry layer added.

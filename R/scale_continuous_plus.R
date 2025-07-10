@@ -1,5 +1,3 @@
-#' @importFrom ggplot2 ggplot_add
-NULL
 #' Find Pretty Breaks for Continuous Axes in ggplot While Ensuring End Labels
 #'
 #' This function attempts to find a set of breaks for a continuous variable such that there aren't too many breaks, the breaks are "pretty" values where possible, and breaks exist at or near to the range values of the variable. It is essential `pretty_breaks()` from the `scales` package except that it is more opinionated about needing breaks at or near both ends of the data range. If needed, the limits of the axis are expanded slightly to yield a new break just past the range of the data.
@@ -61,10 +59,12 @@ cont_breaks_plus = function(data,
 #' @param ... Standard inputs normally given to `scale_x_continuous()`. Must not include `breaks` or `limits` or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.
 #' @param n A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
 #' @param buffer_frac A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
-#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "overlabeled" in a way that might contribute to excess cognitive load.
+#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "over-labeled" in a way that might contribute to excess cognitive load.
 #' @return Returns a list of class `"scale_x_cont_plus"`, which will trigger the `ggplot_add` method by the same name to trigger the axis breaks reconfiguration.
 #' @examples
-#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + scale_x_continuous_plus()
+#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+#' geom_plus(geom = "point") +
+#' scale_x_continuous_plus()
 #' @export
 scale_x_continuous_plus = function(...,
                                  n = 5,
@@ -98,10 +98,12 @@ scale_x_continuous_plus = function(...,
 #' @param ... Standard inputs normally given to `scale_y_continuous()`. Must not include `breaks` or `limits` or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.
 #' @param n A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
 #' @param buffer_frac A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
-#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "overlabeled" in a way that might contribute to excess cognitive load.
+#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "over-labeled" in a way that might contribute to excess cognitive load.
 #' @return Returns a list of class `"scale_y_cont_plus"`, which will trigger the `ggplot_add` method by the same name to trigger the axis breaks reconfiguration.
 #' @examples
-#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + scale_y_continuous_plus()
+#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+#' geom_plus(geom = "point") +
+#' scale_y_continuous_plus()
 #' @export
 scale_y_continuous_plus = function(...,
                                  n = 5,
@@ -135,10 +137,12 @@ scale_y_continuous_plus = function(...,
 #' @param ... Standard inputs normally given to `scale_fill_continuous()`. Must not include `breaks` or `limits` or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.
 #' @param n A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
 #' @param buffer_frac A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
-#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "overlabeled" in a way that might contribute to excess cognitive load.
+#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "over-labeled" in a way that might contribute to excess cognitive load.
 #' @return Returns a list of class `"scale_fill_cont_plus"`, which will trigger the `ggplot_add` method by the same name to trigger the axis breaks reconfiguration.
 #' @examples
-#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + scale_fill_continuous_plus()
+#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+#' geom_plus(geom = "point", ggplot2::aes(fill = Petal.Width)) +
+#' scale_fill_continuous_plus()
 #' @export
 scale_fill_continuous_plus = function(...,
                                    n = 5,
@@ -172,10 +176,12 @@ scale_fill_continuous_plus = function(...,
 #' @param ... Standard inputs normally given to `scale_color_continuous()`. Must not include `breaks` or `limits` or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.
 #' @param n A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
 #' @param buffer_frac A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
-#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "overlabeled" in a way that might contribute to excess cognitive load.
+#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "over-labeled" in a way that might contribute to excess cognitive load.
 #' @return Returns a list of class `"scale_color_cont_plus"`, which will trigger the `ggplot_add` method by the same name to trigger the axis breaks reconfiguration.
 #' @examples
-#' ggplot(iris, aes(x=Sepal.Length, y=Petal.Length)) + geom_plus(geom = "point") + scale_color_continuous_plus()
+#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+#' geom_plus(geom = "point", ggplot2::aes(color = Petal.Width)) +
+#' scale_color_continuous_plus()
 #' @export
 scale_color_continuous_plus = function(...,
                                       n = 5,
@@ -202,9 +208,22 @@ scale_color_continuous_plus = function(...,
                 class = "scale_color_cont_plus")
 }
 
+
+#' Find Pretty Breaks for a Continuous Color axis in ggplot While Ensuring End Labels
+#'
+#' This function is a alias for `scale_color_continuous_plus()`--see there for more information.
+#'
+#' @param ... Standard inputs normally given to `scale_color_continuous()`. Must not include `breaks` or `limits` or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.
+#' @param n A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
+#' @param buffer_frac A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to `cont_breaks_plus()` internally.
+#' @param thin_labels Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "over-labeled" in a way that might contribute to excess cognitive load.
+#' @return Returns a list of class `"scale_color_cont_plus"`, which will trigger the `ggplot_add` method by the same name to trigger the axis breaks reconfiguration.
+#' @examples
+#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
+#' geom_plus(geom = "point", ggplot2::aes(color = Petal.Width)) +
+#' scale_colour_continuous_plus()
 #' @export
 scale_colour_continuous_plus = scale_color_continuous_plus #ALIAS
-
 
 
 #' Add A scale_x_cont_plus-generated X axis Gradation to a ggplot
@@ -214,11 +233,11 @@ scale_colour_continuous_plus = scale_color_continuous_plus #ALIAS
 #'
 #' @param object An object of class `scale_x_continuous_plus`, created by `scale_x_continuous_plus()`, containing user-provided arguments (if any) or else pre-defined default values that find a set of "pretty" breaks that encompass the full range of values on the axis and that expand the limits of the axis slightly, if needed, to accomplish this.
 #' @param plot A ggplot object to which the new x axis scale should be added.
-#' @param name Internal name used by ggplot2 when adding the layer.
+#' @param object_name Internal name used by ggplot2 when adding the layer.
 #'
 #' @return A ggplot object with the x axis breaks and limits redefined.
 #' @export
-ggplot_add.scale_x_cont_plus = function(object, plot, name) {
+ggplot_add.scale_x_cont_plus = function(object, plot, object_name) {
 
   #CHECK TO SEE IF X WAS EXPLICITLY MAPPED.
   if (!is.null(plot$mapping$x)) {
@@ -226,7 +245,7 @@ ggplot_add.scale_x_cont_plus = function(object, plot, name) {
     x_data = plot$data[[x_expr]] #IF SO, GRAB THE X DATA EASILY FROM THE PLOT DATA.
   } else {
     #OTHERWISE, FAKE-BUILD THE PLOT...
-    built = suppressMessages(ggplot2:::ggplot_build.ggplot(plot))
+    built = suppressMessages(ggbuild_ggplot(plot))
     x_data = NULL
     #GO THRU THE PLOT'S DATA LAYERS TO SEE IF WE CAN FIND SOMETHING CALLED X
     for (layer in built$data) {
@@ -262,7 +281,7 @@ ggplot_add.scale_x_cont_plus = function(object, plot, name) {
   }
 
   #ON BINNED GRAPHS LIKE HISTOGRAMS, IT'S PROBABLY NOT A GREAT IDEA TO ENFORCE THE LIMITS BECAUSE IT'S HARD TO SET THOSE TO WORK FOR BINS...
-  built = suppressMessages(ggplot2:::ggplot_build.ggplot(plot)) #FAKE BUILD THE PLOT.
+  built = suppressMessages(ggbuild_ggplot(plot)) #FAKE BUILD THE PLOT.
   #SEE IF ANY OF THE LAYERS LOOK LIKE THEY'D BE BINNED.
   is.binned = any(sapply(built$plot$layers, function(layer) {
     inherits(layer$stat, "StatBin") || inherits(layer$stat, "StatBin2d")
@@ -279,7 +298,7 @@ ggplot_add.scale_x_cont_plus = function(object, plot, name) {
     breaks_limits$labels = tmp
   }
 
-  plot + do.call(scale_x_continuous,
+  plot + do.call(ggplot2::scale_x_continuous,
                c(breaks_limits,
                  object$extra_args)) #CALL SCALE_X_CONTINUOUS AS NORMAL EXCEPT OVERRIDE IN THE NEW BREAKS AND LIMITS.
   } else {
@@ -296,11 +315,11 @@ ggplot_add.scale_x_cont_plus = function(object, plot, name) {
 #'
 #' @param object An object of class `scale_y_continuous_plus`, created by `scale_y_continuous_plus()`, containing user-provided arguments (if any) or else pre-defined default values that find a set of "pretty" breaks that encompass the full range of values on the axis and that expand the limits of the axis slightly, if needed, to accomplish this.
 #' @param plot A ggplot object to which the new y axis scale should be added.
-#' @param name Internal name used by ggplot2 when adding the layer.
+#' @param object_name Internal name used by ggplot2 when adding the layer.
 #'
 #' @return A ggplot object with the y axis breaks and limits redefined.
 #' @export
-ggplot_add.scale_y_cont_plus = function(object, plot, name) {
+ggplot_add.scale_y_cont_plus = function(object, plot, object_name) {
 
   #CHECK TO SEE IF Y WAS EXPLICITLY MAPPED.
   if (!is.null(plot$mapping$y)) {
@@ -308,7 +327,7 @@ ggplot_add.scale_y_cont_plus = function(object, plot, name) {
     y_data = plot$data[[y_expr]] #IF SO, GRAB THE Y DATA EASILY FROM THE PLOT DATA.
   } else {
     #OTHERWISE, FAKE-BUILD THE PLOT...
-    built = suppressMessages(ggplot2:::ggplot_build.ggplot(plot))
+    built = suppressMessages(ggbuild_ggplot(plot))
     y_data = NULL
     #GO THRU THE PLOT'S DATA LAYERS TO SEE IF WE CAN FIND SOMETHING CALLED Y
     for (layer in built$data) {
@@ -345,7 +364,7 @@ ggplot_add.scale_y_cont_plus = function(object, plot, name) {
   }
 
   #ON BINNED GRAPHS LIKE HISTOGRAMS, IT'S PROBABLY NOT A GREAT IDEA TO ENFORCE THE LIMITS BECAUSE IT'S HARD TO SET THOSE TO WORK FOR BINS...
-  built = suppressMessages(ggplot2:::ggplot_build.ggplot(plot)) #FAKE BUILD THE PLOT.
+  built = suppressMessages(ggbuild_ggplot(plot)) #FAKE BUILD THE PLOT.
   #SEE IF ANY OF THE LAYERS LOOK LIKE THEY'D BE BINNED.
   is.binned = any(sapply(built$plot$layers, function(layer) {
     inherits(layer$stat, "StatBin") || inherits(layer$stat, "StatBin2d")
@@ -362,7 +381,7 @@ ggplot_add.scale_y_cont_plus = function(object, plot, name) {
     breaks_limits$labels = tmp
   }
 
-  plot + do.call(scale_y_continuous,
+  plot + do.call(ggplot2::scale_y_continuous,
                       c(breaks_limits,
                         object$extra_args)) #CALL SCALE_X_CONTINUOUS AS NORMAL EXCEPT OVERRIDE IN THE NEW BREAKS AND LIMITS.
   } else {
@@ -378,11 +397,11 @@ ggplot_add.scale_y_cont_plus = function(object, plot, name) {
 #'
 #' @param object An object of class `scale_fill_cont_plus`, created by `scale_fill_continuous_plus()`, containing user-provided arguments (if any) or else pre-defined default values that find a set of "pretty" breaks that encompass the full range of values on the axis and that expand the limits of the axis slightly, if needed, to accomplish this.
 #' @param plot A ggplot object to which the new fill color bar should be added.
-#' @param name Internal name used by ggplot2 when adding the layer.
+#' @param object_name Internal name used by ggplot2 when adding the layer.
 #'
 #' @return A ggplot object with the fill scale breaks and limits redefined.
 #' @export
-ggplot_add.scale_fill_cont_plus = function(object, plot, name) {
+ggplot_add.scale_fill_cont_plus = function(object, plot, object_name) {
 
   #CHECK TO SEE IF FILL WAS MAPPED IN GGPLOT GLOBALLY--THIS IS DIFFERENT THAN WITH X AND Y BECAUSE SOMETIMES THESE CAN BE PROCEDURALLY GENERATED BUT COLOR AND FILL CAN'T--THEY NEED TO BE EXPLICITLY MENTIONED SOMEHOW. ALSO, WE NEED TO GET THE *RAW* DATA FROM THE VARIABLE MAPPED TO FILL/COLOR, NOT THE FILL/COLOR COLUMN ITSELF CUZ THAT'LL STORE COLOR DATA.
   if (!is.null(plot$mapping$fill)) {
@@ -428,7 +447,7 @@ ggplot_add.scale_fill_cont_plus = function(object, plot, name) {
   }
 
   #ON BINNED GRAPHS LIKE HISTOGRAMS, IT'S PROBABLY NOT A GREAT IDEA TO ENFORCE THE LIMITS BECAUSE IT'S HARD TO SET THOSE TO WORK FOR BINS...
-  built = suppressMessages(ggplot2:::ggplot_build.ggplot(plot)) #FAKE BUILD THE PLOT.
+  built = suppressMessages(ggbuild_ggplot(plot)) #FAKE BUILD THE PLOT.
   #SEE IF ANY OF THE LAYERS LOOK LIKE THEY'D BE BINNED.
   is.binned = any(sapply(built$plot$layers, function(layer) {
     inherits(layer$stat, "StatBin") || inherits(layer$stat, "StatBin2d")
@@ -445,7 +464,7 @@ ggplot_add.scale_fill_cont_plus = function(object, plot, name) {
     breaks_limits$labels = tmp
   }
 
-  plot + do.call(scale_fill_continuous,
+  plot + do.call(ggplot2::scale_fill_continuous,
                  c(breaks_limits,
                    object$extra_args)) #CALL SCALE_X_CONTINUOUS AS NORMAL EXCEPT OVERRIDE IN THE NEW BREAKS AND LIMITS.
   } else {
@@ -462,16 +481,16 @@ ggplot_add.scale_fill_cont_plus = function(object, plot, name) {
 #'
 #' @param object An object of class `scale_color_cont_plus`, created by `scale_color_continuous_plus()`, containing user-provided arguments (if any) or else pre-defined default values that find a set of "pretty" breaks that encompass the full range of values on the axis and that expand the limits of the axis slightly, if needed, to accomplish this.
 #' @param plot A ggplot object to which the new color bar should be added.
-#' @param name Internal name used by ggplot2 when adding the layer.
+#' @param object_name Internal name used by ggplot2 when adding the layer.
 #'
 #' @return A ggplot object with the color scale breaks and limits redefined.
 #' @export
-ggplot_add.scale_color_cont_plus = function(object, plot, name) {
+ggplot_add.scale_color_cont_plus = function(object, plot, object_name) {
 
   #CHECK TO SEE IF FILL WAS MAPPED IN GGPLOT GLOBALLY--THIS IS DIFFERENT THAN WITH X AND Y BECAUSE SOMETIMES THESE CAN BE PROCEDURALLY GENERATED BUT COLOR AND FILL CAN'T--THEY NEED TO BE EXPLICITLY MENTIONED SOMEHOW. ALSO, WE NEED TO GET THE *RAW* DATA FROM THE VARIABLE MAPPED TO FILL/COLOR, NOT THE FILL/COLOR COLUMN ITSELF CUZ THAT'LL STORE COLOR DATA.
   if (!is.null(plot$mapping$colour)) {
     colour_expr = rlang::as_name(plot$mapping$colour)
-    if(!is.null(plot$data) && colour_exp %in% names(plot$data)) {
+    if(!is.null(plot$data) && colour_expr %in% names(plot$data)) {
       colour_data = plot$data[[colour_expr]] #IF SO, GRAB THE FILL DATA
     }
   } else {
@@ -512,7 +531,7 @@ ggplot_add.scale_color_cont_plus = function(object, plot, name) {
   }
 
   #ON BINNED GRAPHS LIKE HISTOGRAMS, IT'S PROBABLY NOT A GREAT IDEA TO ENFORCE THE LIMITS BECAUSE IT'S HARD TO SET THOSE TO WORK FOR BINS...
-  built = suppressMessages(ggplot2:::ggplot_build.ggplot(plot)) #FAKE BUILD THE PLOT.
+  built = suppressMessages(ggbuild_ggplot(plot)) #FAKE BUILD THE PLOT.
   #SEE IF ANY OF THE LAYERS LOOK LIKE THEY'D BE BINNED.
   is.binned = any(sapply(built$plot$layers, function(layer) {
     inherits(layer$stat, "StatBin") || inherits(layer$stat, "StatBin2d")
@@ -529,7 +548,7 @@ ggplot_add.scale_color_cont_plus = function(object, plot, name) {
     breaks_limits$labels = tmp
   }
 
-  plot + do.call(scale_colour_continuous,
+  plot + do.call(ggplot2::scale_colour_continuous,
                  c(breaks_limits,
                    object$extra_args)) #CALL SCALE_X_CONTINUOUS AS NORMAL EXCEPT OVERRIDE IN THE NEW BREAKS AND LIMITS.
   } else {
