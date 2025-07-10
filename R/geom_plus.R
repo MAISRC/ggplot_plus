@@ -319,7 +319,7 @@ ggplot_add.geom_plus = function(object, plot, object_name) {
   geom_str = paste0("geom_", geom_name)
 
   #THE IF/ELSE LOGIC HERE ALLOWS US TO NAMESPACE GGPLOT2 SAFELY BUT AVOID DOING SO WITH MY CUSTOM GEOMS.
-  if(geom_name == "geom_point_plus") {
+  if(geom_str == "geom_point_plus") {
     layer = do.call(geom_point_plus, use_these_args)
   } else {
     geom_fn = getExportedValue("ggplot2", geom_str) #GET THE ACTUAL FUNCTION THAT THE USER IS HOPING WE'LL USE HERE.
