@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center">
-<meta name="dcterms.date" content="2025-07-09">
+<meta name="dcterms.date" content="2025-07-10">
 
 <title>ggplot.plus Readme and Quick-Start Guide</title>
 <style>
@@ -99,7 +99,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 9, 2025</p>
+      <p class="date">July 10, 2025</p>
     </div>
   </div>
   
@@ -117,76 +117,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("devtools")  # if not already installed</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"https://github.com/MAISRC/ggplot_plus"</span>) <span class="co">#&lt;--</span><span class="al">NOTE</span><span class="co"> THE _ INSTEAD OF THE . IN THE NAME.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rcpp (1.0.14 -&gt; 1.1.0 ) [CRAN]
-sf   (1.0-20 -&gt; 1.0-21) [CRAN]</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>package 'Rcpp' successfully unpacked and MD5 sums checked</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: cannot remove prior installation of package 'Rcpp'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in file.copy(savedcopy, lib, recursive = TRUE): problem copying
-C:\Users\Bajcz\AppData\Local\R\win-library\4.5\00LOCK\Rcpp\libs\x64\Rcpp.dll to
-C:\Users\Bajcz\AppData\Local\R\win-library\4.5\Rcpp\libs\x64\Rcpp.dll:
-Permission denied</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: restored 'Rcpp'</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>package 'sf' successfully unpacked and MD5 sums checked</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: cannot remove prior installation of package 'sf'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in file.copy(savedcopy, lib, recursive = TRUE): problem copying
-C:\Users\Bajcz\AppData\Local\R\win-library\4.5\00LOCK\sf\libs\x64\sf.dll to
-C:\Users\Bajcz\AppData\Local\R\win-library\4.5\sf\libs\x64\sf.dll: Permission
-denied</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: restored 'sf'</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-The downloaded binary packages are in
-    C:\Users\Bajcz\AppData\Local\Temp\RtmpmEzajN\downloaded_packages
-── R CMD build ─────────────────────────────────────────────────────────────────
-* checking for file 'C:\Users\Bajcz\AppData\Local\Temp\RtmpmEzajN\remotes36246914f0b\MAISRC-ggplot_plus-21de746/DESCRIPTION' ... OK
-* preparing 'ggplot.plus':
-* checking DESCRIPTION meta-information ... OK
-* checking for LF line-endings in source and make files and shell scripts
-* checking for empty or unneeded directories
-Omitted 'LazyData' from DESCRIPTION
-  NB: this package now depends on R (&gt;= 4.1.0)
-  WARNING: Added dependency on R &gt;= 4.1.0 because package code uses the
-  pipe |&gt; or function shorthand \(...) syntax added in R 4.1.0.
-  File(s) using such syntax:
-    'geom_point_plus.R'
-* building 'ggplot.plus_0.1.8.tar.gz'
-</code></pre>
-</div>
 </div>
 <p>Then, load it alongside <code>ggplot2</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("ggplot2")  # if not already installed</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot.plus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("ggplot2")  # if not already installed</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot.plus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Once loaded, you can start layering in the “plus” tools to improve your plot design with minimal effort.</p>
 <section id="using-the-tools" class="level3">
 <h3 class="anchored" data-anchor-id="using-the-tools">Using the tools</h3>
 <p>Just by loading <code>ggplot.plus</code>, you will switch your session’s default color palette to one that is more broadly accessible–there’s no need to call <code>palettes_plus()</code> to alter this palette unless you want to (see the “Accessible Color Palettes” section for details):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#A BASIC GGPLOT SCATTERPLOT, EXCEPT USING ggplot.plus's DEFAULT COLOR PALETTE INSTEAD.</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#A BASIC GGPLOT SCATTERPLOT, EXCEPT USING ggplot.plus's DEFAULT COLOR PALETTE INSTEAD.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -197,11 +144,11 @@ Omitted 'LazyData' from DESCRIPTION
 </div>
 <p>To access the tweaks the package makes to <code>ggplot2</code>’s common geometries (“geoms”), convert your <code>geom_*()</code> calls into <code>geom_plus()</code> calls, including the name of the <code>geom</code> for the <code>geom</code> argument:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, <span class="co">#&lt;--DIFF FUNCTION, NEW GEOM INPUT.</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, <span class="co">#&lt;--DIFF FUNCTION, NEW GEOM INPUT.</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -213,18 +160,18 @@ Omitted 'LazyData' from DESCRIPTION
 <p>You can already see that this is a very different graph than what <code>ggplot2</code> would produce by default!</p>
 <p>Everything else the package offers gets turned on when you add (using <code>ggplot2</code>’s usual <code>+</code> operator) the associated function to your <code>ggplot()</code> command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species)) <span class="sc">+</span> </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> <span class="co">#&lt;-OVERHAULS VISUAL THEME</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="st">"Petal length (cm)"</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--OVERHAULS AXIS BREAKS AND LIMITS (FOR CONTINUOUS AXES ONLY!) </span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> <span class="co">#&lt;--SAME FOR Y AXIS.</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--RELOCATES AND RE-ORIENTS Y AXIS TITLE.</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--ADDS THOUGHTFUL GRIDLINES, IF YOU *REALLY* WANT THEM.</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(<span class="st">"Iris"</span>)<span class="sc">*</span><span class="st">" species"</span>)) <span class="co">#&lt;--THIS IS BASE GGPLOT2, BUT A NICE TOUCH!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> Species)) <span class="sc">+</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> <span class="co">#&lt;-OVERHAULS VISUAL THEME</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="st">"Petal length (cm)"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--OVERHAULS AXIS BREAKS AND LIMITS (FOR CONTINUOUS AXES ONLY!) </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> <span class="co">#&lt;--SAME FOR Y AXIS.</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--RELOCATES AND RE-ORIENTS Y AXIS TITLE.</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span> <span class="co">#&lt;--ADDS THOUGHTFUL GRIDLINES, IF YOU *REALLY* WANT THEM.</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(<span class="st">"Iris"</span>)<span class="sc">*</span><span class="st">" species"</span>)) <span class="co">#&lt;--THIS IS BASE GGPLOT2, BUT A NICE TOUCH!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

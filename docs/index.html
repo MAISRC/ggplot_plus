@@ -112,7 +112,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>
 ── R CMD build ─────────────────────────────────────────────────────────────────
-* checking for file 'C:\Users\Bajcz\AppData\Local\Temp\RtmpOQ6aFn\remotes190cdba5567\MAISRC-ggplot_plus-829415d/DESCRIPTION' ... OK
+* checking for file 'C:\Users\Bajcz\AppData\Local\Temp\Rtmpgpp96x\remotes427c5818649c\MAISRC-ggplot_plus-2eac06b/DESCRIPTION' ... OK
 * preparing 'ggplot.plus':
 * checking DESCRIPTION meta-information ... OK
 * checking for LF line-endings in source and make files and shell scripts
@@ -704,7 +704,7 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 </div>
 </div>
 </div>
-<p>Here’s how you’d relocate the legend to its normal position. But, if you do this, I’d adjust some of its spacing settings also, as the defaults are built for horizontal rather than vertical orientation:</p>
+<p>Here’s how you’d relocate the legend to its normal position–the theme will automatically apply some styling unique to this position instead:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
@@ -714,7 +714,7 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">legend_pos =</span> <span class="cn">FALSE</span>) <span class="co">#&lt;--ANY VALUE OTHER THAN THE DEFAULT "top" RESTORES ENSURES RIGHT-HAND LEGEND. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>(<span class="at">legend_pos =</span> <span class="cn">FALSE</span>) <span class="co">#&lt;--ANY VALUE OTHER THAN THE DEFAULT "top" RESTORES RIGHT-HAND LEGEND. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -723,7 +723,7 @@ However, <code>palettes_plus()</code> excludes, by default, both the darkest pur
 </div>
 </div>
 </div>
-<p>Personally, I don’t really like this…it feels a bit wasteful in terms of space. But if you like it, that’s ultimately what matters! Like the rest of the <code>ggplot.plus</code> toolkit, <code>theme_plus()</code> is meant to be a smart starting point, <strong>not</strong> a “final destination.” Its outputs won’t be ideal for every plot, person, or context (I don’t think that’s even remotely possible!), but it’s designed to save you time by making it so there are at least <em>fewer</em> adjustments you need to make to get your graphs up to modern design standards.</p>
+<p>Personally, I don’t really like this, but it’s an option if you really prefer it! Like the rest of the <code>ggplot.plus</code> toolkit, <code>theme_plus()</code> is meant to be a smart starting point, <strong>not</strong> a “final destination.” Its outputs won’t be ideal for every plot, person, or context (I don’t think that’s even remotely possible!), but it’s designed to save you time by making it so there are at least <em>fewer</em> adjustments you need to make to get your graphs up to modern design standards.</p>
 <p>There are a few theme considerations that apply only to color bars, which are the legend components you see when you map <code>color</code> or <code>fill</code> to a continuous variable. Let’s map a continuous variable to <code>fill</code> to get such a legend:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
@@ -1309,7 +1309,8 @@ inside geom_plus() to TRUE to hide this and other messages.</code></pre>
 <span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
 <span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
 <span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Petal width (cm)"</span>) <span class="co">#&lt;--TO SATISFY THE PREVIOUS </span><span class="al">WARNING</span><span class="co">.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Petal.Width, the variable you mapped to fill, has 22 unique levels.
 Even with a high-quality palette, it's difficult to ensure all colors chosen
@@ -1318,15 +1319,6 @@ such cases, consider using a different visual channel, intersecting another
 visual channel (e.g., shape) with color, or reducing the number of groups
 shown. Set silence_warnings inside geom_plus() to TRUE to hide this and other
 messages.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: It looks like you haven't provided a custom title for variable(s)
-Petal.Width, mapped to the following aesthetic(s), respectively: fill. This
-means the title(s) are probably still the column name(s) from your data set,
-which may not be human-readable, nicely formatted, and intuitive and contain
-units (if any). We recommend using a scale*() function to specify a custom
-title for each such scale. Set silence_warnings inside geom_plus() to TRUE to
-hide this and other messages.</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -1343,18 +1335,18 @@ hide this and other messages.</code></pre>
 <h2 class="anchored" data-anchor-id="known-issues">Known Issues</h2>
 <p>There’s a known limitation when using <code>yaxis_title_plus()</code> alongside a <strong>top-positioned x-axis</strong>. The relocated y-axis title will end up in the same horizontal “row” as the top x axis labels, causing them to clip into each other:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE X AXIS TO TOP OF THE GRAPH</span></span>
-<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
-<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE X AXIS TO TOP OF THE GRAPH</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: It looks like you haven't provided a custom title for variable(s)
 Species, mapped to the following aesthetic(s), respectively: fill. This means
@@ -1380,18 +1372,18 @@ Alternatively, set "location = 'bottom'" in switch_y_axis().</code></pre>
 </div>
 <p>You’ll notice that <code>yaxis_title_plus()</code> provides a warning in this case and gives you a suggestion as to how to work around it: you can use the <code>location = "bottom"</code> option in <code>yaxis_title_plus()</code> to relocate the y title beneath the plot instead:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
-<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> </span>
-<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span></span>
-<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>(<span class="at">location =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE  Y AXIS TITLE TO BOTTOM INSTEAD</span></span>
-<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species),</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span> </span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span></span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>(<span class="at">location =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> <span class="co">#&lt;--MOVE  Y AXIS TITLE TO BOTTOM INSTEAD</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1400,27 +1392,27 @@ Alternatively, set "location = 'bottom'" in switch_y_axis().</code></pre>
 </div>
 </div>
 </div>
-<p>This feels a little “backwards” to me at first, but it works!</p>
+<p>This feels a little “backwards” to us, but it works. Maybe it’d make good sense in a specific context wherein this reversing of the graph’s standard schema aids reader intuition.</p>
 <p>Now, if you instead <em>duplicate</em> the x-axis on <strong>both top and bottom</strong> or have a secondary x axis on the top, you won’t be able to relocate the y-axis title easily. In that case, the best fallback is probably to stick with the horizontal y-axis title broken across as many lines as possible using line breaks (<code>\n</code>), as shown earlier.</p>
 <section id="idealized-scatterplot-for-reference" class="level3">
 <h3 class="anchored" data-anchor-id="idealized-scatterplot-for-reference">Idealized scatterplot for reference</h3>
 <p>Here’s a “final” version of our scatterplot using all of <code>ggplot.plus</code>’s tools together:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palettes_plus</span>(<span class="at">begin_discrete =</span> <span class="dv">0</span>, </span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">end_discrete =</span> <span class="dv">1</span>)</span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>),</span>
-<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">silence_warnings =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--OTHERWISE, Species WILL TRIGGER A </span><span class="al">WARNING</span><span class="co">.</span></span>
-<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
-<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
-<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
-<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
-<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palettes_plus</span>(<span class="at">begin_discrete =</span> <span class="dv">0</span>, </span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">end_discrete =</span> <span class="dv">1</span>)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris,</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length, </span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_plus</span>(<span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> Species, </span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">alpha =</span> <span class="fl">0.3</span>),</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">silence_warnings =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co">#&lt;--OTHERWISE, Species WILL TRIGGER A </span><span class="al">WARNING</span><span class="co">.</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Petal length (cm)"</span>, <span class="at">thin_labels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous_plus</span>(<span class="at">name =</span> <span class="st">"Sepal length (cm)"</span>) <span class="sc">+</span> </span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_plus</span>() <span class="sc">+</span> </span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">yaxis_title_plus</span>() <span class="sc">+</span></span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gridlines_plus</span>() <span class="sc">+</span></span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_alpha</span>(<span class="at">guide =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
