@@ -21,3 +21,8 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Acknowledgements:
+    I thank Allan Cameron (@Allan Cameron) for answers to
+    Stack Overflow questions 79654995 and 79682150, which
+    provided key coding elements enabling the functionality
+    of yaxis_title_plus() and geom_point_plus().

@@ -596,6 +596,78 @@ ggplot_build.geom_plus_warnings = function(plot) {
       warning(warning_text,
               call. = FALSE)
 
+    }
+
+    #WARNING CHECKS #3--SEE IF USERS HAVE CONTINUOUS SCALES THAT ARE LACKING LABELS AT OR NEAR THEIR LIMITS. THEY SHOULD CONSIDER USING OUR SCALE_*_CONTINUOUS_PLUS FUNCTIONS FOR THESE SCALES.
+
+    #THIS IS A CONVENIENCE FUNCTION (THANKS CHATGPT) THAT TAKES A GGPLOT OBJECT AND AN AESTHETIC, LIKE "x", AND FIGURES OUT IF IT'S MAPPED AND, IF SO, FIGURES OUT WHAT VARIABLE IT WAS MAPPED TO.
+    find_aes_source = function(gg, aes) {
+
+      plot = if (inherits(gg, "ggplot")) gg else gg$plot #FIGURE OUT WHERE TO LOOK
+
+      #SCAN THROUGH THE LAYERS TO SEARCH THERE (THESE WOULD WIN IF THERE IS ONE)
+      for (L in rev(plot$layers)) {
+        if (!is.null(L$mapping[[aes]])) {
+          return(rlang::as_label(L$mapping[[aes]]))
+        }
+        if (!is.null(L$aes_params[[aes]])) {
+          return(NA)
+        }
+      }
+
+      #OTHERWISE GET IT FROM GLOBAL IF IT'S THERE.
+      if (!is.null(plot$mapping[[aes]])) {
+        return(rlang::as_label(plot$mapping[[aes]]))
+      }
+
+      #OTHERWISE JUST FAIL--MUST NOT BE MAPPED.
+      return(NA)
+    }
+
+    #ANOTHER CONVENIENCE FUNCTION FROM CHATGPT THAT TAKES A BUILT GGPLOT OBJECT AND AN AESTHETIC AND FINDS THE RANGE OF THE VARIABLE MAPPED TO THAT AESTHETICQ  QA  a` ` (ASSUMING IT'S CONTINUOUS)
+    range_from_built_data = function(built, aes) {
+      vals = unlist(lapply(built$data, function(df) {
+        if (aes %in% names(df)) { df[[aes]] } else { NULL }
+      }))
+      vals = vals[is.finite(vals)]
+      if (length(vals)) { range(vals) } else { NULL }
+    }
+
+    #NOW, WE CYCLE THRU EACH OF THE RELEVANT AESTHETICS
+    scales2warn = c()
+    for(sc in c("x", "y", "colour", "fill")) {
+      scale.mapped = find_aes_source(built, sc) #CHECK TO SEE IF THIS SCALE WAS EVEN MAPPED TO A VARIABLE.
+      if(!is.null(scale.mapped) &&
+         !is.na(scale.mapped)) {
+
+        scale.attr = built$plot$scales$get_scales(sc) #IF SO, FIND THAT SCALE IN THE PLOT'S SCALES.
+
+        if(inherits(scale.attr, "ScaleContinuous")) { #FIND OUT IF IT'S A CONTINUOUS SCALE
+
+          #PERFORM THE SAME CHECK AS IN THE SCALE_*_CONTINUOUS_PLUS FUCTIONS.
+          scale.range = range_from_built_data(built, sc) #RANGE OF ACTUAL DATA
+          lower = scale.range[1]
+          upper = scale.range[2]
+          span = upper-lower
+
+          brks = built$layout$panel_params[[1]][[sc]]$breaks #THE ASSIGNED BREAKPOINTS
+          brks = brks[!is.na(brks)] #SCRUB OUT NAS
+          buffer_frac = 0.05
+
+          has_low = any(abs(brks - lower) < buffer_frac * span) || any(brks < lower)
+          has_high = any(abs(brks - upper) < buffer_frac * span) || any(brks > upper)
+          #IF THE BREAKS SEEM SUBOPTIMAL, WE FLAG THAT WITH A WARNING.
+          if(!has_low || !has_high) {
+            scales2warn = c(scales2warn, sc)
+          }
+
+        }
+
+      }
+
+    }
+    if(length(scales2warn) > 0) {
+    warning(paste0("Your [", paste0(scales2warn, collapse = ", "), "] scale(s) seem(s) to be lacking a break near the upper and/or lower limit(s) of the data. Consider using the corresponding scale_*_continuous_plus() function(s) to address this issue. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages."))
      }
     }
 
