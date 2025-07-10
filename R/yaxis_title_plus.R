@@ -206,7 +206,8 @@ switch_axis_label = function(p, location = "top") {
   gt$heights[target_row] = grid::unit(1.5, "lines") #=-FOR ME, 2 LINES SEEMS ENOUGH SPACE.
 
   #IF THE USER HAS FACETED, AND IF THEY HAVE STRIP LABELS AT THE TOP, AND THEY ARE TRYING TO PUT THE Y AXIS ON TOP INSTEAD OF ON BOTTOM (3 CHECKS!), THE FACET STRIP LABELS GO IN ROW 9 BY DEFAULT, BELOW THE NEW Y AXIS TITLE IN ROW 8, WHICH IS ILLOGICAL, SO WE FLIP THE ORDER OF THESE TWO ROWS.
-  if (inherits(p$facet, "Facet") &&
+  if (any(inherits(p$facet, "Facet"),
+          inherits(p$layout$facet, "Facet")) &&
       target_row == 8 &&
       any(!sapply(gt$grobs[which(gt$layout$t <= 9 &
                                  gt$layout$b >= 9 &

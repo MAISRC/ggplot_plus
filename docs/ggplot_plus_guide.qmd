@@ -64,7 +64,7 @@ The `ggplot.plus` package is guided by three core principles:
 The package introduces several new functions to add to your base `ggplot2` arsenal. These include:
 
 | Function | Purpose |
-|----|----|
+|------------------------------------|------------------------------------|
 | `geom_plus()` | A general wrapper for geoms with improved default aesthetics |
 | `geom_point_plus()` | An alternative version to `geom_point()` that introduces a new palette of shapes designed to be more readily distinguishable from each other. |
 | `theme_plus()` | A better base theme with improved default settings for size, spacing, legend placement, and much more. |
@@ -549,7 +549,7 @@ ggplot(iris,
   theme_plus(axis.line = element_line(linewidth = 0.75)) #<--WE CAN MAKE THE AXIS LINES A LITTLE THINNER IF WE WANT. DEFAULT = 1.2
 ```
 
-Here's how you'd relocate the legend to its normal position. But, if you do this, I'd adjust some of its spacing settings also, as the defaults are built for horizontal rather than vertical orientation:
+Here's how you'd relocate the legend to its normal position–the theme will automatically apply some styling unique to this position instead:
 
 ```{r adj theme 2, warning=F}
 ggplot(iris,
@@ -560,10 +560,10 @@ ggplot(iris,
             alpha = 0.3) +
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
-  theme_plus(legend_pos = FALSE) #<--ANY VALUE OTHER THAN THE DEFAULT "top" RESTORES ENSURES RIGHT-HAND LEGEND. 
+  theme_plus(legend_pos = FALSE) #<--ANY VALUE OTHER THAN THE DEFAULT "top" RESTORES RIGHT-HAND LEGEND. 
 ```
 
-Personally, I don't really like this...it feels a bit wasteful in terms of space. But if you like it, that's ultimately what matters! Like the rest of the `ggplot.plus` toolkit, `theme_plus()` is meant to be a smart starting point, **not** a "final destination." Its outputs won’t be ideal for every plot, person, or context (I don't think that's even remotely possible!), but it’s designed to save you time by making it so there are at least *fewer* adjustments you need to make to get your graphs up to modern design standards.
+Personally, I don't really like this, but it's an option if you really prefer it! Like the rest of the `ggplot.plus` toolkit, `theme_plus()` is meant to be a smart starting point, **not** a "final destination." Its outputs won’t be ideal for every plot, person, or context (I don't think that's even remotely possible!), but it’s designed to save you time by making it so there are at least *fewer* adjustments you need to make to get your graphs up to modern design standards.
 
 There are a few theme considerations that apply only to color bars, which are the legend components you see when you map `color` or `fill` to a continuous variable. Let's map a continuous variable to `fill` to get such a legend:
 
@@ -1069,7 +1069,8 @@ ggplot(iris,
   theme_plus() + 
   yaxis_title_plus() +
   gridlines_plus() +
-  scale_alpha(guide = "none")
+  scale_alpha(guide = "none") +
+  labs(fill = "Petal width (cm)") #<--TO SATISFY THE PREVIOUS WARNING.
 ```
 
 It's hard to even keep the legend "in bounds" here, since it's so big! But it's also nigh-impossible to distinguish neighboring colors here in the legend.
@@ -1112,7 +1113,7 @@ ggplot(iris,
   gridlines_plus()
 ```
 
-This feels a little "backwards" to me at first, but it works!
+This feels a little "backwards" to us, but it works. Maybe it'd make good sense in a specific context wherein this reversing of the graph's standard schema aids reader intuition.
 
 Now, if you instead *duplicate* the x-axis on **both top and bottom** or have a secondary x axis on the top, you won’t be able to relocate the y-axis title easily. In that case, the best fallback is probably to stick with the horizontal y-axis title broken across as many lines as possible using line breaks (`\n`), as shown earlier.
 
