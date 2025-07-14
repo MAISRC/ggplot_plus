@@ -560,7 +560,7 @@ ggplot(iris,
             alpha = 0.3) +
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
-  theme_plus(legend_pos = FALSE) #<--ANY VALUE OTHER THAN THE DEFAULT "top" RESTORES RIGHT-HAND LEGEND. 
+  theme_plus(legend_pos = "right") #<--ANY VALUE OTHER THAN "top" OR "right" WILL RETURN AN ERROR.
 ```
 
 Personally, I don't really like this, but it's an option if you really prefer it! Like the rest of the `ggplot.plus` toolkit, `theme_plus()` is meant to be a smart starting point, **not** a "final destination." Its outputs won’t be ideal for every plot, person, or context (I don't think that's even remotely possible!), but it’s designed to save you time by making it so there are at least *fewer* adjustments you need to make to get your graphs up to modern design standards.

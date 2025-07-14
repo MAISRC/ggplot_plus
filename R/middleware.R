@@ -9,7 +9,7 @@ default_theme = theme_gray() %+replace% #<--SPECIAL GGPLOT2 OPERATOR FOR THEMES
     # aspect.ratio = 1, #I WANT TO DO MORE RESEARCH ON WHAT THIS VALUE SHOULD BE OR HOW TO CALCULATE IT.
     axis.line = ggplot2::element_line(color = "black", linewidth = 1.2, lineend = "square"), #ADD THICK BLACK X AND Y AXIS LINES WITH SQUARE ENDS TO ENSURE THAT THEY APPEAR TO VISUALLY MEET.
     axis.title.x = ggplot2::element_text(color = "black", size = 18, margin = ggplot2::margin(t = 10)), #ADD TOP MARGIN TO X AXIS TITLE.
-    axis.title.y = ggplot2::element_text(color = "black", size = 18, vjust = 0.5, margin = ggplot2::margin(r  = 15)),
+    axis.title.y = ggplot2::element_text(color = "black", size = 18, vjust = 0.5, margin = ggplot2::margin(r  = 15), angle = 90),
     axis.text = ggplot2::element_text(size = 16, color = "black"), #ENSURE AXIS LABELS ARE BLACK AND SIZE 16
     axis.ticks.length = ggplot2::unit(0.3, "cm"), #INCREASE SIZE OF AXIS TICK MARKS TO BE MORE NOTICEABLE.
     legend.title = ggplot2::element_text(color = "black", size = 18),
@@ -27,7 +27,6 @@ default_theme = theme_gray() %+replace% #<--SPECIAL GGPLOT2 OPERATOR FOR THEMES
     plot.subtitle = ggplot2::element_blank(),
     strip.background = ggplot2::element_rect(color = "white", fill = "white"),
     strip.text = ggplot2::element_text(color = "black", size = 16, face = "bold"),
-    strip.text.y = ggplot2::element_text(angle = 0),
     strip.placement = "outside", #THIS ALWAYS ENSURES THAT AXIS LABELS GO CLOSER TO THE AXIS THAN THE STRIP LABELS WOULD.
     complete = TRUE #<--KEY INPUT, ENSURES FEWER SURPRISES IN HOW THIS THEME BEHAVES VIS-A-VIS A DEFAULT THEME. COMPLETE THEMES ARE TREATED AS A COLLECTION OF FALLBACK VALUES FOR WHEN A USER DOESN'T SPECIFY SOMETHING OR DOESN'T INHERIT SOMETHING FROM A MORE GLOBAL VALUE.
   )

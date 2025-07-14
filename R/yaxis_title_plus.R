@@ -77,7 +77,7 @@ ggplot_gtable.switched = function(data) {
   class(data) = setdiff(class(data), "switched") #PREVENT RECURSION
   doneplot = switch_axis_label(data, location = loc,
                                move_top_legend_down = data$plot$move_top_legend_down)
-  doneplot + ggplot2::theme(axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 0))) #ADD IN A THEME TO SWITCH HOW THE MARGIN IS ADJUSTED.
+  doneplot + ggplot2::theme(axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 0), angle = 0)) #ADD IN A THEME TO SWITCH HOW THE MARGIN IS ADJUSTED.
 }
 
 #' Place a Y Axis Title on a ggplot in a Safe Place Above the Y Axis Line.
