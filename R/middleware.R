@@ -27,6 +27,8 @@ default_theme = theme_gray() %+replace% #<--SPECIAL GGPLOT2 OPERATOR FOR THEMES
     plot.subtitle = ggplot2::element_blank(),
     strip.background = ggplot2::element_rect(color = "white", fill = "white"),
     strip.text = ggplot2::element_text(color = "black", size = 16, face = "bold"),
+    strip.text.y = element_text(margin = margin(l=5), angle = 0),
+    strip.text.x = element_text(margin = margin(b=5)),
     strip.placement = "outside", #THIS ALWAYS ENSURES THAT AXIS LABELS GO CLOSER TO THE AXIS THAN THE STRIP LABELS WOULD.
     complete = TRUE #<--KEY INPUT, ENSURES FEWER SURPRISES IN HOW THIS THEME BEHAVES VIS-A-VIS A DEFAULT THEME. COMPLETE THEMES ARE TREATED AS A COLLECTION OF FALLBACK VALUES FOR WHEN A USER DOESN'T SPECIFY SOMETHING OR DOESN'T INHERIT SOMETHING FROM A MORE GLOBAL VALUE.
   )

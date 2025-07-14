@@ -669,9 +669,9 @@ ggplot(iris,
 
 If you are using `yaxis_title_plus()` and `theme_plus()` together and your graph has a legend, it will default to a horizontal stripe at the top of the graph. By default, this stripe will sit in its own "row" above the relocated y axis title.
 
-Sometimes, this will be necessary to get both elements to fit. However, if there is enough room for them to sit side by side, you can set `move_top_legend_down` to `TRUE` inside `yaxis_title_plus()` to move the legend down into the same row as the relocated y axis title:
+Sometimes, this will be necessary to get both elements to fit. However, if there is enough room for them to sit side by side, you can set `move_top_legend_down` to `TRUE` inside `yaxis_title_plus()` to move the legend down into the same row as the relocated y axis title for some sweet sweet efficiency:
 
-```{r relocating the legend}
+```{r relocating the legend, warning=F}
 #| fig-height: 6
 #| fig-width: 9
 

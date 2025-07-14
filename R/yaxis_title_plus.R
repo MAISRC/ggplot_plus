@@ -177,7 +177,7 @@ switch_axis_label = function(p, location = "top", move_top_legend_down = FALSE) 
     )
   }
 
-  #MAKE ROW 8/11 HAVE A NON-ZERO HEIGHT (THIS IS THE ROW THAT SECOND GTABLE GROB WOULD NORMALLY GO IN--IT HAS A 0 HEIGHT UNLESS A TOP X-AXIS EXISTS.)
+  #MAKE ROW 8/11 HAVE A NON-ZERO HEIGHT
   gt$heights[target_row] = grid::unit(1.5, "lines") #=-FOR ME, 2 LINES SEEMS
 
   #HERE, IF THE USER HAS SPECIFIED THEY WANT TO THROW THE TOP LEGEND INTO ROW 8, ALONG WITH THE Y AXIS TITLE, WE DO THAT MOVE NOW:
@@ -186,6 +186,20 @@ switch_axis_label = function(p, location = "top", move_top_legend_down = FALSE) 
   gt$layout$t[which(grepl("guide-box-top", gt$layout$name))] = 8
   gt$layout$b[which(grepl("guide-box-top", gt$layout$name))] = 8
   gt$heights[5] = grid::unit(0, "cm")
+  }
+
+  ##IN FACETED GRAPHS, WITH strip.placement = "outside", TOP FACET LABELS END UP IN ROW 8, WHERE THEY'D CONFLICT WITH THE MOVED AXIS TITLE. SO WE PICK THEM UP AND MOVE THEM TO ROW 7 INSTEAD. ****COULD MAYBE BE ROW 6 IN THE FUTURE, AS THAT SEEMS EVEN SAFER??
+  these_rows = which(grepl("strip-t", gt$layout$name)) #WHICH ROWS IN THE GT ARE TOP STRIPS?
+  stripGrobs = gt$grobs[these_rows]
+  anyNon0Strips = any(sapply(stripGrobs, function(x) { !"zeroGrob" %in% class(x) })) #SEE IF ANY OF THOSE GROBS ARE NOT ZEROGROBS, INDICATING TOP STRIPS EXIST.
+  if(anyNon0Strips) {
+    test = any(gt$layout$t[these_rows] == 8) &&
+           any(gt$layout$b[these_rows] == 8) #MAKE SURE THEY'RE IN ROW 8
+    if(test) {
+      gt$layout$t[which(grepl("strip-t", gt$layout$name))] = 7
+      gt$layout$b[which(grepl("strip-t", gt$layout$name))] = 7
+      gt$heights[7] = grid::unit(1, "lines") #IF SO, MOVE THEM.
+    }
   }
 
   #WARNINGS REGIONS ------
