@@ -1,6 +1,6 @@
 Package: ggplot.plus
-Title: Elevating Ggplot2's Defaults Aesthetics and Behaviors
-Version: 0.1.9
+Title: Enhancing Ggplot2's Defaults Aesthetics and Behaviors
+Version: 0.2.0
 Authors@R: 
     person("Alex", "Bajcz", email = "bajcz003@umn.com", role = c("aut", "cre"))
 Description: A collection of ggplot2 enhancements for improved design defaults, accessibility, and usability.

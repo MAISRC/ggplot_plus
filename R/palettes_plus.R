@@ -16,7 +16,7 @@
 #' @export
 palettes_plus = function(palette_discrete = "D",
                          palette_continuous = "E",
-                         begin_discrete = 0.28,
+                         begin_discrete = 0,
                          end_discrete = 0.72,
                          begin_continuous = 0,
                          end_continuous = 1) {

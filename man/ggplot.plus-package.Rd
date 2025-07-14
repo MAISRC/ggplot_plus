@@ -4,7 +4,7 @@
 \name{ggplot.plus-package}
 \alias{ggplot.plus}
 \alias{ggplot.plus-package}
-\title{ggplot.plus: Elevating Ggplot2's Defaults Aesthetics and Behaviors}
+\title{ggplot.plus: Enhancing Ggplot2's Defaults Aesthetics and Behaviors}
 \description{
 A collection of ggplot2 enhancements for improved design defaults, accessibility, and usability.
 }

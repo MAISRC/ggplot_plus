@@ -4,12 +4,14 @@
 \alias{switch_axis_label}
 \title{Place a Y Axis Title on a ggplot in a Safe Place Above the Y Axis Line.}
 \usage{
-switch_axis_label(p, location = "top")
+switch_axis_label(p, location = "top", move_top_legend_down = FALSE)
 }
 \arguments{
 \item{p}{A ggplot object built using ggplot_build whose y axis title will be moved.}
 
 \item{location}{A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to \code{"top"}. Potentially overridden by whatever is specified to \code{y_axis_title_plus()}'s parameter of the same name when it's called.}
+
+\item{move_top_legend_down}{A length-1 logical indicating whether a top legend (if any) should be moved down to be in the same row as the relocated y axis title (where they could clip into each other). Defaults to FALSE.}
 }
 \value{
 A ggplot object compatible with \code{ggplot2}'s + command structure.

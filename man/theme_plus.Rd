@@ -4,7 +4,7 @@
 \alias{theme_plus}
 \title{Add a New Base Theme to ggplots With Elevated Defaults}
 \usage{
-theme_plus(..., legend_pos = "top")
+theme_plus(..., legend_pos = c("top", "right"))
 }
 \arguments{
 \item{...}{Other arguments to be passed along to the \code{theme()} (optional).}

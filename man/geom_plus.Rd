@@ -13,14 +13,14 @@ geom_plus(
   include_yscale_plus = FALSE,
   include_fillscale_plus = FALSE,
   include_colorscale_plus = FALSE,
-  new_x_title = NULL,
-  new_y_title = NULL,
-  new_color_title = NULL,
-  new_fill_title = NULL,
-  new_size_title = NULL,
-  new_shape_title = NULL,
-  new_alpha_title = NULL,
-  silence_warnings = FALSE
+  x_title = NULL,
+  y_title = NULL,
+  color_title = NULL,
+  fill_title = NULL,
+  size_title = NULL,
+  shape_title = NULL,
+  alpha_title = NULL,
+  silence_warnings = getOption("geom_plus_silence_warnings", FALSE)
 )
 }
 \arguments{
@@ -40,21 +40,9 @@ geom_plus(
 
 \item{include_colorscale_plus}{Should a call to \code{scale_color_continuous_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
 
-\item{new_x_title}{A string to use for the graph's x axis title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
+\item{x_title, y_title, color_title, size_title, shape_title, alpha_title}{A string to use for the graph's legend title for the corresponding aesthetic. Defaults to \code{NULL} and will be ignored unless a length-1 string. Internally, this passes the new title to \code{ggplot2::labs()} to circumvent around calling a \verb{scale_*} function, which might overwrite intended behaviors.}
 
-\item{new_y_title}{A string to use for the graph's y axis title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
-
-\item{new_color_title}{A string to use for the graph's color legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
-
-\item{new_fill_title}{A string to use for the graph's fill legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
-
-\item{new_size_title}{A string to use for the graph's size legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
-
-\item{new_shape_title}{A string to use for the graph's shape legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
-
-\item{new_alpha_title}{A string to use for the graph's alpha legend title. Defaults to \code{NULL} and will be ignored unless a length-1 string.}
-
-\item{silence_warnings}{\code{geom_plus()} triggers some checks for aspects of good graph design and, if any of these checks fail, a warning is triggered to direct the user towards better practices. Set this parameter to \code{FALSE} to silence these warnings.}
+\item{silence_warnings}{\code{geom_plus()} triggers some checks for aspects of good graph design and, if any of these checks fail, a warning is triggered to direct the user towards better practices. Set this parameter to \code{FALSE} to silence these warnings. To set TRUE as the default for the current session, run \code{options(geom_plus_silence_warnings = TRUE)}.}
 }
 \value{
 List with the class "geom_plus", which will trigger the geom_plus method in ggplot_add.
@@ -62,7 +50,22 @@ List with the class "geom_plus", which will trigger the geom_plus method in ggpl
 \description{
 Maps inputs to a base ggplot geom (e.g., geom_point or geom_line) but provides default values more likely to adhere to best practices around usability, design aesthetics, and accessibility.
 }
+\details{
+If you map the \strong{shape} aesthetic, \code{geom_plus()} automatically adds
+\code{ggplot2::scale_shape_manual()} with the palette of shapes = 21–25.
+
+If you later add your own \verb{scale_shape_*()} layer, it will \emph{replace}
+the default palette with a warning.
+
+To change only the legend title while keeping the default palette,
+use the \code{shape_title} argument or \code{ggplot2::labs()} instead of adding a new scale.
+
+A similar pattern occurs with fill and color, as these are governed by
+\verb{scale_fill_viridis_*()} or \verb{scale_color_viridis_*()}, respectively.
+See \code{?palettes_plus()} for details.
+}
 \examples{
+#BASIC USAGE
 ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
 geom_plus(geom = "point")
 }

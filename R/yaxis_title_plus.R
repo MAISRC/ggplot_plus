@@ -3,15 +3,22 @@
 #' This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using `ggplot2`'s default styling tools.
 #'
 #' @param location A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to `"top"`. `"bottom"` should generally only be used when the x axis labels (which would occupy the same row as the new y axis title) have been moved to the top of the graph.
+#' @param move_top_legend_down A length-1 logical indicating whether a top legend (if any) should be moved down to be in the same row as the relocated y axis title (where they could clip into each other). Defaults to FALSE.
+#'
+#' @details
+#' This function should be called after calling your respective geom in your call.
+#'
 #' @return Returns a list of class "axis_switcher", which will trigger the ggplot_add method by the same name.
 #' @examples
 #' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
 #' geom_plus(geom = "point") +
 #' yaxis_title_plus()
 #' @export
-yaxis_title_plus = function(location = "top") {
+yaxis_title_plus = function(location = "top",
+                            move_top_legend_down = FALSE) {
   structure(
-    list(location = match.arg(location, c("top", "bottom"))),
+    list(location = match.arg(location, c("top", "bottom")),
+         move_top_legend_down = move_top_legend_down),
     class = "axis_switcher"
   )
 }
@@ -29,6 +36,7 @@ yaxis_title_plus = function(location = "top") {
 #' @export
 ggplot_add.axis_switcher = function(object, plot, object_name) {
   plot$y_axis_switch_location = object$location
+  plot$move_top_legend_down = object$move_top_legend_down
   class(plot) = c("switcher", class(plot))
   plot
 }
@@ -45,8 +53,10 @@ ggplot_add.axis_switcher = function(object, plot, object_name) {
 ggplot_build.switcher = function(plot) {
 
   class(plot) = setdiff(class(plot), "switcher")
+  move_legend_down = plot$move_top_legend_down
   output = suppressMessages(ggplot2::ggplot_build(plot))
   class(output) = c("switched", class(output))
+  output$plot$move_top_legend_down = move_legend_down
   output
 }
 
@@ -65,45 +75,9 @@ ggplot_gtable.switched = function(data) {
                data$plot$y_axis_switch_location,
                 "top") #IF USER DIDN'T SPECIFY DIFFERENT, MOVE THE Y AXIS TITLE TO THE TOP.
   class(data) = setdiff(class(data), "switched") #PREVENT RECURSION
-  doneplot = switch_axis_label(data, location = loc)
+  doneplot = switch_axis_label(data, location = loc,
+                               move_top_legend_down = data$plot$move_top_legend_down)
   doneplot + ggplot2::theme(axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 0))) #ADD IN A THEME TO SWITCH HOW THE MARGIN IS ADJUSTED.
-}
-
-
-#' Convert Between a Couple of Different Ways of Referencing the Same Aesthetic
-#'
-#' This is an internal convenience function that allows translation of the names of aesthetics like "colour" into ones like "col" used by `grid`'s functions.
-#'
-#' @param el A list or list-like object containing the names of elements to be translated.
-#'
-#' @return A list of translated elements.
-#' @export
-translate_element = function(el) {
-  el_list = as.list(el)
-  #TRANSLATE BETWEEN SOME DIFFERENT AESTHETICS DEPENDING ON HOW EXACTLY THEY ARE CODED.
-  if (!is.null(el_list$colour)){ el_list$col = el_list$colour }
-  if (!is.null(el_list$face)){ el_list$fontface = el_list$face }
-  if (!is.null(el_list$size)){ el_list$fontsize = el_list$size }
-
-  return(el_list)
-}
-
-
-#' Translate Between Ggplot's and Gpar's Attribute Names.
-#'
-#' This is an internal convenience function that matches up `ggplot2`'s aesthetics names with those expected by the `grid::gpar` function so that user-specified aesthetics get properly carried over into the final product.
-#'
-#' @param el A list or list-like object containing the names of elements to be translated.
-#'
-#' @return A list of translated elements.
-#' @export
-element_to_gpar = function(el) {
-  el_list = translate_element(el)
-  #ATTRIBUTES THAT GPARS NEED TO HAVE--LINE THESE UP WITH THE ATTRIBUTES OF THE ELEMENT BEING PORTED IN.
-  gpar_args = c("col", "fill", "alpha", "lty", "lwd", "lex", "lineend",
-                "linejoin", "linemitre", "fontsize", "cex", "fontfamily",
-                "fontface", "font", "lineheight")
-  do.call(grid::gpar, el_list[intersect(names(el_list), gpar_args)])
 }
 
 #' Place a Y Axis Title on a ggplot in a Safe Place Above the Y Axis Line.
@@ -113,9 +87,10 @@ element_to_gpar = function(el) {
 #'
 #' @param p A ggplot object built using ggplot_build whose y axis title will be moved.
 #' @param location A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to `"top"`. Potentially overridden by whatever is specified to `y_axis_title_plus()`'s parameter of the same name when it's called.
+#' @param move_top_legend_down A length-1 logical indicating whether a top legend (if any) should be moved down to be in the same row as the relocated y axis title (where they could clip into each other). Defaults to FALSE.
 #' @return A ggplot object compatible with `ggplot2`'s + command structure.
 #' @export
-switch_axis_label = function(p, location = "top") {
+switch_axis_label = function(p, location = "top", move_top_legend_down = FALSE) {
 
   #IF A USER USES coord_flip(), I.E., THE WORST GGPLOT2 FUNCTION EVER LOL, THEN WE *REALLY* NEED TO GRAB THE X AXIS TITLE INSTEAD.
   #THE p$coordinates OBJECT WILL HAVE CLASS "CoordFlip" IN THAT INSTANCE.
@@ -203,39 +178,14 @@ switch_axis_label = function(p, location = "top") {
   }
 
   #MAKE ROW 8/11 HAVE A NON-ZERO HEIGHT (THIS IS THE ROW THAT SECOND GTABLE GROB WOULD NORMALLY GO IN--IT HAS A 0 HEIGHT UNLESS A TOP X-AXIS EXISTS.)
-  gt$heights[target_row] = grid::unit(1.5, "lines") #=-FOR ME, 2 LINES SEEMS ENOUGH SPACE.
+  gt$heights[target_row] = grid::unit(1.5, "lines") #=-FOR ME, 2 LINES SEEMS
 
-  #IF THE USER HAS FACETED, AND IF THEY HAVE STRIP LABELS AT THE TOP, AND THEY ARE TRYING TO PUT THE Y AXIS ON TOP INSTEAD OF ON BOTTOM (3 CHECKS!), THE FACET STRIP LABELS GO IN ROW 9 BY DEFAULT, BELOW THE NEW Y AXIS TITLE IN ROW 8, WHICH IS ILLOGICAL, SO WE FLIP THE ORDER OF THESE TWO ROWS.
-  if (any(inherits(p$facet, "Facet"),
-          inherits(p$layout$facet, "Facet")) &&
-      target_row == 8 &&
-      any(!sapply(gt$grobs[which(gt$layout$t <= 9 &
-                                 gt$layout$b >= 9 &
-                                 grepl("strip-t", gt$layout$name))], function(x) {
-                                   inherits(x, "zeroGrob")
-                                 }))) {
+  #HERE, IF THE USER HAS SPECIFIED THEY WANT TO THROW THE TOP LEGEND INTO ROW 8, ALONG WITH THE Y AXIS TITLE, WE DO THAT MOVE NOW:
 
-    oldlayout = gt$layout #GET CURRENT LAYOUT AND HEIGHTS
-    oldheights = gt$heights
-
-    #GET OLD CONTENTS OF THESE TWO ROWS.
-    oldrow8 = oldlayout$t == 8 & oldlayout$b == 8 #TRUE FOR CONTENTS ONLY IN ROW 8/9
-    oldrow9 = oldlayout$t == 9 & oldlayout$b == 9
-
-    #SWAPPING THE T AND B VALUES FOR ALL ELEMENTS IN THESE TWO ROWS.
-    oldlayout$t[oldrow8] = 9
-    oldlayout$b[oldrow8] = 9
-    oldlayout$t[oldrow9] = 8
-    oldlayout$b[oldrow9] = 8
-
-    #SWAP THE HEIGHTS TOO.
-    tmp = oldheights[8]
-    oldheights[8] = oldheights[9]
-    oldheights[9] = tmp
-
-    #OVERWRITE GT WITH MODIFIED VERSIONS
-    gt$layout = oldlayout
-    gt$heights = oldheights
+  if(move_top_legend_down == TRUE) {
+  gt$layout$t[which(grepl("guide-box-top", gt$layout$name))] = 8
+  gt$layout$b[which(grepl("guide-box-top", gt$layout$name))] = 8
+  gt$heights[5] = grid::unit(0, "cm")
   }
 
   #WARNINGS REGIONS ------

@@ -4,16 +4,21 @@
 \alias{yaxis_title_plus}
 \title{Relocate a Y Axis Title to Above the Y Axis on a ggplot and Turn it Horizontal.}
 \usage{
-yaxis_title_plus(location = "top")
+yaxis_title_plus(location = "top", move_top_legend_down = FALSE)
 }
 \arguments{
 \item{location}{A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to \code{"top"}. \code{"bottom"} should generally only be used when the x axis labels (which would occupy the same row as the new y axis title) have been moved to the top of the graph.}
+
+\item{move_top_legend_down}{A length-1 logical indicating whether a top legend (if any) should be moved down to be in the same row as the relocated y axis title (where they could clip into each other). Defaults to FALSE.}
 }
 \value{
 Returns a list of class "axis_switcher", which will trigger the ggplot_add method by the same name.
 }
 \description{
 This function relocates the y axis title of a ggplot graph to the top of the plot, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using \code{ggplot2}'s default styling tools.
+}
+\details{
+This function should be called after calling your respective geom in your call.
 }
 \examples{
 ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +

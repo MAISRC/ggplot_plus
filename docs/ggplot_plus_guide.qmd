@@ -165,18 +165,18 @@ ggplot(iris,
   geom_point(mapping = aes(color = Species))
 ```
 
-This function uses the titular `viridis` palette for discrete variables and the `cividis` palette for continuous variables. By default, `viridis` spans from dark purple to light yellow, passing through blue, green, and teal. This relatively large number of hues makes it easier to find SEVERAL discrete hues that are visually distinct from each other and from whatever background color you use.\
+This function uses the titular `viridis` palette for discrete variables and the `cividis` palette for continuous variables. By default, `viridis` spans from dark purple to light yellow, passing through blue, green, and teal. This relatively large number of hues makes it easier to find several discrete hues that are visually distinct from each other and from whatever background color you use.\
 \
-However, `palettes_plus()` excludes, by default, both the darkest purple and the lightest yellow regions of the `viridis` palette because these shades can lack contrast against elements that are black and white, respectively. As a result, the remaining palette centers the blue/teal/green region of the palette to maintain both accessibility and visual appeal in most contexts.
+However, `palettes_plus()` excludes, by default, the lightest yellow region of the `viridis` palette because these shades can lack contrast against elements that are white or light-colored, as backgrounds in ggplots tend to be. As a result, the remaining palette centers the purple/blue/teal/green region of the palette to maintain both accessibility and visual appeal in most contexts.
 
 However, you can easily adjust this behavior using the `begin_discrete` and `end_discrete` parameters, which range from 0 to 1:
 
--   `begin_discrete = 0` would enable the dark purple portion of the color range.
+-   `begin_discrete = 0.28` would disable the dark purple portion of the color range.
 
 -   `end_discrete = 1` would enable the light yellow portion.
 
 ```{r bringing in dark purple}
-palettes_plus(begin_discrete = 0) #<--ALLOW DARK PURPLE RANGE. CALL THIS FUNCTION ONLY WHENEVER YOU WANT TO CHANGE ITS BEHAVIORS.
+palettes_plus(begin_discrete = 0.28) #<--ALLOW DARK PURPLE RANGE. CALL THIS FUNCTION ONLY WHENEVER YOU WANT TO CHANGE ITS BEHAVIORS.
 
 #SAME GRAPH AS BEFORE
 ggplot(iris,
@@ -185,7 +185,7 @@ ggplot(iris,
   geom_point(mapping = aes(color = Species))
 ```
 
-In this example, we’ve re-enabled the purple end of the palette. This color contrasts well against the light background, unlike the light yellow, which would be harder to distinguish from the gray background here.
+In this example, we’ve disabled the purple end of the palette, which might be appropriate if you had a lot of dark elements and you needed to ensure contrast between them all.
 
 ### Continuous color scales
 
@@ -667,6 +667,27 @@ ggplot(iris,
   yaxis_title_plus()
 ```
 
+If you are using `yaxis_title_plus()` and `theme_plus()` together and your graph has a legend, it will default to a horizontal stripe at the top of the graph. By default, this stripe will sit in its own "row" above the relocated y axis title.
+
+Sometimes, this will be necessary to get both elements to fit. However, if there is enough room for them to sit side by side, you can set `move_top_legend_down` to `TRUE` inside `yaxis_title_plus()` to move the legend down into the same row as the relocated y axis title:
+
+```{r relocating the legend}
+#| fig-height: 6
+#| fig-width: 9
+
+#SAME GRAPH AS BEFORE, BUT NOW RENDERED AT A WIDTH/HEIGHT OF 9/6. 
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_plus(geom = "point", 
+            mapping = aes(fill = Species),
+            alpha = 0.3) +
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
+  scale_y_continuous_plus(name = "Sepal length (cm)") + 
+  theme_plus() + 
+  yaxis_title_plus(move_top_legend_down = TRUE) #<--MOVE ANY TOP LEGEND DOWN INTO THE SAME ROW AS THE Y AXIS TITLE. 
+```
+
 ## Thoughtful Gridlines
 
 One (arguably) controversial design choice in `ggplot.plus`'s `theme_plus()` is the complete removal of gridlines. While some readers rely on them or expect them, many find them distracting or visually cluttering in most situations, and data viz experts often advise that they be removed entirely as a general rule.
@@ -724,7 +745,7 @@ ggplot(iris,
             include_gridlines = TRUE, #<--TURNS ON gridlines_plus()
             include_yscale_plus = TRUE, #<--TURNS ON scale_y_continuous_plus()
             include_theme = TRUE, #<--TURNS ON theme_plus()
-            new_y_title = "Sepal length (cm)" #<--SETS Y AXIS TITLE.
+            y_title = "Sepal length (cm)" #<--SETS Y AXIS TITLE SAFELY.
             ) +
   scale_x_continuous_plus("Petal length (cm)", thin_labels = TRUE) + #<--WE STILL SPECIFY CUSTOM LABELS AND THE TITLE THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().
   yaxis_title_plus() #<--THIS STILL NEEDS TO BE ADDED SEPARATELY.
@@ -1075,7 +1096,7 @@ ggplot(iris,
 
 It's hard to even keep the legend "in bounds" here, since it's so big! But it's also nigh-impossible to distinguish neighboring colors here in the legend.
 
-Of course, users who are already familiar with these graph-design issues and concepts may find these warnings distracting or repetitive. They can all be disabled by setting `silence_warnings` inside `geom_plus()` to `TRUE`.
+Of course, users who are already familiar with these graph-design issues and concepts may find these warnings distracting or repetitive. They can all be disabled by setting `silence_warnings` inside `geom_plus()` to `TRUE`. To silence them for the rest of the current session, run `options(geom_plus_silence_warnings = TRUE)`.
 
 ## Known Issues
 

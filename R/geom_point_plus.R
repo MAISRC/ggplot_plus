@@ -42,12 +42,12 @@ geom_point2 = function(mapping = NULL,
 
 #' An alternative version of `ggplot2`'s geomPoint proto that incorporates new, distinctive shapes.
 #'
-#' This ggplot proto object is called internally by `geom_point2()` and inherits most, but not all, of its methods from those used in `ggplot2`'s standard `geomPoint` proto. However, it has different default aesthetics, a different shapes palette, and can draw these new shapes in a legend. This function is not meant to be called by the user; for that, `geom_point_plus()` is intended.
+#' This ggplot proto object is called internally by `geom_point2()` and inherits most, but not all, of its methods and fields from those used in `ggplot2`'s standard `geomPoint` proto class. However, it has different default aesthetics, a different shapes palette, and can draw these new shapes in a legend. This subclass is not meant to be encountered by the user and is instead fodder for `geom_point_plus()`.
 #'
-#' @return A `ggplot2` ggproto class object.
+#' @return A `ggplot2` ggproto subclass object.
 #' @export
 GeomPointPlus = ggplot2::ggproto(
-  "point_plus",
+  "PointPlus",
   ggplot2::GeomPoint, #THIS NEW GEOM PROTO INHERITS PROPERTIES AND METHODS FROM GEOMPOINT, BUT WILL OVERRIDE THREE OF ITS MAIN ATTRIBUTES: DRAW_PANEL, DRAW_KEY, AND DEFAULT AES. IT BEHAVES EXACTLY LIKE GEOM_POINT UNLESS A CHARACTER-BASED SHAPE INPUT IS PROVIDED THAT MATCHES ONE IN THE CUSTOM SHAPES LIST.
   #DRAW PANEL IS THE METHOD THAT DICTATES WHAT EXACTLY GETS DRAWN IN THE PLOT PANEL. WE OVERRIDE IT SO THAT OUR CUSTOM SHAPES COME THROUGH.
   draw_panel = function(self,
@@ -163,7 +163,7 @@ GeomPointPlus = ggplot2::ggproto(
     do.call(grid::grobTree, c(g, list(name = "geom_point_plus_key")))
   },
 
-  ##LASTLY WE OVERRIDE DEFAULT_AES SO THAT GGPLOT2 KNOWS WHAT AESTHETICS THIS PROTO ACCEPTS AND WHAT TO SET THEM TO IF THEY ARE NOT AUTOMATICALLY PROVIDED.
+  ##LASTLY WE OVERRIDE THE DEFAULT_AES FIELD SO THAT GGPLOT2 KNOWS WHAT AESTHETICS THIS PROTO ACCEPTS AND WHAT TO SET THEM TO IF THEY ARE NOT AUTOMATICALLY PROVIDED.
   default_aes = ggplot2::aes(
     shape = 21,
     colour = "black",
