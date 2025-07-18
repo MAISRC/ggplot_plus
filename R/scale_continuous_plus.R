@@ -18,6 +18,9 @@
     if (!got_high) hi = hi + buffer
   }
 
+  print(brks)
+  print(c(min(brks) - buffer, max(brks) + buffer))
+
   if(Return == "breaks") {
     return(brks)
   } else if(Return == "limits") {
@@ -122,7 +125,7 @@
   ##--BREAKS AND LIMITS ARGUMENTS--##
   #SET BREAKS USING ENDPOINT_BREAKS, DISCARDING ANY CENSORED BREAKS SO THAT CUSTOM LABELS CAN MORE EASILY MATCH.
   breaks_arg = function(lims) {
-    .endpoint_breaks(lims, n = n, buffer_frac = buffer_frac, Return = "breaks")
+    scales::discard(.endpoint_breaks(lims, n = n, buffer_frac = buffer_frac, Return = "breaks"), lims)
   }
 
   limits_arg = function(lims) {
