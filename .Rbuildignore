@@ -18,3 +18,4 @@
 ^desktop\.ini$
 ^\.Rd2pdf[0-9]+$
 ^\.\.?pdf$
+^/deprecated$

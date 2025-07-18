@@ -2,27 +2,58 @@
 % Please edit documentation in R/scale_continuous_plus.R
 \name{scale_x_continuous_plus}
 \alias{scale_x_continuous_plus}
-\title{Find Pretty Breaks for a Continuous X axis in ggplot While Ensuring End Labels}
+\alias{scale_y_continuous_plus}
+\alias{scale_colour_continuous_plus}
+\alias{scale_color_continuous_plus}
+\alias{scale_fill_continuous_plus}
+\title{Continuous Scales with Breaks Anchored Close to Data Limits}
 \usage{
 scale_x_continuous_plus(..., n = 5, buffer_frac = 0.05, thin_labels = FALSE)
+
+scale_y_continuous_plus(..., n = 5, buffer_frac = 0.05, thin_labels = FALSE)
+
+scale_colour_continuous_plus(
+  ...,
+  n = 5,
+  buffer_frac = 0.05,
+  thin_labels = FALSE
+)
+
+scale_color_continuous_plus(
+  ...,
+  n = 5,
+  buffer_frac = 0.05,
+  thin_labels = FALSE
+)
+
+scale_fill_continuous_plus(..., n = 5, buffer_frac = 0.05, thin_labels = FALSE)
 }
 \arguments{
-\item{...}{Standard inputs normally given to \code{scale_x_continuous()}. Must not include \code{breaks} or \code{limits} or an error will be returned, as the function attempts to circumvent the need to specify prettier breaks or appropriate limits.}
+\item{...}{Additional arguments passed to \code{continuous_scale()}, as one might provide to \verb{ggplot2::scale_*_continuous()}. Must not include \code{breaks} or \code{limits}; these are handled internally. You may still supply custom \code{labels}, if desired, so long as their length matches the length of the final breaks exactly. As such, you may want to first call this function once without specifying labels to see how many will be needed.}
 
-\item{n}{A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to \code{cont_breaks_plus()} internally.}
+\item{n}{Desired number of breaks. Passed to an internal \code{pretty_breaks}-based algorithm. Defaults to 5. The final number of breaks may vary slightly.}
 
-\item{buffer_frac}{A length-1 numeric value corresponding to how close the end breaks must be to the end of the data for new breaks to not be added. Defaults to 0.05 (5\%). A length-1 numeric value for the "target" number of breaks to create. Defaults to 5. Passed to \code{cont_breaks_plus()} internally.}
+\item{buffer_frac}{A fraction of the data range used to determine how close the endpoint breaks must be to the data limits. Defaults to \code{0.05} (i.e., within 5\% of the data range).}
 
-\item{thin_labels}{Should every other label (starting with the second) be replaced with an empty string? Defaults to FALSE. Change to TRUE to enable. Useful for when the number of breaks/labels is high enough that the axis feels "over-labeled" in a way that might contribute to excess cognitive load.}
+\item{thin_labels}{Logical. If \code{TRUE}, replaces every other label (starting with the second) with an empty string. Useful for reducing label clutter when breaks are dense/numerous.}
 }
 \value{
-Returns a list of class \code{"scale_x_cont_plus"}, which will trigger the \code{ggplot_add} method by the same name to trigger the axis breaks reconfiguration.
+A \code{ScaleContinuous} ggproto object that can be added to a ggplot.
 }
 \description{
-This function attempts to find a set of breaks for a continuous variable mapped to the x axis of a ggplot graph such that there aren't too many breaks, the breaks are "pretty" values where possible, and breaks exist at or near to the range values of the variable. It uses \code{cont_breaks_plus()} to do this--see there for more information.
+These scale functions create continuous axis scales (or colorbars) that use a modified break-finding algorithm compared to the one used by \verb{ggplot2::scale_*_continuous()}. Specifically, the algorithm aims to ensure that breakpoints are still visually "pretty" but that breakpoints exist at, near, or just past the range of the provided data on both sides. This helps avoid situations where endpoints of a scale are essentially unlabeled.
 }
 \examples{
-ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
-geom_plus(geom = "point") +
-scale_x_continuous_plus()
+ggplot2::ggplot(iris, ggplot2::aes(x = Sepal.Length, y = Petal.Length)) +
+  ggplot.plus::geom_plus("point") +
+  ggplot.plus::scale_x_continuous_plus()
+
+}
+\seealso{
+\code{\link[ggplot2]{scale_x_continuous}},
+\code{\link[scales]{pretty_breaks}},
+\code{\link[ggplot.plus]{scale_y_continuous_plus}},
+\code{\link[ggplot.plus]{scale_colour_continuous_plus}},
+\code{\link[ggplot.plus]{scale_color_continuous_plus}},
+\code{\link[ggplot.plus]{scale_fill_continuous_plus}}
 }
