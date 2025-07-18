@@ -176,7 +176,8 @@
   scale = do.call(continuous_scale, args)
 
   #THIS MIMICS INTERNAL GGPLOT2 LOGIC FOR HOW TO TACK ON A SECONDARY AXIS POST-CONTINUOUS_SCALE (see: https://rdrr.io/cran/ggplot2/src/R/axis-secondary.R#sym-set_sec_axis)
-  if(!inherits(sec.axis, "waiver")) {
+  if(!inherits(sec.axis, "waiver")  &&
+     !is.null(sec.axis)) {
     if(inherits(sec.axis, "formula")) {
       sec.axis = ggplot2::sec_axis(sec.axis)
     }
