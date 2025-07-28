@@ -18,9 +18,6 @@
     if (!got_high) hi = hi + buffer
   }
 
-  print(brks)
-  print(c(min(brks) - buffer, max(brks) + buffer))
-
   if(Return == "breaks") {
     return(brks)
   } else if(Return == "limits") {
@@ -124,12 +121,28 @@
 
   ##--BREAKS AND LIMITS ARGUMENTS--##
   #SET BREAKS USING ENDPOINT_BREAKS, DISCARDING ANY CENSORED BREAKS SO THAT CUSTOM LABELS CAN MORE EASILY MATCH.
-  breaks_arg = function(lims) {
-    scales::discard(.endpoint_breaks(lims, n = n, buffer_frac = buffer_frac, Return = "breaks"), lims)
+  #DURING PROBING, ESP. ON GRAPHS WITH ONE CONTINUOUS AND ONE DISCRETE AXIS, GGPLOT2 WILL SOMETIMES MAKE THE LIMITS NULL TO SEE WHAT HAPPENS, SO WE HAVE TO CACHE ACCEPTABLE LIMITS AS "ONE-TIME USE" TO GET PAST THOSE INSTANCES.
+  limits_arg = function(lims) {
+    if (is.null(lims) || !is.numeric(lims) || length(lims) != 2 || any(!is.finite(lims))) {
+      if(!is.null(cached_limits)) {
+        use_cache = cached_limits
+        cached_limits <<- NULL
+      return(.endpoint_breaks(use_cache, n = n, buffer_frac = buffer_frac, Return = "limits"))
+      } else {
+      return(c(0,1)) #DUNNO WHAT THIS SHOULD BE REALLY.
+      }
+    } else {
+      cached_limits <<- lims
+      return(.endpoint_breaks(lims, n = n, buffer_frac = buffer_frac, Return = "limits"))
+    }
   }
 
-  limits_arg = function(lims) {
-    .endpoint_breaks(lims, n = n, buffer_frac = buffer_frac, Return = "limits")
+  breaks_arg = function(lims) {
+    if (is.null(lims) || !is.numeric(lims) || length(lims) != 2 || any(!is.finite(lims)) || identical(lims, c(0,1))) {
+      return(numeric())  # Or numeric(0), but this might be safer
+    } else {
+      scales::discard(.endpoint_breaks(lims, n = n, buffer_frac = buffer_frac, Return = "breaks"), lims)
+    }
   }
 
   ##--NAME ARGUMENT--##
