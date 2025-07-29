@@ -1,14 +1,31 @@
 ---
 title: "Guide to the ggplot.plus Package"
 author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center"
-
+version: "0.3.0"
+date: today
 format:
   html:
     output-file: index.html
-    code-overflow: wrap
-
+    self-contained: true
+    toc: true               # Table of contents in sidebar
+    toc-depth: 3            # Include up to h3 in the TOC
+    toc-location: left
+    code-fold: show         # Allow code folding
+    code-summary: "Toggle showing code"  # Label for expandable code
+    code-tools: true        # Add copy/paste buttons
+    code-overflow: wrap     # Prevent horizontal scroll
+    theme: cosmo            # Clean, modern theme
+    highlight-style: a11y   # Accessible code syntax highlighting
+    df-print: paged         # Good for browsing long dataframes
+    smooth-scroll: true     # Nicer TOC and anchor navigation
+    number-sections: true   # Helps link to specific parts
 execute:
-  message: false
+  echo: true                # Show code by default
+  warning: false            # Hide warnings (set to true if you’re debugging)
+  message: false            # Hide messages
+  error: false              # Hide errors (set true if you want to show failures)
+  freeze: auto              # Prevent re-running code unless it changes
+editor: visual              # Helps with editing
 ---
 
 ## Getting started
@@ -22,12 +39,13 @@ devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _
 
 ```{r load package local}
 #| include: false
+library(ggplot2)
 devtools::load_all()
 ```
 
 Then, load it alongside `ggplot2`:
 
-```{r load libraries}
+```{r load libraries, eval = F}
 # install.packages("ggplot2")  #IF NOT ALREADY INSTALLED
 library(ggplot2)
 library(ggplot.plus)
@@ -529,7 +547,7 @@ The left-hand side of the scale has expanded to include 0 so that it is clear to
 
 Our graph is nearly there (at least in our estimation!)—but one issue remains: the **y axis title** is still vertically oriented and tucked away in the plot's left margin. Let’s change that.
 
-In base `ggplot2`, you *can* reorient the title to be horizontal, at least, using a few hacky adjustments like line breaks and theme tweaks:
+In base `ggplot2`, you *can* reorient the title to be horizontal, at least, using a few hacky adjustments involving line breaks and theme tweaks:
 
 ```{r change y axis title manual, warning=F}
 ggplot(iris,
@@ -539,19 +557,19 @@ ggplot(iris,
             mapping = aes(fill = Species),
             alpha = 0.3) +
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
-  scale_y_continuous_plus(name = "Sepal\nlength\n(cm)") + #<--INSERT SOME LINE BREAKS USING \n TO BREAK THE TITLE ONTO MANY LINES FOR MAX SPACE EFFICIENCY. 
-  theme_plus(axis.title.y = element_text(vjust = 0.5, angle = 0)) #<--CHANGE THE Y AXIS TITLE TO BE VERTICALLY JUSTIFIED AND HORIZONTAL (UNANGLED).
+  scale_y_continuous_plus(name = "Sepal\nlength\n(cm)") + #<--INSERT LINE BREAKS USING \n TO BREAK TITLE ONTO MANY LINES FOR SPACE EFFICIENCY. 
+  theme_plus(axis.title.y = element_text(vjust = 0.5, angle = 0)) #<--CHANGE Y AXIS TITLE TO VERTICALLY JUSTIFIED AND HORIZONTAL.
 ```
 
-This works reasonably well, to be honest. It's readable, and it's *relatively* simple to implement, if you know how (a **big** if for many `ggplot2` beginners!). But it has limitations:
+This works reasonably well, to be honest. It's readable, and it's *relatively* simple to implement, if you know how (but that's a **big** if for many `ggplot2` beginners!). But it has limitations:
 
--   It steals horizontal space in the graph's "center row" from your data in the plotting area, much as a right-hand legend does.
+-   It steals horizontal space in the graph's "center row" from your data, much as a right-hand legend does, and it forces a similar amount of wasted white space above and below it.
 
--   It keeps the label in a *relatively* unprominent location, where readers may not necessarily encounter it early.
+-   It keeps the label in a *relatively* unprominent location, where readers may not encounter it early.
 
 -   It doesn’t scale up well to longer axis titles or those with long, unbreakable words.
 
-To get around these challenges, `ggplot.plus` includes `yaxis_title_plus()`, which repositions the y axis title to the top left corner of the plotting area, above the y axis and left-justified to the edges of the y-axis labels:
+To get around these challenges, `ggplot.plus` includes `yaxis_title_plus()`, which moves the y axis title to the top left, above the y axis line and left-justified to the edges of the y-axis labels:
 
 ```{r yaxis mover, warning=F}
 ggplot(iris,
@@ -561,26 +579,26 @@ ggplot(iris,
             mapping = aes(fill = Species),
             alpha = 0.3) +
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
-  scale_y_continuous_plus(name = "Sepal length (cm)") + #<--NO ADJUSTMENTS TO TITLE NEEDED NOW.
-  theme_plus() + #<--NO THEME ADJUSTMENTS EITHER.
-  yaxis_title_plus() #<--THIS FUNCTION HANDLES EVERYTHING!
+  scale_y_continuous_plus(name = "Sepal length (cm)") + #<--NO HACKS TO TITLE NEEDED.
+  theme_plus() + #<--NO THEME ADJUSTMENTS.
+  yaxis_title_plus() #<--THIS HANDLES EVERYTHING!
 ```
 
-This small adjustment brings a number of potential benefits:
+This may seem a little radical to some at first, but this small adjustment has a number of potential benefits:
 
--   **Prominence**: Readers of left-to-right, top-to-bottom languages naturally start in the upper-left (we read in what's called a **"Z reading frame,"** which is to say we read in a pattern that traces one or more Z shapes, starting at the top left of an element), so the y axis title is now one of the very first components of our graph many readers will encounter.
+-   **Prominence**: Readers of left-to-right, top-to-bottom languages naturally start in the upper-left (we read in what's called a **"Z reading frame,"** which is to say we read in a pattern that traces one or more Z shapes, starting at the top left of an element), so the y axis title is now one of the first components of our graph many readers will encounter.
 
 -   **Readability**: The title is horizontal, making it easier and faster to read for all kinds of people in all kinds of contexts.
 
--   **Space efficiency**: Instead of taking up horizontal room in the "data row" of the graph, the title sits in a narrow horizontal band *above* the plot, freeing up the core of the graphing area for your data to spread out.
+-   **Space efficiency**: Instead of taking up room in the "data row" of the graph, the title sits in a narrow horizontal band *above* the plot, freeing up the core of the graphing area for your data.
 
--   **Pseudo-title element**: Many design experts recommend against giving your plots a title. The reason is that, at best, titles tend to do what y axis titles and captions already do, only worse. However, research suggests novice graph readers, especially, find titles helpful. By moving the y axis title to where a plot title might reasonably go, we allow it to serve a similar purpose but without any risk of repetition.
+-   **Pseudo-title element**: Many graph design advocates recommend against plot titles. The reason is that, at best, titles tend to do what y axis titles and captions already do, only worse. However, research suggests novice graph readers, especially, find titles helpful nonetheless. By moving the y axis title to where a plot title might reasonably go, we allow it to serve a similar purpose but with no risk of being repetitive.
 
--   **No ambiguity**: One hazard with moving the y axis title is that it may become unclear what it refers to. By anchoring it above the y axis line and left-justified to the left edge of the y axis labels, there's little ambiguity as to its purpose compared to just about any other potential placement.
+-   **No ambiguity**: One hazard with moving the y axis title to anywhere other than its "normal" location is that it may become unclear what it refers to. By anchoring it above the y axis line and left-justified to the left edge of the y axis labels, there's little, if any, ambiguity as to its purpose.
 
-Some may find this placement unconventional at first, but it's backed by **decades of advocacy** from the data visualization community (dating back to at least the 1990s). So while it's optional, it's not a fringe or new idea! Give it a try–you just might find that you like it better too!
+This adjustment is backed by **decades of advocacy** from the data visualization community (dating back to at least the 1990s). So while it's optional, it's not a fringe or new idea! Give it a try–you just might find you like it better too!
 
-One neat feature: No matter how long your y axis labels get, `yaxis_title_plus()` will ensure the title stays left-justified to their left edge, wherever that is:
+One neat feature: No matter how long your y axis labels get, `yaxis_title_plus()` will ensure the title stays left-justified to their left edge:
 
 ```{r stay left justified, warning=F}
 ggplot(iris,
@@ -591,14 +609,14 @@ ggplot(iris,
             alpha = 0.3) +
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)", 
-                          labels = c(4, 5, 6, "7.0000000", 8)) + #<--ONE OBNOXIOUS LABEL IN LENGTH. 
+                          labels = c(4, 5, 6, "7.0000000", 8)) + #<--ONE OBNOXIOUS LABEL. 
   theme_plus() + 
   yaxis_title_plus()
 ```
 
-If you are using `yaxis_title_plus()` and `theme_plus()` together and your graph has a legend, it will default to a horizontal stripe at the top of the graph. By default, this stripe will sit in its own "row" above the relocated y axis title.
+If you're using `yaxis_title_plus()` and `theme_plus()` together and your graph has a legend, the latter will default to a horizontal stripe at the top of the graph. By default, this stripe will sit in its own "row" above the relocated y axis title.
 
-Sometimes, this will be necessary to get both elements to fit. However, if there is enough room for them to sit side by side, you can set `move_top_legend_down` to `TRUE` inside `yaxis_title_plus()` to move the legend down into the same row as the relocated y axis title for some sweet sweet efficiency:
+Sometimes, this will be necessary to get both elements to fit. However, if there is enough room for them to sit side by side, you can set `move_top_legend_down` to `TRUE` inside `yaxis_title_plus()` to move the legend down into the same row as the relocated y axis title for some sweet sweet space efficiency:
 
 ```{r relocating the legend, warning=F}
 #| fig-height: 6
@@ -614,14 +632,16 @@ ggplot(iris,
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
-  yaxis_title_plus(move_top_legend_down = TRUE) #<--MOVE ANY TOP LEGEND DOWN INTO THE SAME ROW AS THE Y AXIS TITLE. 
+  yaxis_title_plus(move_top_legend_down = TRUE) #<--MOVE TOP LEGEND(S) DOWN INTO SAME ROW AS Y AXIS TITLE. 
 ```
+
+Sometimes, this won't work–the two elements will clip into one another, so just keep that in mind.
 
 ## Thoughtful Gridlines
 
-One (arguably) controversial design choice in `ggplot.plus`'s `theme_plus()` is the complete removal of gridlines. While some readers rely on them or expect them, many find them distracting or visually cluttering in most situations, and data viz experts often advise that they be removed entirely as a general rule.
+One (arguably) controversial opinion coded into `ggplot.plus`'s `theme_plus()` is the removal of gridlines. While some readers rely on them or expect them, many (probably the clear majority!) tend to find them distracting or visually cluttering in most situations. In fact, data viz experts often advise they not be used, as a general rule.
 
-If you’d like to restore them, however, you can: you *could* manually add them back using `theme()` or `theme_plus()`. But there’s an easier and more thoughtful option: `gridlines_plus()`. This function *selectively* reintroduces only the major gridlines (and not also minor ones) in only directions mapped to numeric variables (and not also discrete ones) and only renders them very faintly:
+If you’d like to restore them, however, you can: you *could* manually add them using `theme()` or `theme_plus()`. But there’s an easier (and more opinionated) option: `gridlines_plus()`. This function *selectively* reintroduces only the major gridlines (not minor ones) in only directions mapped to numeric variables (not discrete ones) and renders them as faintly as possible:
 
 ```{r gridlines plus, warning=F}
 ggplot(iris,
@@ -634,35 +654,35 @@ ggplot(iris,
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +
-  gridlines_plus() #<--REINTRODUCE SOME GRIDLINES
+  gridlines_plus() #<--REINTRODUCE GRIDLINES
 ```
 
-These gridlines default to `"gray90"`. Prior research suggests that gridlines of this faint color will be *just* visible enough (against a white background) for those who need help estimating values or otherwise want to use them but light enough to easily fade into the background for everyone else.
+These gridlines default to `"gray90"`. Prior research suggests gridlines this faint relative to the background color will be *just* visible enough for those who need help estimating values or otherwise want to use them to be able to while being light enough to easily fade into the background for everyone else.
 
-Research has shown that faint, thin, and infrequent gridlines like these can improve comprehension for some readers without drawing undue attention or degrading visual contrast. That's what we're aiming for here.
+As such, research has shown that faint, thin, and infrequent gridlines like these can improve comprehension for some readers without drawing undue attention or degrading visual contrast. That's what we're aiming for here.
 
-However, if you want to tweak them in some respect or another, `gridlines_plus()` allows adjustments to `linetype`, `color`, and `linewidth`.
+However, if you want to tweak them in some respect or another, `gridlines_plus()` allows adjustments to `linetype`, `color`, and `linewidth` for your convenience–no need to use `theme_plus()` to make those adjustments!
 
-If we had just one continuous axis, `gridlines_plus()` would automatically detect this and draw the gridlines in only one direction:
+If we had just one continuous axis, `gridlines_plus()` would automatically detect this and draw the gridlines in only the one relevant direction:
 
 ```{r one one gridlines, warning=F}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Species)) + #<--MAKE DISCRETE
   geom_plus(geom = "boxplot") + #<--CHANGE GEOM TYPE. 
-  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) + #<--NO CONTINUOUS Y ANY MORE TO IMPROVE.
+  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) + #<--NO CONTINUOUS Y ANY LONGER.
   theme_plus() + 
   yaxis_title_plus() +
   gridlines_plus()
 ```
 
-Because gridlines are primarily designed for helping read exact values, there's no need for them when an axis is discrete and thus has no exact values to read! Thus, we can simplify the presentation by omitting them in that direction.
+Because gridlines are primarily designed to aid in reading exact values, there's no need for them when an axis is discrete and thus has no exact values to read! Thus, we can simplify the presentation by omitting them in that direction.
 
 ## Shortcuts
 
-As the above examples have demonstrated, `ggplot.plus`'s core functions are designed to be used *ala carte*, if that's your preference. However, `geom_plus()` can also include the operations of other functions in the package if you use its optional arguments.
+As the above examples have demonstrated, `ggplot.plus`'s core functions can be used *ala carte*, if that's your preference. However, `geom_plus()` can also include the operations of several other functions if you'd prefer to bundle several together into one call.
 
-For example, our previous scatterplot from above could also have been generated this way:
+For example, our previous scatterplot could also have been generated this way:
 
 ```{r shortcuts, warning=F}
 ggplot(iris,
@@ -674,19 +694,19 @@ ggplot(iris,
             include_gridlines = TRUE, #<--TURNS ON gridlines_plus()
             include_yscale_plus = TRUE, #<--TURNS ON scale_y_continuous_plus()
             include_theme = TRUE, #<--TURNS ON theme_plus()
-            y_title = "Sepal length (cm)" #<--SETS Y AXIS TITLE SAFELY.
+            y_title = "Sepal length (cm)" #<--SETS Y AXIS TITLE.
             ) +
-  scale_x_continuous_plus("Petal length (cm)", thin_labels = TRUE) + #<--WE STILL SPECIFY CUSTOM LABELS AND THE TITLE THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().
-  yaxis_title_plus() #<--THIS STILL NEEDS TO BE ADDED SEPARATELY.
+  scale_x_continuous_plus("Petal length (cm)", thin_labels = TRUE) + #<--WE STILL SPECIFY CUSTOM LABELS AND TITLE THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().
+  yaxis_title_plus() #<--THIS STILL NEEDS TO BE ADDED SEPARATELY, AS IT CAN'T COME BUNDLED WITH GEOM_PLUS
 ```
 
-In this example, we were able to call `scale_y_continuous_plus()`, `theme_plus()`, and `gridlines_plus()` with their default parameters by setting their corresponding arguments inside `geom_plus()` to `TRUE`.
+In this example, we were able to call `scale_y_continuous_plus()`, `theme_plus()`, and `gridlines_plus()` with their default parameters by setting the corresponding arguments inside `geom_plus()` to `TRUE`.
 
-If we *don't* want to accept the defaults for these, though, we need to call them separately, which is why we do not set `include_xscale_plus` to `TRUE`; we want to set its labels, so we call `scale_x_continuous_plus()` separately instead.
+If we *don't* want to accept the defaults for these, though, we need to call them separately, which is why we do not set `include_xscale_plus` to `TRUE`; we want to adjust the x axis labels, so we call `scale_x_continuous_plus()` separately to do that.
 
-Note that we can also specify new axis/scale titles inside `geom_plus` if we want (so long as we are not subsequently calling their associated `scale_*continuous_plus()` function!).
+Note that we can also specify new axis/scale titles inside `geom_plus` if we want (so long as we are not subsequently calling their associated `scale_*_continuous_plus()` function!).
 
-Also note that `yaxis_title_plus()` must still be called separately, if you wish to use it.
+Also note that `yaxis_title_plus()` must still be called separately, if you wish to use it, as it does not come bundled with `geom_plus()`.
 
 ## Faceting With `ggplot.plus`
 
@@ -700,7 +720,7 @@ ggplot(iris,
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
             alpha = 0.3, 
-            show.legend = FALSE) + #<--SUPPRESS THE REDUNDANT LEGEND.
+            show.legend = FALSE) + #<--SUPPRESS REDUNDANT LEGEND.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
@@ -709,7 +729,7 @@ ggplot(iris,
   facet_grid(. ~ Species) #<--MAKE ONE SMALL MULTIPLE (PANEL) PER SPECIES (ACROSS COLUMNS)
 ```
 
-As this example shows, **most features in `ggplot.plus` are compatible with faceting**, though a few may require some extra thought.
+As this example shows, **many features in `ggplot.plus` are compatible with faceting**, though some may require extra thought.
 
 For example, using `yaxis_title_plus()` with facets works—the function automatically shuffles where facet strip labels go to ensure that they go *above* the top y axis title, as shown above, so the latter stays close to the axis it labels. However, for some, this could look a little confusing or awkward.
 
@@ -728,7 +748,7 @@ ggplot(iris,
   theme_plus() + 
   yaxis_title_plus() + 
   gridlines_plus() +
-  facet_grid(Species ~ .) #<--FACET ACROSS ROWS INSTEAD
+  facet_grid(Species ~ .) #<--FACET ACROSS ROWS
 ```
 
 Another option would be to relocate the facet strip labels to the bottom of the graph so they aren't competing with the relocated y axis title:
@@ -747,7 +767,7 @@ ggplot(iris,
   yaxis_title_plus() + 
   gridlines_plus() +
   facet_grid(. ~ Species, 
-             switch = "x") #<--MOVE TOP STRIP LABELS TO BOTTOM.
+             switch = "x") #<--MOVE STRIP LABELS TO BOTTOM.
 ```
 
 A third option would be to suppress the facet strip labels and instead retain the legend:
@@ -769,17 +789,17 @@ ggplot(iris,
   facet_grid(. ~ Species)
 ```
 
-Faceting is a relatively complex operation that `ggplot2` performs. `ggplot.plus`'s features are designed to work nicely with it, but that doesn't mean some creativity won't still be involved!
+Faceting is a relatively complex feature of `ggplot2`. `ggplot.plus`'s features are designed to work with it, but that doesn't mean some creativity won't still be involved!
 
 ## Transparency in the Legend Keys
 
-You may have noticed that the **legend keys**—the circles in the legend that clarify fill color—are solid even though the plotted points are semi-transparent. This is not the way things normally work in `ggplot2`; by default, the `alpha` value applied to the points would be applied to their legend representations as well. We can see that behavior by using `geom_point()`:
+You may have noticed that the **legend keys**—the circles in the legend that clarify fill color—are solid even though the plotted points are semi-transparent. This is not the way things normally work in `ggplot2`; by default, the `alpha` value applied to the points would be applied to their legend key representations as well. We can see that behavior by using `geom_point()`:
 
 ```{r override aes, warning=F}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
-  geom_point(mapping = aes(fill = Species), #<--REVERT TO geom_point, BUT WITH SETTINGS MORE LIKE BEFORE.
+  geom_point(mapping = aes(fill = Species), #<--REVERT TO geom_point, BUT WITH SETTINGS MORE LIKE GEOM_PLUS WOULD SET.
              shape = 21, 
              size = 5,
              alpha = 0.3) +
@@ -792,7 +812,7 @@ ggplot(iris,
 
 As you can see, the legend keys get the same treatment as our points here, which makes the legend keys (arguably) harder to interpret. `ggplot.plus`'s `geom_plus()` function attempts to see if you may have set `size` and/or `alpha` aesthetics that would result in legend keys that might be too faint or too small to easily read and overrides the legend aesthetics accordingly, if so.\
 \
-We can observe this behavior for size as well, then:
+We can observe this behavior for size as well:
 
 ```{r see size matters, warning=FALSE}
 ggplot(iris,
@@ -800,7 +820,7 @@ ggplot(iris,
            y = Sepal.Length)) +
   geom_plus(geom = "point", 
             mapping = aes(fill = Species),
-            size = 1) + #<--MAKE THE POINTS MUCH SMALLER.
+            size = 1) + #<--MAKE POINTS MUCH SMALLER THAN DEFAULT.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
@@ -808,15 +828,17 @@ ggplot(iris,
   gridlines_plus()
 ```
 
-Even though the points are smaller here (too small, really!), the legend keys are still large enough to be read.
+Even though the points are smaller here (far too small, really!), the legend keys are still large enough to read.
 
 ## Color Isn't Everything–Incorporating Distinctive Shapes Into Scatterplots
 
-Thus far, we've mostly focused on graphs using color (hue, luminance, and saturation) to communicate differences in the data. `ggplot.plus` is designed to revamp how `ggplot2` approaches color to yield graphs that are more accessible and interpretable.
+Thus far, we've mostly focused on graphs that use color (hue, luminance, and saturation) to communicate differences in the data. `ggplot.plus` is designed to revamp how `ggplot2` approaches color to yield graphs that are more accessible and interpretable while still having the aesthetic and engagement benefits of color.
 
-However, *any* graph that uses color to communicate difference can only be *so* accessible and interpretable. A small but sizable number of humans are completely colorblind, and color perception weakens as we age. Additionally, many people still read and/or view scientific publications in gray scale, wherein colors may not be as readily distinguished (unless they vary a lot in luminance).
+However, *any* graph that uses color to communicate difference can only be *so* accessible and interpretable. A small but sizable number of humans are completely colorblind, and color perception weakens as we age. Additionally, many people still read and/or view publications in gray scale, wherein colors may not be as readily distinguished (unless they vary sufficiently in luminance).
 
-As such, data viz experts would remind us that there are many other visual channels (ways of communicating difference) out there! One of these, shape, is a useful and classic channel for communicating difference in scatterplots like those we've made so far. However, `ggplot2` only makes available the same 26 shapes for points that are available in base R:
+As such, data viz advocates would remind us there are many other **visual channels** (ways of communicating difference in a graph) out there, including a ton baked into `ggplot2`! One of these, point `shape`, is a useful and classic channel for communicating difference in scatterplots like those we've made so far.
+
+However, `ggplot2` only makes available the same 26 point shapes for points that are available in base R:
 
 ```{r Rs base shapes }
 pch_values = 0:25
@@ -827,13 +849,13 @@ plot(pch_values,
      pch = 0:25, cex = 2)
 ```
 
-While there is certainly *some* variation between these shapes , many are perceptually very similar, making them difficult to distinguish quickly \[research has suggested that humans more readily distinguish shapes when they vary from each other along three axes: 1) Openness, 2) Spikiness, and 3) Intersectionality\].
+While there is certainly *some* variation between these shapes, many are perceptually similar, making them difficult to distinguish quickly: Research has suggested that humans more readily distinguish shapes when they vary strongly from each other along three axes: 1) Openness, 2) Spikiness, and 3) Intersectionality.
 
-In addition, only the last five of these shapes have separate outline (stroke) and interior (fill) portions, allowing them to bear separate outline and fill colors, and these five shapes are very similar with respect to openness and intersectionality, making them harder to distinguish from each other at a glance. This limits their versatility.
+Notably, only the last five shapes have separate outline (stroke) and interior (fill) portions, allowing them to bear separate outline and fill colors, and these five shapes are very similar with respect to openness and intersectionality, making them harder to distinguish from each other at a glance. This limits their versatility.
 
 As such, we designed a custom version of `geom_point()`, `geom_point_plus()`, that introduces the ability to access nine new and thoughtfully crafted shapes that:
 
--   Intentionally vary along the three axes described above as much as possible and
+-   Intentionally vary as much as possible along the three axes described above.
 
 -   Can bear separate stroke and fill colors:
 
@@ -844,7 +866,7 @@ As such, we designed a custom version of `geom_point()`, `geom_point_plus()`, th
 geom_point_plus_shapes
 ```
 
-These more distinctive shapes can be used to communicate difference whenever using color to do so might be undesirable or otherwise viewed as unnecessary:
+These more distinctive shapes can be used to communicate difference whenever using color (alone) to do so might be undesirable or unnecessary:
 
 ```{r shape scatter1, warning = F}
 #| fig-height: 6.5
@@ -854,8 +876,8 @@ set.seed(123)
 
 ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ], #<--RESTRICT DATA VOLUME TO REDUCE OVERPLOTTING FOR ILLUSTRATION.
        mapping = aes(x = Petal.Length, y = Sepal.Length)) +
-  geom_point_plus(mapping = aes(shape = factor(round(Petal.Length))), #<--MAP SHAPE TO A FACTOR WITH 9 OR FEWER LEVELS.
-                  legend_title = "Petal length (binned)") + #<--SPECIFY A NEW LEGEND TITLE.
+  geom_point_plus(mapping = aes(shape = factor(round(Petal.Length))), #<--MAP SHAPE TO FACTOR WITH 9 OR FEWER LEVELS!
+                  legend_title = "Petal length (binned)") + #<--SPECIFY NEW LEGEND TITLE.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
   theme_plus() +
@@ -863,7 +885,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ], #<--RESTRICT DATA VOLU
   gridlines_plus()
 ```
 
-As the example above shows, you can specify a new shape legend title right inside `geom_point_plus()` using the `legend_title` parameter. You can also use the `shape_values` parameter to specify which specific shapes you want to use:
+As the example above shows, you can specify a new shape legend title inside `geom_point_plus()` using the `legend_title` parameter for convenience. You can also use the `shape_values` parameter to specify which specific shapes from the new palette you want to use:
 
 ```{r choosing shapes, warning = F}
 #| fig-height: 6.5
@@ -875,7 +897,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
        mapping = aes(x = Petal.Length, y = Sepal.Length)) +
   geom_point_plus(mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + #<--SPECIFY THE SPECIFIC SHAPES YOU WANT TO USE.
+                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + #<--SPECIFY SPECIFIC SHAPES YOU WANT.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
   theme_plus() +
@@ -883,7 +905,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
   gridlines_plus()
 ```
 
-As you might hopefully expect, you can also access these features using `geom_plus(geom = "point_plus")` instead:
+As you might hope, you can also access these features using `geom_plus(geom = "point_plus")` instead:
 
 ```{r geom_plus access, warning=F}
 #| fig-height: 6.5
@@ -904,7 +926,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
   gridlines_plus()
 ```
 
-As previously noted, all these shapes have separate fill and color aesthetics, so these aesthetics can be set to constants or even mapped to variables (although we wouldn't necessarily recommend it):
+As previously noted, all these shapes have separate fill and color aesthetics, so these color-based aesthetics can be set to constants or even mapped to variables (although we wouldn't necessarily recommend doing the latter in most cases, we did want to ensure it was possible!):
 
 ```{r}
 #| fig-height: 6.5
@@ -918,7 +940,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
             mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
                   shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle"),
-            fill = viridis::viridis(1,0.5,0.5)) + #<--BOTH COLOR AND FILL CAN BE MAPPED TO CONSTANTS OR TO VARIABLES 
+            fill = viridis::viridis(1,0.5,0.5)) + #<--BOTH COLOR AND FILL CAN BE MAPPED TO CONSTANTS OR EVEN TO VARIABLES 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
   theme_plus() +
@@ -926,15 +948,15 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
   gridlines_plus()
 ```
 
-These shapes are specifically designed for use via `geom_point_plus()` for when you want to map a variable to shape. However, you could use them in "regular" scatterplots (i.e., those that don't map shape to data) too, if you want! To do this (at present), you must:
+These shapes are specifically designed for use via `geom_point_plus()` for when you want to map a discrete variable to shape, especially in lieu of using color to do this. However, you *could* use them in "regular" scatterplots (i.e., those that *don't* map shape) too, if you want! To do this (at present), you must:
 
-1.  Use `geom_point_plus()` rather than `geom_point()` (directly or indirectly).
+1.  Use `geom_point_plus()` rather than `geom_point()`.
 
 2.  Set `shape` to a constant *inside* of `aes()`, not outside of it.
 
-3.  Specify the specific shape(s) you want via `shape_values`.
+3.  Specify the specific shape(s) you want via the `shape_values` argument.
 
-It's not required, but you may also want to suppress the shape legend by setting `include_shape_legend` to `FALSE` if you're not mapping shape, as a legend will be automatically generated otherwise:
+It's not required, but you may also want to suppress the shape legend by setting `include_shape_legend` to `FALSE` if you're not mapping shape, as a legend will be automatically generated regardless:
 
 ```{r using custom shapes on their own, warning = F}
 ggplot(iris,
@@ -942,11 +964,11 @@ ggplot(iris,
            y = Sepal.Length)) +
   geom_plus(geom = "point_plus", #<--MUST USE GEOM_POINT_PLUS, NOT GEOM_POINT
             mapping = aes(fill = Species, 
-                          shape = factor(1)), #<--MAP SHAPE TO A DISCRETE CONSTANT.
+                          shape = factor(1)), #<--MAP SHAPE TO DISCRETE CONSTANT.
             size = 2.5,
             alpha = 0.5,
-            shape_values = "waffle", #<--PICK THE EXACT SHAPE(S) YOU WANT.
-            include_shape_legend = FALSE) + #<--OPTIONALLY, SUPPRESS THE SHAPE LEGEND.
+            shape_values = "waffle", #<--PICK EXACT SHAPE(S) YOU WANT, OTHERWISE THE DEFAULT ONE WILL BE USED.
+            include_shape_legend = FALSE) + #<--PROBABLY WISE TO SUPPRESS SHAPE LEGEND IF MAPPING TO A CONSTANT.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
@@ -958,7 +980,7 @@ We'll try to make this less cumbersome in future versions.
 
 ## More Unusual Interactions
 
-One sort of strange function in `ggplot2` is `coord_flip()`, which will flip the graph's coordinate system so that the x axis runs vertically and the y axis runs horizontally. `ggplot.plus`'s tools will work with this function, if used:
+One sort of strange function in `ggplot2` is `coord_flip()`, which will flip the graph's coordinate system so that the x axis runs vertically and the y axis runs horizontally. `ggplot.plus`'s tools will work with this function, if you use it:
 
 ```{r coord flip, warning = FALSE}
 palettes_plus(begin_discrete = 0, 
@@ -980,11 +1002,11 @@ ggplot(iris,
 
 ## Warnings Aimed at Best Practice Adoption
 
-There are some aspects of suboptimal graph design that `ggplot.plus` can't (currently) help you implement directly (yet). However, it tries to at least *detect* these circumstances and give you informative messages about what has been detected and what you can do about it.
+There are some aspects of suboptimal graph design that `ggplot.plus` can't (currently) help you implement (yet). However, it tries to at least *detect* these circumstances and give you informative messages about what has been detected and what you should do about it.
 
 For example, by default, `ggplot2` will make your axis titles the column names of the variables in the data set you've mapped to those axes. So, if we map `x` to `Petal.Length` in our data set, our axis title will say `Petal.Length` unless we change it.
 
-Most column names are not designed to be human-readable and intuitive. Instead, they are designed to be short, computer-readable, and easy to type. They may feature unusual capitalization and punctuation, lack spaces, include cryptic abbreviations, and lack units.
+Just like "Petal.Length", most column names are not designed to be perfectly human-readable and intuitive. Instead, they are designed to be short, computer-readable, and easy to type. They may feature unusual capitalization and punctuation, lack spaces, include cryptic abbreviations, and lack units.
 
 If you use any of the `scale_*_continuous_plus()` functions, if they detect that you have not specified custom axis titles for your scales (because the titles being rendered match the column names of the mapped variables exactly), they will flag this:
 
@@ -1005,28 +1027,34 @@ ggplot(iris,
 
 The idea here is to flag an issue that someone who might be new to making graphics in `ggplot2` (or in general) might not otherwise immediately notice or think of and to move them more quickly towards best practices.
 
-Another example: The number of distinct colors that the human eye can successfully distinguish from each other is relatively small. Most research puts this number at 12 (at maximum) but closer to 8 in most contexts. As such, if you attempt to request a discrete color palette requiring more than 8 colors, you will get a warning about a likely loss of sufficient contrast:
+Another example: The number of distinct colors that the human eye can successfully distinguish from each other is relatively small. Most research puts this number at 12 (at maximum) but closer to 8 in most contexts. Color perceptual space is just not that big! As such, if you attempt to request a discrete color palette requiring more than 8 colors, you will get a warning about a likely lack of contrast:
 
 ```{r warning about less contrast, warning=TRUE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
   geom_plus(geom = "point", 
-            mapping = aes(fill = as.factor(Petal.Width))) + #<--MAKE THIS VARIABLE A FACTOR--IT HAS MANY LEVELS
+            mapping = aes(fill = as.factor(Petal.Width))) + #<--MAKE THIS VARIABLE A FACTOR--IT WILL HAVE TONS OF LEVELS
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +
   gridlines_plus() +
   scale_alpha(guide = "none") +
-  labs(fill = "Petal width (cm)") #<--TO SATISFY THE PREVIOUS WARNING.
+  labs(fill = "Petal width (cm)") #<--SATISFY THE PREVIOUS WARNING SO WE DON'T GET IT AGAIN.
 ```
 
 It's hard to even keep the legend "in bounds" here, since it's so big! But it's also nigh-impossible to distinguish neighboring colors here in the legend.
 
 ## Known Issues
 
-There’s a known limitation when using `yaxis_title_plus()` alongside a **top-positioned x-axis**. The relocated y-axis title will end up in the same horizontal "row" as the top x axis labels, causing them to clip into each other:
+At present, the package 's codebase is very hacky, though pains have been taken to try to make it less so. As such, there are likely many bugs and also many features of `ggplot2` that `ggplot.plus` fails to support or even breaks.
+
+As a general rule, the more complex a thing you're trying to do, the less likely it is that `ggplot.plus`'s features will work with it. That said, `ggplot.plus` is primarily intended for use by those who may not have the skill (or patience) yet to use `ggplot2` in complex ways; if you're already a `ggplot2` pro, you can probably find ways to work around `ggplot.plus`'s current limitations on your own.
+
+Also, little developmental energy has been put (so far) into making `ggplot.plus` compatible with other ggplot2-niverse packages, so we offer no warranty that it will "play nice" with any others you intend to use.
+
+There is also a known limitation when using `yaxis_title_plus()` alongside a **top-positioned x-axis**. The relocated y-axis title will end up in the same horizontal "row" as the top x axis labels, causing them to clip into each other:
 
 ```{r yaxis top conflict, warning=TRUE}
 ggplot(iris,
@@ -1036,7 +1064,7 @@ ggplot(iris,
             mapping = aes(fill = Species),
             alpha = 0.3) +
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE,
-                          position = "top") + #<--MOVE X AXIS TO TOP OF THE GRAPH
+                          position = "top") + #<--MOVE X AXIS TO TOP
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +
@@ -1056,15 +1084,15 @@ ggplot(iris,
                           position = "top") + 
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() +
-  yaxis_title_plus(location = "bottom") + #<--MOVE  Y AXIS TITLE TO BOTTOM INSTEAD
+  yaxis_title_plus(location = "bottom") + #<--MOVE Y AXIS TITLE TO BOTTOM INSTEAD
   gridlines_plus()
 ```
 
-This feels a little "backwards" to us, but it works. Maybe it'd make good sense in a specific context wherein this reversing of the graph's standard schema aids reader intuition.
+This feels a little "backwards" to us, but it works. Maybe it'd make good sense in a specific context wherein this reversing of the graph's standard schema aids reader intuitionl, such as when the y axis is mapped to lake depth.
 
 Now, if you instead *duplicate* the x-axis on **both top and bottom** or have a secondary x axis on the top, you won’t be able to relocate the y-axis title easily. In that case, the best fallback is probably to stick with the horizontal y-axis title broken across as many lines as possible using line breaks (`\n`), as shown earlier.
 
-### Idealized scatterplot for reference
+## Final scatterplot for reference
 
 Here’s a "final" version of our scatterplot using all of `ggplot.plus`’s tools together:
 
