@@ -429,144 +429,177 @@ ggplot_build.geom_plus_warnings = function(plot) {
     }
   }
 
-    #WARNING CHECKS #2--SEE IF USERS HAVE FAILED TO SPECIFY A CUSTOM TITLE FOR EACH SCALE THEY'VE MAPPED. IF THEY HAVEN'T PROVIDE A FRIENDLY WARNING THAT THEY SHOULD CONSIDER DOING SO.
+      ###DEPRECATED--THE SCALE_*_CONTINUOUS_PLUS() FUNCTIONS ALREADY CHECK THIS INTERNALLY AND WARN ABOUT IT.
+    # #WARNING CHECKS #2--SEE IF USERS HAVE FAILED TO SPECIFY A CUSTOM TITLE FOR EACH SCALE THEY'VE MAPPED. IF THEY HAVEN'T PROVIDE A FRIENDLY WARNING THAT THEY SHOULD CONSIDER DOING SO.
+    #
+    # bad_scales = c() #STORAGE OBJS.
+    # bad_vars = c()
+    #
+    # #GO THRU ALL LAYERS IN THE PLOT:
+    # for(l in 1:length(built$plot$layers)) {
+    # #GO THRU ALL THE MAPPINGS IN THE CURRENT LAYER
+    # for(m in 1:length(built$plot$layers[[l]]$mapping)) {
+    #
+    #   curr_aes = built$plot$layers[[l]]$mapping[m]
+    #
+    #   aes_name = names(curr_aes) #WHICH AESTHETIC ARE WE ON?
+    #
+    #   #WHAT VARIABLE WAS THAT MAPPED TO? (MUST CLEAN OF EXPRESSION GUNK)
+    #   var_dirty = rlang::as_label(curr_aes[[1]]) #GET THE NAME OF WHATEVER VARIABLE IS MAPPED TO THIS AESTHETIC.
+    #   default_var = sub(".*\\(([^()]+)\\).*", "\\1", var_dirty)
+    #
+    #   #USERS CAN SPECIFY CUSTOM NAMES 3 WAYS--VIA LABS(), VIA *LAB(), AND VIA SCALE_*(). THIS CHECKS FOR THE FIRST TWO. ALSO NEEDS CLEANING.
+    #   label_from_labs = built$plot$labels[[aes_name]]
+    #   if (length(label_from_labs) > 0) {
+    #     label_clean = sub(".*\\(([^()]+)\\).*", "\\1", label_from_labs)
+    #   } else {
+    #     label_clean = NULL #WILL NULL OUT IF THERE'S NOTHING HERE.
+    #   }
+    #
+    #   #IF THE USER USED A SCALE FUNCTION INSTEAD, LABEL_CLEAN WILL HAVE FOUND JUST THE DEFAULT VARIABLE NAME HERE, SO WE NULL IT BACK OUT TO CONTINUE.
+    #   if(label_clean == default_var) { label_clean = NULL }
+    #
+    #   #NOW, WE CHECK TO SEE IF THEY'VE SPECIFIED IT VIA SCALES.
+    #   if(is.null(label_clean)) {
+    #     scale_obj = built$plot$scales$get_scales(aes_name)
+    #     if (!is.null(scale_obj$name) &&
+    #                       !inherits(scale_obj$name, "waiver")) {
+    #      label_clean = sub(".*\\(([^()]+)\\).*", "\\1", scale_obj$name)
+    #     } else {
+    #      label_clean = NULL #WILL AGAIN NULL OUT IF WE FAIL TO FIND ONE.
+    #     }
+    #   }
+    #
+    #   #IF THERE IS NO USER PROVIDED NAME, OR THE CLEANED SCALE NAME MATCHES THE CLEANED COLUMN NAME OF THE ORIGINAL DATA, STORE THIS AS A VIOLATION.
+    #   if(is.null(label_clean) || label_clean == default_var) {
+    #     bad_scales = unique(c(bad_scales, aes_name)) #WRAP IN UNIQUE TO PREVENT CATCHING THIS MULTIPLE TIMES.
+    #     bad_vars = unique(c(bad_vars, default_var))
+    #   }
+    #  }
+    # }
+    #
+    # #TRIGGER THE WARNING IF ANY SCALES VIOLATE.
+    # if(length(bad_scales) > 0) {
+    #   bad_vars = paste0(bad_vars, collapse = ", ")
+    #   bad_scales = paste0(bad_scales, collapse = ", ")
+    #   warning_text = sprintf("It looks like you haven't provided a custom title for variable(s) %s, mapped to the following aesthetic(s), respectively: %s. This means the title(s) are probably still the column name(s) from your data set, which may not be human-readable, nicely formatted, and intuitive and contain units (if any). We recommend using a scale*() function to specify a custom title for each such scale. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages.", bad_vars, bad_scales)
+    #
+    #   warning(warning_text,
+    #           call. = FALSE)
+    #
+    # }
 
-    bad_scales = c() #STORAGE OBJS.
-    bad_vars = c()
-
-    #GO THRU ALL LAYERS IN THE PLOT:
-    for(l in 1:length(built$plot$layers)) {
-    #GO THRU ALL THE MAPPINGS IN THE CURRENT LAYER
-    for(m in 1:length(built$plot$layers[[l]]$mapping)) {
-
-      curr_aes = built$plot$layers[[l]]$mapping[m]
-
-      aes_name = names(curr_aes) #WHICH AESTHETIC ARE WE ON?
-
-      #WHAT VARIABLE WAS THAT MAPPED TO? (MUST CLEAN OF EXPRESSION GUNK)
-      var_dirty = rlang::as_label(curr_aes[[1]]) #GET THE NAME OF WHATEVER VARIABLE IS MAPPED TO THIS AESTHETIC.
-      default_var = sub(".*\\(([^()]+)\\).*", "\\1", var_dirty)
-
-      #USERS CAN SPECIFY CUSTOM NAMES 3 WAYS--VIA LABS(), VIA *LAB(), AND VIA SCALE_*(). THIS CHECKS FOR THE FIRST TWO. ALSO NEEDS CLEANING.
-      label_from_labs = built$plot$labels[[aes_name]]
-      if (length(label_from_labs) > 0) {
-        label_clean = sub(".*\\(([^()]+)\\).*", "\\1", label_from_labs)
-      } else {
-        label_clean = NULL #WILL NULL OUT IF THERE'S NOTHING HERE.
-      }
-
-      #IF THE USER USED A SCALE FUNCTION INSTEAD, LABEL_CLEAN WILL HAVE FOUND JUST THE DEFAULT VARIABLE NAME HERE, SO WE NULL IT BACK OUT TO CONTINUE.
-      if(label_clean == default_var) { label_clean = NULL }
-
-      #NOW, WE CHECK TO SEE IF THEY'VE SPECIFIED IT VIA SCALES.
-      if(is.null(label_clean)) {
-        scale_obj = built$plot$scales$get_scales(aes_name)
-        if (!is.null(scale_obj$name) &&
-                          !inherits(scale_obj$name, "waiver")) {
-         label_clean = sub(".*\\(([^()]+)\\).*", "\\1", scale_obj$name)
-        } else {
-         label_clean = NULL #WILL AGAIN NULL OUT IF WE FAIL TO FIND ONE.
-        }
-      }
-
-      #IF THERE IS NO USER PROVIDED NAME, OR THE CLEANED SCALE NAME MATCHES THE CLEANED COLUMN NAME OF THE ORIGINAL DATA, STORE THIS AS A VIOLATION.
-      if(is.null(label_clean) || label_clean == default_var) {
-        bad_scales = unique(c(bad_scales, aes_name)) #WRAP IN UNIQUE TO PREVENT CATCHING THIS MULTIPLE TIMES.
-        bad_vars = unique(c(bad_vars, default_var))
-      }
-     }
-    }
-
-    #TRIGGER THE WARNING IF ANY SCALES VIOLATE.
-    if(length(bad_scales) > 0) {
-      bad_vars = paste0(bad_vars, collapse = ", ")
-      bad_scales = paste0(bad_scales, collapse = ", ")
-      warning_text = sprintf("It looks like you haven't provided a custom title for variable(s) %s, mapped to the following aesthetic(s), respectively: %s. This means the title(s) are probably still the column name(s) from your data set, which may not be human-readable, nicely formatted, and intuitive and contain units (if any). We recommend using a scale*() function to specify a custom title for each such scale. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages.", bad_vars, bad_scales)
-
-      warning(warning_text,
-              call. = FALSE)
-
-    }
-
-    #WARNING CHECKS #3--SEE IF USERS HAVE CONTINUOUS SCALES THAT ARE LACKING LABELS AT OR NEAR THEIR LIMITS. THEY SHOULD CONSIDER USING OUR SCALE_*_CONTINUOUS_PLUS FUNCTIONS FOR THESE SCALES.
-
-    #THIS IS A CONVENIENCE FUNCTION (THANKS CHATGPT) THAT TAKES A GGPLOT OBJECT AND AN AESTHETIC, LIKE "x", AND FIGURES OUT IF IT'S MAPPED AND, IF SO, FIGURES OUT WHAT VARIABLE IT WAS MAPPED TO.
-    find_aes_source = function(gg, aes) {
-
-      plot = if (inherits(gg, "ggplot")) gg else gg$plot #FIGURE OUT WHERE TO LOOK
-
-      #SCAN THROUGH THE LAYERS TO SEARCH THERE (THESE WOULD WIN IF THERE IS ONE)
-      for (L in rev(plot$layers)) {
-        if (!is.null(L$mapping[[aes]])) {
-          return(rlang::as_label(L$mapping[[aes]]))
-        }
-        if (!is.null(L$aes_params[[aes]])) {
-          return(NA)
-        }
-      }
-
-      #OTHERWISE GET IT FROM GLOBAL IF IT'S THERE.
-      if (!is.null(plot$mapping[[aes]])) {
-        return(rlang::as_label(plot$mapping[[aes]]))
-      }
-
-      #OTHERWISE JUST FAIL--MUST NOT BE MAPPED.
-      return(NA)
-    }
-
-    #ANOTHER CONVENIENCE FUNCTION FROM CHATGPT THAT TAKES A BUILT GGPLOT OBJECT AND AN AESTHETIC AND FINDS THE RANGE OF THE VARIABLE MAPPED TO THAT AESTHETICQ  QA  a` ` (ASSUMING IT'S CONTINUOUS)
-    range_from_built_data = function(built, aes) {
-      vals = unlist(lapply(built$data, function(df) {
-        if (aes %in% names(df)) { df[[aes]] } else { NULL }
-      }))
-      vals = vals[is.finite(vals)]
-      if (length(vals)) { range(vals) } else { NULL }
-    }
-
-    #NOW, WE CYCLE THRU EACH OF THE RELEVANT AESTHETICS
-    scales2warn = c()
-    for(sc in c("x", "y", "colour", "fill")) {
-      scale.mapped = find_aes_source(built, sc) #CHECK TO SEE IF THIS SCALE WAS EVEN MAPPED TO A VARIABLE.
-      if(!is.null(scale.mapped) &&
-         !is.na(scale.mapped)) {
-
-        scale.attr = built$plot$scales$get_scales(sc) #IF SO, FIND THAT SCALE IN THE PLOT'S SCALES.
-
-        if(inherits(scale.attr, "ScaleContinuous")) { #FIND OUT IF IT'S A CONTINUOUS SCALE
-
-          #PERFORM THE SAME CHECK AS IN THE SCALE_*_CONTINUOUS_PLUS FUCTIONS.
-          scale.range = range_from_built_data(built, sc) #RANGE OF ACTUAL DATA
-          lower = scale.range[1]
-          upper = scale.range[2]
-          span = upper-lower
-
-          brks = built$layout$panel_params[[1]][[sc]]$breaks #THE ASSIGNED BREAKPOINTS
-          brks = brks[!is.na(brks)] #SCRUB OUT NAS
-          buffer_frac = 0.05
-
-          has_low = any(abs(brks - lower) < buffer_frac * span) || any(brks < lower)
-          has_high = any(abs(brks - upper) < buffer_frac * span) || any(brks > upper)
-          #IF THE BREAKS SEEM SUBOPTIMAL, WE FLAG THAT WITH A WARNING.
-          if(!has_low || !has_high) {
-            scales2warn = c(scales2warn, sc)
-          }
-
-  # ##WARNING #4: WHILE WE'RE CHECKING CONTINUOUS AXES, WE CAN CHECK THE Y AXIS TO SEE IF 0 IS WITHIN THE LIMITS. IF IT ISN'T, WARNING COULD REMIND USERS THAT 0 IS A COMMON NULL HYPOTHESIS VALUE AND THAT IT MIGHT BE APPROPRIATE TO INCLUDE IT.
-  #         if(sc == "y" &&
-  #            !is_between(low = lower, high = upper, value = 0)) {
+      ###DE-ACTIVATED FOR NOW--IT BREAKS WITH FILL BECAUSE IT WILL MAP FILLS TO HEXCODES WHICH LOOK LIKE CHARACTERS IN THIS CONTEXT...###
+  #   #WARNING CHECKS #3--SEE IF USERS HAVE CONTINUOUS SCALES THAT ARE LACKING LABELS AT OR NEAR THEIR LIMITS. THEY SHOULD CONSIDER USING OUR SCALE_*_CONTINUOUS_PLUS FUNCTIONS FOR THESE SCALES.
   #
-  #           warning("It appears that y is mapped to a continuous variable, but 0 is not within the y-axis limits. 0 is a common null hypothesis value; consider whether it would be appropriate to expand the axis limits to include it. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages.")
+  #   #THIS IS A CONVENIENCE FUNCTION (THANKS CHATGPT) THAT TAKES A GGPLOT OBJECT AND AN AESTHETIC, LIKE "x", AND FIGURES OUT IF IT'S MAPPED AND, IF SO, FIGURES OUT WHAT VARIABLE IT WAS MAPPED TO.
+  #   find_aes_source = function(gg, aes) {
   #
-  #         } #DEPRECATED WHILE I CONSIDER HOW BEST TO IMPLEMENT.
-        }
-
-      }
-
-    }
-    if(length(scales2warn) > 0) {
-    warning(paste0("Your [", paste0(scales2warn, collapse = ", "), "] scale(s) seem(s) to be lacking a break near the upper and/or lower limit(s) of the data. Consider using the corresponding scale_*_continuous_plus() function(s) to address this issue. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages."))
-     }
-    }
+  #     plot = if (inherits(gg, "ggplot")) gg else gg$plot #FIGURE OUT WHERE TO LOOK
+  #
+  #     #SCAN THROUGH THE LAYERS TO SEARCH THERE (THESE WOULD WIN IF THERE IS ONE)
+  #     for (L in rev(plot$layers)) {
+  #       if (!is.null(L$mapping[[aes]])) {
+  #         return(rlang::as_label(L$mapping[[aes]]))
+  #       }
+  #       if (!is.null(L$aes_params[[aes]])) {
+  #         return(NA)
+  #       }
+  #     }
+  #
+  #     #OTHERWISE GET IT FROM GLOBAL IF IT'S THERE.
+  #     if (!is.null(plot$mapping[[aes]])) {
+  #       return(rlang::as_label(plot$mapping[[aes]]))
+  #     }
+  #
+  #     #OTHERWISE JUST FAIL--MUST NOT BE MAPPED.
+  #     return(NA)
+  #   }
+  #
+  #   #ANOTHER CONVENIENCE FUNCTION FROM CHATGPT THAT TAKES A BUILT GGPLOT OBJECT AND AN AESTHETIC AND FINDS THE RANGE OF THE VARIABLE MAPPED TO THAT AESTHETIC (ASSUMING IT'S CONTINUOUS)
+  #   range_from_built_data = function(built, aes) {
+  #     vals = unlist(lapply(seq_along(built$data), function(i) {
+  #       df = built$data[[i]]
+  #       message("Layer ", i, " | cols: ", paste(names(df), collapse = ", "))
+  #
+  #       # Direct column check
+  #       if (aes %in% names(df)) {
+  #         message("  Found raw aes: ", aes, "; class: ", class(df[[aes]]))
+  #         if (is.numeric(df[[aes]])) {
+  #           return(df[[aes]])
+  #         } else {
+  #           message("  Skipping: not numeric.")
+  #         }
+  #       }
+  #
+  #       # Special fallback for x/y
+  #       fallback_cols = switch(
+  #         aes,
+  #         x = intersect(c("xmin_final", "xmax_final"), names(df)),
+  #         y = intersect(c("ymin_final", "ymax_final"), names(df)),
+  #         character(0)
+  #       )
+  #
+  #       if (length(fallback_cols)) {
+  #         message("  Using fallback columns: ", paste(fallback_cols, collapse = ", "))
+  #         return(unlist(df[, fallback_cols, drop = FALSE]))
+  #       }
+  #
+  #       return(NULL)
+  #     }))
+  #
+  #     vals = vals[is.finite(vals)]
+  #     if (length(vals)) range(vals) else NULL
+  #   }
+  #
+  #   #NOW, WE CYCLE THRU EACH OF THE RELEVANT AESTHETICS
+  #   scales2warn = c()
+  #   for(sc in c("x", "y", "colour", "fill")) {
+  #     scale.mapped = find_aes_source(built, sc) #CHECK TO SEE IF THIS SCALE WAS EVEN MAPPED TO A VARIABLE.
+  #     if(!is.null(scale.mapped) &&
+  #        !is.na(scale.mapped)) {
+  #
+  #       scale.attr = built$plot$scales$get_scales(sc) #IF SO, FIND THAT SCALE IN THE PLOT'S SCALES.
+  #
+  #       print(class(scale.attr))
+  #       if(inherits(scale.attr, "ScaleContinuous")) { #FIND OUT IF IT'S A CONTINUOUS SCALE
+  #
+  #         #PERFORM THE SAME CHECK AS IN THE SCALE_*_CONTINUOUS_PLUS FUCTIONS.
+  #      #   browser()
+  #         scale.range = range_from_built_data(built, sc) #RANGE OF ACTUAL DATA
+  #         lower = scale.range[1]
+  #         upper = scale.range[2]
+  #         span = upper-lower
+  #
+  #         brks = built$layout$panel_params[[1]][[sc]]$breaks #THE ASSIGNED BREAKPOINTS
+  #         brks = brks[!is.na(brks)] #SCRUB OUT NAS
+  #         buffer_frac = 0.05
+  #         buffer = buffer_frac * span
+  #
+  #         got_low  = min(brks) <= (lower + buffer)
+  #         got_high = max(brks) >= (upper - buffer)
+  #
+  #         #IF THE BREAKS SEEM SUBOPTIMAL, WE FLAG THAT WITH A WARNING.
+  #         if(!got_low || !got_high) {
+  #           scales2warn = c(scales2warn, sc)
+  #         }
+  #
+  # # ##WARNING #4: WHILE WE'RE CHECKING CONTINUOUS AXES, WE CAN CHECK THE Y AXIS TO SEE IF 0 IS WITHIN THE LIMITS. IF IT ISN'T, WARNING COULD REMIND USERS THAT 0 IS A COMMON NULL HYPOTHESIS VALUE AND THAT IT MIGHT BE APPROPRIATE TO INCLUDE IT.
+  # #         if(sc == "y" &&
+  # #            !is_between(low = lower, high = upper, value = 0)) {
+  # #
+  # #           warning("It appears that y is mapped to a continuous variable, but 0 is not within the y-axis limits. 0 is a common null hypothesis value; consider whether it would be appropriate to expand the axis limits to include it. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages.")
+  # #
+  # #         } #DEPRECATED WHILE I CONSIDER HOW BEST TO IMPLEMENT.
+  #       }
+  #
+  #     }
+  #
+  #   }
+  #   if(length(scales2warn) > 0) {
+  #   warning(paste0("Your [", paste0(scales2warn, collapse = ", "), "] scale(s) seem(s) to be lacking a break near the upper and/or lower limit(s) of the data. Consider using the corresponding scale_*_continuous_plus() function(s) to address this issue. Set silence_warnings inside geom_plus() to TRUE to hide this and other messages."))
+  #    }
+   }
 
     class(built) = c("geom_plus_warnings_built", class(built))
 

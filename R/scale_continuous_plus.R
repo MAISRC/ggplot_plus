@@ -126,8 +126,8 @@
     if (is.null(lims) || !is.numeric(lims) || length(lims) != 2 || any(!is.finite(lims))) {
       if(!is.null(cached_limits)) {
         use_cache = cached_limits
-        cached_limits <<- NULL
-      return(.endpoint_breaks(use_cache, n = n, buffer_frac = buffer_frac, Return = "limits"))
+        rm(cached_limits)
+        return(.endpoint_breaks(use_cache, n = n, buffer_frac = buffer_frac, Return = "limits"))
       } else {
       return(c(0,1)) #DUNNO WHAT THIS SHOULD BE REALLY.
       }
@@ -158,8 +158,8 @@
     name_arg = unnamed.args[[name_idx]]
     unnamed.args[[name_idx]] = NULL
   } else {
-    warning("No obvious name argument was provided for this scale, so the name will default to ggplot's default, which may lack desirable characteristics. Consider adding a descriptive, human-readable, and properly formatted name containing units, if applicable.", call. = TRUE) #TRIGGER A THOUGHTFUL WARNING TO EDUCATE.
-    name_arg = waiver() #DEFAULT TO GGPLOT2'S DEFAULT NAMING SYSTEM OTHERWISE.
+    warning(sprintf("No obvious name argument was provided for the %s scale, so its name will default to ggplot's default, which may lack desirable characteristics. Consider adding a descriptive, human-readable, and properly formatted name containing units, if applicable.", aes), call. = FALSE) #TRIGGER A THOUGHTFUL WARNING TO EDUCATE.
+    name_arg = ggplot2::waiver() #DEFAULT TO GGPLOT2'S DEFAULT NAMING SYSTEM OTHERWISE.
   }
 
 ##--ASSEMBLING DO.CALL ARGUMENTS LIST.

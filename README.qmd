@@ -18,21 +18,28 @@ execute:
   message: false
 editor: visual
 date: today
+version: "0.3.0"
 ---
 
 ## Quick Start Guide
 
 To begin using the `ggplot.plus` package, you’ll first need to install it from GitHub using the devtools package:
 
-```{r load package, message=F}
-# install.packages("devtools")  # if not already installed
-devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _ INSTEAD OF THE . IN THE NAME.
+```{r load package, message=F, eval=F}
+# install.packages("devtools")  #IF NOT ALREADY INSTALLED
+devtools::install_github("https://github.com/MAISRC/ggplot_plus") #<--NOTE THE _ INSTEAD OF THE . IN THE PACKAGE NAME.
+```
+
+```{r for load knit}
+#| include: false
+library(ggplot2)
+devtools::load_all()
 ```
 
 Then, load it alongside `ggplot2`:
 
-```{r load libraries}
-# install.packages("ggplot2")  # if not already installed
+```{r load libraries, eval = F}
+# install.packages("ggplot2")  #IF NOT ALREADY INSTALLED
 library(ggplot2)
 library(ggplot.plus)
 ```
@@ -41,17 +48,17 @@ Once loaded, you can start layering in the “plus” tools to improve your plot
 
 ### Using the tools
 
-Just by loading `ggplot.plus`, you will switch your session's default color palette to one that is more broadly accessible–there's no need to call `palettes_plus()` to alter this palette unless you want to (see the "Accessible Color Palettes" section for details):
+Just by loading `ggplot.plus`, you will switch your session's default color palette to one that is more broadly accessible–there's no need to call `palettes_plus()` to alter this palette unless you want or need to:
 
 ```{r auto new palette, warning=F}
-#A BASIC GGPLOT SCATTERPLOT, EXCEPT USING ggplot.plus's DEFAULT COLOR PALETTE INSTEAD.
+#A BASIC GGPLOT SCATTERPLOT, EXCEPT USING ggplot.plus's DEFAULT COLOR PALETTE.
 ggplot(iris, 
        mapping = aes(x = Petal.Length, 
                      y = Sepal.Length)) +
   geom_point(mapping = aes(color = Species))
 ```
 
-To access the tweaks the package makes to `ggplot2`'s common geometries ("geoms"), convert your `geom_*()` calls into `geom_plus()` calls, including the name of the `geom` for the `geom` argument:
+To access the tweaks the package makes to `ggplot2`'s common geometries ("geoms"), convert your `geom_*()` calls into `geom_plus()` calls, including the name of the `geom` for the `geom` arguments:
 
 ```{r showing geom_plus, warning=F}
 ggplot(iris, 
@@ -71,7 +78,7 @@ ggplot(iris,
                      y = Sepal.Length)) +
   geom_plus(geom = "point", 
             mapping = aes(color = Species)) + 
-  theme_plus() + #<-OVERHAULS VISUAL THEME
+  theme_plus() + #<-OVERHAULS THEME
   scale_x_continuous_plus("Petal length (cm)",
                           thin_labels = TRUE) + #<--OVERHAULS AXIS BREAKS AND LIMITS (FOR CONTINUOUS AXES ONLY!) 
   scale_y_continuous_plus("Sepal length (cm)") + #<--SAME FOR Y AXIS.
@@ -80,6 +87,6 @@ ggplot(iris,
   labs(color = expression(italic("Iris")*" species")) #<--THIS IS BASE GGPLOT2, BUT A NICE TOUCH!
 ```
 
-The above graphs demonstrates how `ggplot.plus`'s tools rethink the default design features of `ggplot2`. The intention is to yield a cleaner, more accessible, and more modern baseline more quickly so that you need to spend less time fine-tuning and polishing your graphs for publication than you might otherwise need to.
+The above graphs demonstrates how `ggplot.plus`'s tools rethink the default design features of `ggplot2`. The intention is to yield a more opinionated, design-principles-guided product more quickly so you need to spend less time fine-tuning and polishing your graphs for publication than you might otherwise need to.
 
 However, there's a *lot* more to know! If you want to dive deeper, please [check out the full package guide](https://maisrc.github.io/ggplot_plus/ "ggplot_plus guide site").

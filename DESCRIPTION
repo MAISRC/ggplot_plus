@@ -1,9 +1,9 @@
 Package: ggplot.plus
-Title: Enhancing Ggplot2's Defaults Aesthetics and Behaviors
-Version: 0.2.1
+Title: `ggplot.plus: An Opinionated, Universal-Design Focused Veneer For Ggplot2
+Version: 0.3.0
 Authors@R: 
     person("Alex", "Bajcz", email = "bajcz003@umn.com", role = c("aut", "cre"))
-Description: A collection of ggplot2 enhancements for improved design defaults, accessibility, and usability.
+Description: A collection of ggplot2 enhancements for improved defaults, accessibility, and usability.
 Depends: R (>= 3.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -23,7 +23,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Acknowledgements:
-    I thank Allan Cameron (@Allan Cameron) for answers to
+    Thanks to Allan Cameron (@Allan Cameron) for answers to
     Stack Overflow questions 79654995 and 79682150, which
     provided key coding elements enabling the functionality
     of yaxis_title_plus() and geom_point_plus().
