@@ -15,15 +15,15 @@ default_theme = theme_gray() %+replace% #<--SPECIAL GGPLOT2 OPERATOR FOR THEMES
     legend.title = ggplot2::element_text(color = "black", size = 18),
     legend.text = ggplot2::element_text(size = 16, color = "black"),
     legend.key = ggplot2::element_rect(fill = "transparent", color = "white"),
-    legend.background = ggplot2::element_rect(color = "white", fill = "white"),
+    legend.background = ggplot2::element_rect(color = NA, fill = "#FFFEFD"),
     legend.ticks.length = ggplot2::unit(0.2, "cm"),
     legend.frame = ggplot2::element_rect(color = "black", linewidth = 1.2), #MAKE SOLID BLACK LINES FOR THE LEGEND BORDER FOR CONTINUOUS SCALES.
     legend.ticks = ggplot2::element_line(color = "white", linewidth = 1.2, linetype = "solid"), #MAKE THE TICKS WHITE
     panel.border = ggplot2::element_blank(),
     panel.grid = ggplot2::element_blank(), #ELIMINATE MAJOR AND MINOR GRIDLINES
-    panel.background = ggplot2::element_rect(fill = "#FFFEFD", color = NA), #SWITCH FROM GRAY TO JUST OFFWHITE BACKGROUND
+    panel.background = ggplot2::element_rect(fill = "#FFFEFD", color = NA), #SWITCH FROM GRAY TO WHITE BACKGROUND
     panel.spacing = ggplot2::unit(1, "cm"),
-    plot.background = ggplot2::element_rect(fill = "#FFFDFA", color = NA), #SAME OFFWHITE BACKGROUND.
+    plot.background = ggplot2::element_rect(fill = "#FFFEFD", color = NA),
     plot.title = ggplot2::element_blank(),
     plot.subtitle = ggplot2::element_blank(),
     strip.background = ggplot2::element_rect(color = "white", fill = "white"),
