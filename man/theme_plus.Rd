@@ -2,22 +2,93 @@
 % Please edit documentation in R/theme_plus.R
 \name{theme_plus}
 \alias{theme_plus}
-\title{Add a New Base Theme to ggplots With Elevated Defaults}
+\title{A Universal Design-Oriented Base Ggplot2 Theme With Scalable and Overridable Defaults}
 \usage{
-theme_plus(..., legend_pos = c("top", "right"))
+theme_plus(
+  ...,
+  legend_pos = c("top", "right"),
+  base_font_size = 16,
+  base_linewidth = 1.2,
+  base_rectlinewidth = 1.2,
+  line_color = "black",
+  text_color = "black",
+  background_color = "#FFFEFD"
+)
 }
 \arguments{
-\item{...}{Other arguments to be passed along to the \code{theme()} (optional).}
+\item{...}{Optional additional theme settings passed to \code{\link[ggplot2:theme]{ggplot2::theme()}}.
+These are applied \emph{after} the base theme, so the theme's defaults
+(same as in ggplot2).}
 
-\item{legend_pos}{Where should the legend(s) be? Defaults to "top", which will make the legend a horizontal stripe at the top of the graph. Any other value will move the legend to a vertical stripe to the right of the plot (its usual position in \code{ggplot2}).}
+\item{legend_pos}{Where to put the legend. \code{"top"} (default) creates a
+horizontal stripe at the top; \code{"right"} uses a vertical legend at the
+right (ggplot2’s usual position) but with design modifications.}
+
+\item{base_font_size}{Base text size (in points) for most text elements. These
+will scale via \code{rel()}. Default is \code{16}.}
+
+\item{base_linewidth}{Baseline thickness for most \strong{line} theme elements
+(e.g., axis lines, tick marks). Defaults to \code{1.2}. Specific elements
+may use \code{rel()} multipliers on top of this.}
+
+\item{base_rectlinewidth}{Baseline line thickness for most \strong{rect} theme elements
+(e.g., legend frames). Defaults to \code{1.2}.}
+
+\item{line_color}{Default color for most line elements (axis lines, frames, etc.).
+Defaults to \code{"black"}.}
+
+\item{text_color}{Default color for most text elements. Defaults to \code{"black"}.}
+
+\item{background_color}{Background fill applied to the panel, plot, legend,
+and strip backgrounds. Defaults to a slightly warm white, \code{"#FFFEFD"}.}
 }
 \value{
-List with the class "theme_plus", which will trigger the theme_plus method in ggplot_add.
+A ggplot2 theme object to add with \code{+}.
 }
 \description{
-Wrapper function for ggplot2's \code{theme()} function that still allows users to specify custom values for theme attributes but has default values for many attributes that are more likely to result in a graph that meets best practices for design aesthetics, usability, and accessibility.
+\code{theme_plus()} returns a complete ggplot2 theme designed to make
+publication-quality, accessible graphs easier to produce. It keeps all of
+ggplot2’s normal behaviors (last theme wins; user overrides take precedence),
+but bakes in opinionated defaults with Universal Design in mind. A few knobs
+let you scale typography/lines, flip the legend layout, and switch the
+background color if desired.
+}
+\details{
+Internally, text sizes are expressed with \code{rel()}, so they scale with
+\code{base_font_size}. Line/rect line thicknesses start from \code{base_linewidth} and
+\code{base_rectlinewidth} and scale similarly with \code{rel()}. The function builds
+a complete base theme using \verb{\%+replace\%}, then \emph{adds} any user overrides via
+\code{theme(...)}, so the user's preferences always take precedence.
 }
 \examples{
-ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
-geom_plus(geom = "point") + theme_plus()
+# Basic use
+library(ggplot2)
+ggplot(iris, aes(Sepal.Length, Petal.Length, colour = Species)) +
+  geom_point() +
+  theme_plus()
+
+# Prefer the right-side legend and pure white background
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  theme_plus(legend_pos = "right", background_color = "white")
+
+# Scale text up and make lines a bit lighter
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point() +
+  theme_plus(base_font_size = 18, base_linewidth = 1.0)
+
+# You can still override any element normally via theme()
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point() +
+  theme_plus() +
+  theme(axis.line = element_line(linewidth = 0.8))
+
+# But you could just as easily do so via theme_plus()
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point() +
+  theme_plus(axis.line = element_line(linewidth = 0.8))
+
+}
+\seealso{
+\code{\link[ggplot2:theme]{ggplot2::theme()}}, \code{\link[ggplot2:ggtheme]{ggplot2::theme_gray()}}, \code{\link[ggplot2:theme_get]{ggplot2::theme_get()}}
 }

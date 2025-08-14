@@ -81,7 +81,7 @@ The `ggplot.plus` package is guided by three core principles:
 The package has several core functions and a couple of more situational ones:
 
 | Function | Purpose |
-|------------------------------------|------------------------------------|
+|----|----|
 | `geom_plus()` | A general wrapper for all supported `ggplot2` geoms, enforcing opinionated design choices. |
 | `geom_point_plus()` | An alternative version to `geom_point()` that introduces a new palette of shapes designed to be more readily differentiated. |
 | `theme_plus()` | An opinionated version of `ggplot2`'s base `theme_gray` theme, with changes to the settings for size, spacing, legend placement, and much more. |

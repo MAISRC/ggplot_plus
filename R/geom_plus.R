@@ -147,9 +147,22 @@ ggplot_add.geom_plus = function(object, plot, object_name) {
 
   #THE ONLY GLOBAL AESTHETICS WE SHOULD USE ARE THOSE NOT REFERENCE LOCALLY IN ANY WAY.
   #OF COURSE, USERS MIGHT HAVE SPECIFIED ONE THING BUT MEANT ANOTHER. ONE EXAMPLE IS INHERITANCE. IF THEY SPECIFY INHERIT.AES = FALSE, WE NEED TO RESPECT THAT HERE:
-  inherit = if(!is.null(user_args$inherit.aes)) { user_args$inherit.aes } else {TRUE}
+  pmatch_idx = pmatch("inherit.aes", names(user_args), nomatch = 0L)
+  if (pmatch_idx > 0L) { user_args[[pmatch_idx]] } else { user_args$inherit.aes = TRUE }
 
-  if(inherit) {
+  #SO, THINGS GO SQUIRRELY WHEN USERS TRY TO SET CONSTANTS INSIDE OF AES() INSTEAD OF OUTSIDE OF IT. WE WILL GO THRU ALL THE MAPPED AESTHETICS AND, IF ANY ARE MAPPED TO CONSTANTS, WE WEED THOSE OUT AND PUT THEM IN USER_ARGS WHERE THEY BELONGED.
+  result_local = extract_mapped_constants(aes_local, user_args, silence = silence_warnings, location = "geom")
+  aes_local = result_local$aes
+  user_args = result_local$constants
+
+  #ONLY DO IF INHERIT == T BECAUSE OTHERWISE ONLY LOCAL AES MATTERS AT THIS MOMENT.
+  if(user_args$inherit.aes) {
+  result_global = extract_mapped_constants(aes_global, user_args, silence = silence_warnings, location = "ggplot")
+  aes_global = result_global$aes
+  user_args = result_global$constants
+  }
+
+  if(user_args$inherit.aes) {
   globals_used = aes_global[!names(aes_global) %in% c(names(user_args), names(aes_local))]
   } else {
     globals_used = list()
@@ -347,8 +360,9 @@ ggplot_build.geom_plus_warnings = function(plot) {
 
           #ATTEMPT TO OVERRIDE THE ALPHA AND SIZE VALUES OF JUST THE LEGEND (JUST ONCE!).
           if(is.null(built$legend_keys_overridden)) {
-          rebuild = built$plot + do.call(ggplot2::guides, guide_overrides)
-          built = ggbuild_ggplot(rebuild) #REBUILD FROM HERE.
+          rebuild = built$plot +
+            do.call(ggplot2::guides, guide_overrides)
+          built = suppressWarnings(ggbuild_ggplot(rebuild)) #REBUILD FROM HERE. #FOR CERTAIN COMPATIBLE AESTHETICS, E.G., SHAPE AND COLOUR, WE'LL BE APPLYING TWO GUIDE OVERRIDES TO ONE, UNIFIED LEGEND, WHICH IS REDUNDANT BUT NOT HARMFUL, SO WE JUST SUPPRESS THE WARNING WE'D GET IF WE TRIED.
           built$legend_keys_overridden = TRUE #A FLAG TO KEEP THIS FROM TRIGGERING MULTIPLE TIMES
           break #NO NEED TO DO THIS MORE THAN ONCE PER LAYER...
           }
@@ -565,7 +579,6 @@ ggplot_build.geom_plus_warnings = function(plot) {
   #       if(inherits(scale.attr, "ScaleContinuous")) { #FIND OUT IF IT'S A CONTINUOUS SCALE
   #
   #         #PERFORM THE SAME CHECK AS IN THE SCALE_*_CONTINUOUS_PLUS FUCTIONS.
-  #      #   browser()
   #         scale.range = range_from_built_data(built, sc) #RANGE OF ACTUAL DATA
   #         lower = scale.range[1]
   #         upper = scale.range[2]

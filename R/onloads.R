@@ -10,7 +10,7 @@
 #   - ggplot2.discrete.colour
 #   - ggplot2.continuous.fill
 #   - ggplot2.continuous.colour
-
+#
 .onLoad = function(libname, pkgname) {
     palettes_plus()
 }
