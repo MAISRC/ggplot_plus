@@ -1,3 +1,13 @@
+#CREATE A LITTLE ENVIRONMENT FOR PALETTE KEYS SO WE CAN MANAGE/RESTORE THEM CLEANLY.
+.ggplotplus_palette_env = new.env(parent = emptyenv())
+
+#PLOP THESE PALETTE KEYS IN THERE.
+.ggplotplus_palette_keys = c(
+  "ggplot2.discrete.fill", "ggplot2.discrete.colour",
+  "ggplot2.continuous.fill", "ggplot2.continuous.colour",
+  "ggplot2.binned.fill", "ggplot2.binned.colour"
+)
+
 #' Default settings for geometry layers created by `geom_plus()`
 #'
 #' A named list of default aesthetics used by `geom_plus()` to control styling of the resulting geometry layers.

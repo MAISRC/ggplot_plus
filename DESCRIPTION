@@ -1,6 +1,6 @@
 Package: ggplot.plus
 Title: `ggplot.plus: An Opinionated, Universal-Design Focused Veneer For Ggplot2
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: 
     person("Alex", "Bajcz", email = "bajcz003@umn.com", role = c("aut", "cre"))
 Description: A collection of ggplot2 enhancements for improved defaults, accessibility, and usability.

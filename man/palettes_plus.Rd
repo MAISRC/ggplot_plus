@@ -2,7 +2,7 @@
 % Please edit documentation in R/palettes_plus.R
 \name{palettes_plus}
 \alias{palettes_plus}
-\title{Makes the Viridis Family of Color Palettes the Default For ggplots}
+\title{Make Viridis-Family Palettes the Ssession-Wide Defaults For Ggplots}
 \usage{
 palettes_plus(
   palette_discrete = "D",
@@ -14,26 +14,82 @@ palettes_plus(
 )
 }
 \arguments{
-\item{palette_discrete}{The viridis-family color palette to use for discrete variables. Defaults to "D", which corresponds to the viridis color palette. Must be a length-1 character string from "A" to "H" corresponding to the same codes used by \code{scale_color_viridis_d()} and similar functions to refer to the eight color families available in the viridis package.}
+\item{palette_discrete}{Viridis palette for \strong{discrete} scales. Letter code
+\code{"A"}–\code{"H"} or name (e.g., \code{"viridis"}). Default \code{"D"}.}
 
-\item{palette_continuous}{The viridis-family color palette to use for continuous variables. Defaults to "E", which corresponds to the cividis color palette, which has fewer distinct hues, resulting in less false segmenting of the underlying data driven by hue transitions. Must be a length-1 character string from "A" to "H" corresponding to the same codes used by \code{scale_color_viridis_d()} and similar functions to refer to the eight color families available in the viridis package.}
+\item{palette_continuous}{Viridis palette for \strong{continuous/binned} scales.
+Letter code or name. Default \code{"E"} (\code{"cividis"}).}
 
-\item{begin_discrete}{The color value of the "low" end of the color palette for a discrete scale. Defaults to 0.28, which is a medium-dark blue in the viridis palette. Must be a single numeric value between 0 and 1.}
+\item{begin_discrete}{Low-end position for discrete palettes. Values within \verb{[0, 1]}.
+Default \code{0}.}
 
-\item{end_discrete}{The color value of the "high" end of the color palette for a discrete scale. Defaults to 0.72, which is a medium-light green in the viridis palette. Must be a single numeric value between 0 and 1.}
+\item{end_discrete}{High-end position for discrete palettes. Values within \verb{[0, 1]}.
+Default \code{0.72}.}
 
-\item{begin_continuous}{The color value of the "low" end of the color palette for a continuous scale. Defaults to 0, which is a dark blue. Must be a single numeric value between 0 and 1.}
+\item{begin_continuous}{Low-end position for continuous/binned palettes.
+Default \code{0}.}
 
-\item{end_continuous}{The color value of the "high" end of the color palette For a continuous scale. Defaults to 1, which is a light yellow. Must be a single numeric value between 0 and 1.}
+\item{end_continuous}{High-end position for continuous/binned palettes.
+Default \code{1}.}
 }
 \value{
-Does not return an object.
+(Invisibly) \code{NULL}. The function has the side effect of setting
+session options.
 }
 \description{
-This function coerces the default color palettes for the fill and color aesthetics of ggplots to be the \code{viridis} family of color palettes for the rest of the session by overriding defaults set inside of options(). This ensures the color palettes used with be accessible for those with diverse technological and ocular needs.
+Sets session defaults for ggplot2’s colour/fill scales to viridis-family
+palettes by overriding the \code{options()} keys that ggplot2 consults
+when no explicit scale has been added. Discrete, continuous, and binned scales are
+included. Users can still override them per-plot by adding any \verb{scale_*_*()} call
+as usual (last scale wins).
+}
+\details{
+You can specify viridis palettes either by \strong{letter codes} \code{"A"}–\code{"H"}
+(\code{"A" = "magma"}, \code{"B" = "inferno"}, \code{"C" = "plasma"}, \code{"D" = "viridis"},
+\code{"E" = "cividis"}, \code{"F" = "rocket"}, \code{"G" = "mako"}, \code{"H" = "turbo"}),
+or by their \strong{names}. Internally, this function registers small wrapper
+functions under the ggplot2 option keys so that \code{...} is forwarded and user
+overrides keep working.
+
+When you don’t add a colour/fill scale yourself, ggplot2 checks a few session
+options to decide which scale to use. palettes_plus() sets those options to tiny
+helper functions that return the viridis scales (e.g., scale_fill_viridis_c()).
+Because they’re functions, ggplot2 can pass along any extra arguments via ....
+And if you do add your own scale_\emph{_}() in a plot, ggplot2 uses yours instead;
+your custom code always wins.
+
+The following \code{options()} keys are set:
+\itemize{
+\item \code{ggplot2.discrete.fill}, \code{ggplot2.discrete.colour}
+\item \code{ggplot2.continuous.fill}, \code{ggplot2.continuous.colour}
+\item \code{ggplot2.binned.fill}, \code{ggplot2.binned.colour}
+}
+
+Each key is assigned a function that returns the appropriate
+\verb{scale_*_viridis_*()} with your \code{begin}, \code{end}, and \code{option} values. This is
+exactly how ggplot2 looks up default scales when none are specified on a plot.
+
+This function is run automatically on package load. To \strong{opt out}, set
+\code{options(ggplot.plus.disable_palettes = TRUE)} before loading ggplot.plus.
 }
 \examples{
+# Apply defaults for this session
 palettes_plus()
-ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length, fill=Species)) +
-geom_plus(geom = "point")
+
+# Set different palettes and ranges if you prefer.
+palettes_plus(palette_discrete = "plasma", palette_continuous = "viridis",
+              begin_discrete = 0.1, end_discrete = 0.9)
+
+# Users can still override per-plot
+library(ggplot2)
+ggplot2::ggplot(iris, ggplot2::aes(Sepal.Length, Petal.Length, colour = Species)) +
+  ggplot2::geom_point() +
+  ggplot2::scale_colour_brewer(palette = "Dark2")
+
+}
+\seealso{
+\code{\link[ggplot2:scale_viridis]{ggplot2::scale_fill_viridis_d()}}, \code{\link[ggplot2:scale_viridis]{ggplot2::scale_fill_viridis_c()}},
+\code{\link[ggplot2:scale_viridis]{ggplot2::scale_fill_viridis_b()}}, \code{\link[ggplot2:scale_viridis]{ggplot2::scale_colour_viridis_d()}},
+\code{\link[ggplot2:scale_viridis]{ggplot2::scale_colour_viridis_c()}}, \code{\link[ggplot2:scale_viridis]{ggplot2::scale_colour_viridis_b()}},
+\code{\link[ggplot2:theme_get]{ggplot2::theme_set()}}
 }
