@@ -2,25 +2,49 @@
 % Please edit documentation in R/gridlines_plus.R
 \name{gridlines_plus}
 \alias{gridlines_plus}
-\title{Generates Subtle and Choice Gridlines on a ggplot}
+\title{Subtle, Minimal Gridlines For When and Where They Help}
 \usage{
 gridlines_plus(color = "gray90", linewidth = 1.2, linetype = "solid")
 }
 \arguments{
-\item{color}{The color used for the gridlines. Defaults to "gray90". Must be a single character vector of length 1 corresponding to the name of a color.}
+\item{color}{Gridline color. Single character string. Default: \code{"gray90"}.}
 
-\item{linewidth}{Line width for the gridlines. Defaults to 1.2. Must be a single numeric value.}
+\item{linewidth}{Gridline width (theme line units). Single numeric. Default: \code{1.2}.}
 
-\item{linetype}{Line type for the gridlines. Defaults to "solid." Must be a single character string value corresponding to an accepted linetype, such as "dotted" or "dashed".}
+\item{linetype}{Gridline type. Single string (e.g., \code{"solid"}, \code{"dashed"}).}
 }
 \value{
-List with the class "gridlines_plus", which will trigger the gridlines_plus method in ggplot::ggplot_add.
+An object of class \code{"gridlines_plus"} that you add to a plot with \code{+}.
 }
 \description{
-This function adds, by default, subtle, light gray major gridlines to a ggplot graph only in directions mapped to continuous (and not discrete) variables.
+Adds light, major gridlines along only axes that are mapped to
+continuous variables (never on discrete axes). Minor gridlines are
+blanked. This enables the benefits of gridlines but minimizes clutter.
+Works with local/global mappings, derived continuous axes
+(e.g., histograms), and respects \code{coord_flip()}.
+}
+\details{
+Under the hood, \code{gridlines_plus()} checks layer and/or global mappings to
+see if \code{x} and/or \code{y} are continuous. If needed (e.g., for derived axes like
+histograms), it briefly builds the plot to inspect the trained panel scales.
+It then turns on \strong{major} gridlines for continuous directions and explicitly
+blanks gridlines for the others (including \strong{all minor} gridlines).
 }
 \examples{
-ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
-geom_plus(geom = "point") +
-gridlines_plus()
+library(ggplot2)
+
+ggplot2::ggplot(iris, ggplot2::aes(Sepal.Length, Petal.Length)) +
+  ggplot2::geom_point() +
+  gridlines_plus()
+
+# Only y is continuous here (x is discrete) → y-only major gridlines
+ggplot2::ggplot(mtcars, ggplot2::aes(factor(cyl), mpg)) +
+  ggplot2::geom_boxplot() +
+  gridlines_plus(color = "grey85", linewidth = 1, linetype = "dashed")
+
+# Works with derived continuous axes (histogram)
+ggplot2::ggplot(mtcars, aes(mpg)) +
+  ggplot2::geom_histogram() +
+  gridlines_plus()
+
 }

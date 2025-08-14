@@ -1,15 +1,41 @@
-#' Generates Subtle and Choice Gridlines on a ggplot
+#' Subtle, Minimal Gridlines For When and Where They Help
 #'
-#' This function adds, by default, subtle, light gray major gridlines to a ggplot graph only in directions mapped to continuous (and not discrete) variables.
+#' Adds light, major gridlines along only axes that are mapped to
+#' continuous variables (never on discrete axes). Minor gridlines are
+#' blanked. This enables the benefits of gridlines but minimizes clutter.
+#' Works with local/global mappings, derived continuous axes
+#' (e.g., histograms), and respects `coord_flip()`.
 #'
-#' @param color The color used for the gridlines. Defaults to "gray90". Must be a single character vector of length 1 corresponding to the name of a color.
-#' @param linewidth Line width for the gridlines. Defaults to 1.2. Must be a single numeric value.
-#' @param linetype Line type for the gridlines. Defaults to "solid." Must be a single character string value corresponding to an accepted linetype, such as "dotted" or "dashed".
-#' @return List with the class "gridlines_plus", which will trigger the gridlines_plus method in ggplot::ggplot_add.
+#' @param color Gridline color. Single character string. Default: `"gray90"`.
+#' @param linewidth Gridline width (theme line units). Single numeric. Default: `1.2`.
+#' @param linetype Gridline type. Single string (e.g., `"solid"`, `"dashed"`).
+#'
+#' @return An object of class `"gridlines_plus"` that you add to a plot with `+`.
+#'
+#' @details
+#' Under the hood, `gridlines_plus()` checks layer and/or global mappings to
+#' see if `x` and/or `y` are continuous. If needed (e.g., for derived axes like
+#' histograms), it briefly builds the plot to inspect the trained panel scales.
+#' It then turns on **major** gridlines for continuous directions and explicitly
+#' blanks gridlines for the others (including **all minor** gridlines).
+#'
 #' @examples
-#' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
-#' geom_plus(geom = "point") +
-#' gridlines_plus()
+#' library(ggplot2)
+#'
+#' ggplot2::ggplot(iris, ggplot2::aes(Sepal.Length, Petal.Length)) +
+#'   ggplot2::geom_point() +
+#'   gridlines_plus()
+#'
+#' # Only y is continuous here (x is discrete) → y-only major gridlines
+#' ggplot2::ggplot(mtcars, ggplot2::aes(factor(cyl), mpg)) +
+#'   ggplot2::geom_boxplot() +
+#'   gridlines_plus(color = "grey85", linewidth = 1, linetype = "dashed")
+#'
+#' # Works with derived continuous axes (histogram)
+#' ggplot2::ggplot(mtcars, aes(mpg)) +
+#'   ggplot2::geom_histogram() +
+#'   gridlines_plus()
+#'
 #' @export
 gridlines_plus = function(color = "gray90",
                    linewidth = 1.2,
@@ -20,54 +46,53 @@ gridlines_plus = function(color = "gray90",
   )
 }
 
-#' Add A gridlines_plus-generated Geometry to a ggplot
+#' @title Add Gridlines_plus Theme Adjustments To A Ggplot
+#' @description S3 method for adding a `gridlines_plus` object via `+`.
+#'   Detects continuous axes and applies major gridlines there; blanks all
+#'   other gridlines. Internal wiring; users should call
+#'   [gridlines_plus()] rather than this method.
 #'
-#' This method defines how objects of class `gridlines_plus()`, added by the gridlines_plus function, are added to a ggplot2 plot using the `+` operator.
-#' It considers both default values as well as user overrides for important gridlines features and ensures compatibility with ggplot2 layering.
+#' @param object A `gridlines_plus` object created by [gridlines_plus()].
+#' @param plot A ggplot object.
+#' @param object_name Internal name used by ggplot2.
 #'
-#' @param object An object of class `gridlines_plus`, created by `gridlines_plus()`, containing user-provided arguments (if any) or else pre-defined default values.
-#' @param plot A ggplot object to which the new gridlines should be added.
-#' @param object_name Internal name used by ggplot2 when adding the layer.
+#' @return A ggplot object with theme tweaks applied.
 #'
-#' @return A ggplot object with the new gridlines added.
+#' @keywords internal
 #' @export
+#' @method ggplot_add gridlines_plus
 ggplot_add.gridlines_plus = function(object, plot, object_name) {
 
   #ASSUME BOTH X AND Y ARE NOT CONTINUOUS TO START.
   x_is_cont = FALSE
   y_is_cont = FALSE
 
-  #BECAUSE USERS COULD SPECIFY X AND Y AESTHETICS LOCALLY AND EVEN PROVIDE DATA LOCALLY, WE NEED TO CYCLE THRU THE LAYERS TO FIGURE OUT IF ANY X/Y AESTHETIC IS MAPPED TO A CONTINUOUS VARIABLE AT ANY POINT.
+  gmap = plot$mapping #THIS WOULD BE THE GLOBALLY MAPPING--FALL BACK TO THIS IF LAYERS DON'T SPECIFY THEM.
+
+  #BECAUSE USERS COULD SPECIFY X AND Y AESTHETICS LOCALLY AND EVEN PROVIDE DATA LOCALLY, WE NEED TO CYCLE THRU THE LAYERS TO FIGURE OUT IF *ANY* X/Y AESTHETIC IS MAPPED TO A CONTINUOUS VARIABLE IN *ANY* LAYER.
   for(layer in plot$layers) {
-    #IF THIS LAYER IS NOT INHERITING DATA FROM GLOBAL, STICK W/ THE LOCAL DATA. OTHERWISE, GO TO GLOBAL.
-    if (!inherits(layer$data, "waiver")) {
+    #IF THIS LAYER IS NOT INHERITING DATA FROM GLOBAL, STICK W/ THE LOCAL DATA. OTHERWISE, FALL BACK TO GLOBAL.
+    if(!inherits(layer$data, "waiver")) {
       layer_data = layer$data
     } else {
       layer_data = plot$data
     }
 
-    #CUT OUT THE SPECIFIC MAPPINGS FOR X AND Y
-    x_map = layer$mapping[names(layer$mapping) == "x"]
-    y_map = layer$mapping[names(layer$mapping) == "y"]
+    #RESOLVE WHETHER WE'RE DEALING WITH LOCAL OR GLOBAL MAPPINGS FOR X AND Y
+    lmap = layer$mapping #LOCAL MAPPINGS
+    x_quo = if(!is.null(lmap$x)) { lmap$x } else gmap$x
+    y_quo = if(!is.null(lmap$y)) { lmap$y } else gmap$y
 
-    #TRY TO GRAB THE VARIABLE LINKED TO EACH MAPPING, ASSUMING THERE IS ONE (THERE MAY NOT BE)
-    if (!is.null(x_map)) {
-      x_var = rlang::as_label(x_map$x)
-    } else {
-      x_var = NULL
-    }
-    if (!is.null(y_map)) {
-      y_var = rlang::as_label(y_map$y)
-    } else {
-      y_var = NULL
-    }
+    #GET NAMES OF VARS MAPPED TO X AND Y AESTHETICS. IF THEY ARE EXPRESSIONS, WE CATCH THAT VIA BUILD LATER
+    x_var = if(!is.null(x_quo)) { rlang::as_label(x_quo) } else { NULL }
+    y_var = if(!is.null(y_quo)) { rlang::as_label(y_quo) } else { NULL }
 
     #NOW, CHECK--WAS THERE A VARIABLE? IS THAT VARIABLE IN THIS LAYER? IS IT NUMERIC? WAS A PREVIOUS X/Y VARIABLE IN A PREVIOUS LAYER NUMERIC? UPDATE X/Y_IS_CONT ACCORDINGLY.
-    if (!is.null(x_var) && x_var %in% names(layer_data)) {
+    if(!is.null(x_var) && x_var %in% names(layer_data)) {
       x_is_cont = x_is_cont || is.numeric(layer_data[[x_var]])
     }
 
-    if (!is.null(y_var) && y_var %in% names(layer_data)) {
+    if(!is.null(y_var) && y_var %in% names(layer_data)) {
       y_is_cont = y_is_cont || is.numeric(layer_data[[y_var]])
     }
   }
@@ -93,29 +118,19 @@ ggplot_add.gridlines_plus = function(object, plot, object_name) {
     y_is_cont = swap
   }
 
-  #BASELINE NEW THEME CALL.
-  grid_theme = ggplot2::theme()
+  #STEP 5: IF AN AXIS IS CONTINUOUS, ADD MAJOR AXIS GRIDLINES IN THIS DIRECTION.
+  grid_theme = ggplot2::theme(
+    panel.grid.major.x = if(x_is_cont) { ggplot2::element_line(color = object$color,
+                                                              linewidth = object$linewidth,
+                                                              linetype = object$linetype)
+    } else { ggplot2::element_blank() },
+    panel.grid.major.y = if(y_is_cont) { ggplot2::element_line(color = object$color,
+                                                              linewidth = object$linewidth,
+                                                              linetype = object$linetype)
+    } else { ggplot2::element_blank() }
+  )
 
-  #STEP 5: IF X IS CONTINUOUS, ADD JUST MAJOR X AXIS GRIDLINES IN THIS DIRECTION.
-  if (x_is_cont) {
-    grid_theme = grid_theme + ggplot2::theme(
-      panel.grid.major.x = ggplot2::element_line(
-        color = object$color,
-        linewidth = object$linewidth,
-        linetype = object$linetype
-      )
-    )
-  }
-  #SAME FOR Y
-  if (y_is_cont) {
-    grid_theme = grid_theme + ggplot2::theme(
-      panel.grid.major.y = ggplot2::element_line(
-        color = object$color,
-        linewidth = object$linewidth,
-        linetype = object$linetype
-      )
-    )
-  }
+
   #DRAW THE PLOT WITH THE NEW GRIDLINES.
-  plot + grid_theme
+  plot + grid_theme + ggplot2::theme(panel.grid.minor = element_blank())
 }

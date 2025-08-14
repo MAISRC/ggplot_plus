@@ -2,21 +2,24 @@
 % Please edit documentation in R/gridlines_plus.R
 \name{ggplot_add.gridlines_plus}
 \alias{ggplot_add.gridlines_plus}
-\title{Add A gridlines_plus-generated Geometry to a ggplot}
+\title{Add Gridlines_plus Theme Adjustments To A Ggplot}
 \usage{
 \method{ggplot_add}{gridlines_plus}(object, plot, object_name)
 }
 \arguments{
-\item{object}{An object of class \code{gridlines_plus}, created by \code{gridlines_plus()}, containing user-provided arguments (if any) or else pre-defined default values.}
+\item{object}{A \code{gridlines_plus} object created by \code{\link[=gridlines_plus]{gridlines_plus()}}.}
 
-\item{plot}{A ggplot object to which the new gridlines should be added.}
+\item{plot}{A ggplot object.}
 
-\item{object_name}{Internal name used by ggplot2 when adding the layer.}
+\item{object_name}{Internal name used by ggplot2.}
 }
 \value{
-A ggplot object with the new gridlines added.
+A ggplot object with theme tweaks applied.
 }
 \description{
-This method defines how objects of class \code{gridlines_plus()}, added by the gridlines_plus function, are added to a ggplot2 plot using the \code{+} operator.
-It considers both default values as well as user overrides for important gridlines features and ensures compatibility with ggplot2 layering.
+S3 method for adding a \code{gridlines_plus} object via \code{+}.
+Detects continuous axes and applies major gridlines there; blanks all
+other gridlines. Internal wiring; users should call
+\code{\link[=gridlines_plus]{gridlines_plus()}} rather than this method.
 }
+\keyword{internal}
