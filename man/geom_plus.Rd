@@ -43,7 +43,7 @@ geom_plus(
 
 \item{include_colorscale_plus}{Should a call to \code{scale_color_continuous_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
 
-\item{x_title, y_title, color_title, size_title, shape_title, alpha_title}{A string to use for the graph's legend title for the corresponding aesthetic. Defaults to \code{NULL} and will be ignored unless a length-1 string. Internally, this passes the new title to \code{ggplot2::labs()} to circumvent around calling a \verb{scale_*} function, which might overwrite intended behaviors.}
+\item{x_title, y_title, color_title, size_title, shape_title, alpha_title, fill_title}{A string to use for the graph's legend title for the corresponding aesthetic. Defaults to \code{NULL} and will be ignored unless a length-1 string. Internally, this passes the new title to \code{ggplot2::labs()} to circumvent around calling a \verb{scale_*} function, which might overwrite intended behaviors.}
 
 \item{silence_warnings}{\code{geom_plus()} triggers some checks for aspects of good graph design and, if any of these checks fail, a warning is triggered to direct the user towards better practices. Set this parameter to \code{FALSE} to silence these warnings. To set TRUE as the default for the current session, run \code{options(geom_plus_silence_warnings = TRUE)}.}
 }

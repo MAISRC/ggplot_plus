@@ -11,7 +11,7 @@
 #' @param include_yscale_plus Should a call to `scale_y_continuous_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
 #' @param include_fillscale_plus Should a call to `scale_fill_continuous_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
 #' @param include_colorscale_plus Should a call to `scale_color_continuous_plus()` with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to `FALSE`. Set to `TRUE` to include it.
-#' @param x_title,y_title,color_title,size_title,shape_title,alpha_title A string to use for the graph's legend title for the corresponding aesthetic. Defaults to `NULL` and will be ignored unless a length-1 string. Internally, this passes the new title to `ggplot2::labs()` to circumvent around calling a `scale_*` function, which might overwrite intended behaviors.
+#' @param x_title,y_title,color_title,size_title,shape_title,alpha_title,fill_title A string to use for the graph's legend title for the corresponding aesthetic. Defaults to `NULL` and will be ignored unless a length-1 string. Internally, this passes the new title to `ggplot2::labs()` to circumvent around calling a `scale_*` function, which might overwrite intended behaviors.
 #' @param silence_warnings `geom_plus()` triggers some checks for aspects of good graph design and, if any of these checks fail, a warning is triggered to direct the user towards better practices. Set this parameter to `FALSE` to silence these warnings. To set TRUE as the default for the current session, run `options(geom_plus_silence_warnings = TRUE)`.
 #'
 #' @details
@@ -310,7 +310,7 @@ ggplot_add.geom_plus = function(object, plot, object_name) {
   plot = .ensure_ggplot_plus(plot) #MAKE SURE WE HAND OFF TO COMMON BUILD METHOD AND RECORD INTENT/MANAGE CLASSES/GENERATE STORAGE.
 
   #FLAG GUIDE-RELATED UPDATES NEEDED IN BUILD.
-  plot$ggplot_plus$guides = modifyList(
+  plot$ggplot_plus$guides = utils::modifyList(
     plot$ggplot_plus$guides %||% list(),
     list(needs_override = TRUE,
          custom_shapes = isTRUE(geom_name %in% c("point_plus")) )

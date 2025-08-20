@@ -205,11 +205,40 @@ ggplot_build.ggplot_plus = function(plot) {
     }
   }
 
+  ### #2 -- SETTING A REASONABLE SIZE SCALE FOR BUBBLE CHARTS
+  if(isTRUE(intents$scales$auto_size_range %||% TRUE)) {
 
-  ### #2 -- USER GUIDANCE WARNINGS
+    has_size_map = 'size' %in% present_aes #DID THEY MAP SIZE?
+
+    scs = plot$scales$scales %||% list() #WE CHECK THE PRE-BUILD *PLOT* HERE TO SEE IF THERE WAS A USER-DEFINED SCALE PRIOR TO THE BUILD.
+    user_has_size_scale = any(vapply(scs, function(s) {
+      "size" %in% (s$aesthetics %||% character(0))
+      }, logical(1)
+     ))
+
+    if(has_size_map &&  #YES IT'S MAPPED, NO THERE ISN'T A USER-DEFINED SCALE YET, AND YES IT'S CONTINUOUS.
+       !user_has_size_scale &&
+       .aes_is_continuous(built, "size")) {
+
+      rng = intents$scales$size_range %||% c(3, 7)  #DEFAULT INTENT, BUT OVERRIDABLE.
+      message("You mapped the size aesthetic to a continuous variable but didn't specify a size range using scale_size_continuous(). ggplot2's default size range is pretty small; a larger range has been set for you, but you can override it if you wish.")
+
+      new_plot = suppressMessages(built$plot + ggplot2::scale_size_continuous(range = rng)) #IT'LL BLAB ABOUT MULTIPLE SCALES PRESENT OTHERWISE BECAUSE GGPLOT2 ADDS ONE AS SOON AS SIZE GETS MAPPED.
+
+      class(new_plot) = setdiff(class(new_plot), "ggplot_plus")  #AVOID RECURSION
+      rebuilt = suppressWarnings(ggplot2::ggplot_build(new_plot)) #REBUILD WITH NEW SIZE SCALE.
+      rebuilt$plot$ggplot_plus = built$plot$ggplot_plus  #PUT ALL INTENTS BACK
+
+      built = rebuilt #OVERRIDE AND RE-UNPACK.
+      intents = built$plot$ggplot_plus
+    }
+  }
+
+
+  ### #3 -- USER GUIDANCE WARNINGS
   if(!isTRUE(intents$warnings$silence)) {
 
-    #2A -- NOT LABELING ONE'S SCALES
+    #3A -- NOT LABELING ONE'S SCALES
 
       violations = list() #STORAGE OBJ FOR "VIOLATORS"
 
@@ -290,17 +319,15 @@ ggplot_build.ggplot_plus = function(plot) {
           v = paste(violations[[aes]], collapse = ", ")
           sprintf("%s: %s", aes, v)
         }, character(1))
-        warning(
+        message(
           paste0(
             "Some mapped aesthetics appear to be using default titles. Consider setting human-readable titles (with units) via scale_*() or labs().\n",
             "Unrenamed: ", paste(msgs, collapse = ", "),
             ". Set silence_warnings = TRUE in geom_plus() to suppress warnings like these."
-          ),
-          call. = FALSE
-        )
+          ))
       }
 
-    #2B -- TOO MANY DISCRETE LEVELS FOR COLOR
+    #3B -- TOO MANY DISCRETE LEVELS FOR COLOR
 
     for(aes in c("colour", "fill")) {
 
@@ -333,10 +360,10 @@ ggplot_build.ggplot_plus = function(plot) {
           paste0("\"", pretty_name, "\"")
         }
 
-        warning(sprintf(
+        message(sprintf(
           "%s has %d discrete levels. Beyond ~%d categories, colours become hard to distinguish. Consider using another channel (e.g., shape), multiple intersecting channels (e.g. fill color and pattern), or reducing the number of groups. Set silence_warnings=TRUE in geom_plus() to hide messages like this.",
           lab, n_levels, max_ok
-        ), call. = FALSE)
+        ))
       }
     }
   }

@@ -232,7 +232,7 @@ And so on.
 
 So, to recreate our scatterplot using `geom_plus()`, we simply swap out `geom_point(...)` with `geom_plus(geom = "point", ...)`:
 
-```{r geom plus, warning=F}
+```{r geom plus, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -254,7 +254,7 @@ By default, `geom_plus()` will set the interior color for these points to `"tran
 
 If we switch from mapping species to `color` to instead mapping it to `fill`, `geom_plus()` will switch to using a black stroke color by default. This fixes our earlier issue wherein our yellow points lacked contrast against the light-gray background:
 
-```{r fill instead, warning=F}
+```{r fill instead, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -266,7 +266,7 @@ Because the fill colors are now surrounded by **black outlines**, our eyes will 
 
 Even though dark purple can't be distinguished from a black point stroke, that’s not actually a problem because the point strokes aren't encoding any information. As a result, if we wanted more color options, we could restore the full range of the *viridis* palette:
 
-```{r restore purple, warning=F}
+```{r restore purple, message=FALSE}
 palettes_plus(begin_discrete = 0, end_discrete = 1) #<--RESTORE PURPLE END OF COLOR RANGE AND RETAIN YELLOW RANGE.
 
 #SAME GRAPH
@@ -285,7 +285,7 @@ There are two broadly effective options for addressing overplotting in graphs li
 
 However, another, more aggressive option is to instead map stroke to a color that contrasts against the background well (such as black for a white background), map fill color, and make the points *semi-transparent* so that points that stack on top of one another "blend" chromatically:
 
-```{r using alpha, warning=F}
+```{r using alpha, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -312,7 +312,7 @@ There are three (partially overlapping) ways to assign aesthetics:
 
 This system gives you flexibility, but it can be confusing—especially for new users. Let’s clarify with an example that uses two geoms: a boxplot overlaid with **jittered** points (jittering randomly varies a point's location data):
 
-```{r understanding mapping, warning=F}
+```{r understanding mapping, message=FALSE}
 #NEW PLOT
 ggplot(iris,
        mapping = aes(x = Species, #<--MAKE THIS SPECIES, A DISCRETE VARIABLE 
@@ -345,7 +345,7 @@ We bring all this up just to say that all of the same rules apply when using `gg
 
 Here’s a similar plot with a few tweaks to illustrate this further:
 
-```{r same plot diff map, warning=FALSE}
+```{r same plot diff map, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Species, 
            y = Sepal.Length, 
@@ -375,7 +375,7 @@ If you’d like to see additional geoms supported, you can request them using th
 
 Let’s return to our earlier scatterplot:
 
-```{r return to scatter, warning=F}
+```{r return to scatter, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -386,7 +386,7 @@ ggplot(iris,
 
 There’s still room for improvement, including with the axis titles and labels. A key first step is to make the axis titles more human-readable, intuitive, and complete, including by specifying units. You can do this using the `scale_*_*()` family of functions in `ggplot2`:
 
-```{r normal scale, warning=F}
+```{r normal scale, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -398,7 +398,7 @@ ggplot(iris,
 
 This works, but the x-axis still lacks labels near its endpoints—a common issue with `ggplot2`’s default breaks-determining process. How close are the purple points to 0? The yellow points to 8? It's hard to tell without anchors on both ends. You can fix this using `scale_x_continuous_plus()`, which automatically adjusts breaks and limits to ensure label coverage near the ends of the scale:
 
-```{r cont_plus, warning=F}
+```{r cont_plus, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -414,7 +414,7 @@ As with the base `scale` function, you can pass arguments like `name`, `expand`,
 
 If the resulting labels feel a little too frequent, the package's `scale_*continuous_plus()` functions contain a trick: You can set their `thin_labels` argument to `TRUE` to convert every other label (starting with the second) to an empty string (`""`) while retaining the tick marks:
 
-```{r suppressing some labels, warning=F }
+```{r suppressing some labels, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -428,7 +428,7 @@ This reduces cognitive load and increases void space while preserving the visual
 
 There’s a matching function for the y-axis:
 
-```{r y cont plus, warning=F}
+```{r y cont plus, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -449,7 +449,7 @@ Much of `ggplot2`'s visual styling is governed by the `theme()` function, which 
 
 To help with this, `ggplot.plus` includes `theme_plus()`, a custom version of `ggplot2`'s `theme()` function that supercedes many of `ggplot2`'s default theme settings with an eye towards publication and accessibility:
 
-```{r theme_plus, warning=F}
+```{r theme_plus, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -481,7 +481,7 @@ This version of the theme makes a number of adjustments to the graph's visual de
 
 Of course, everything is still customizable. If you don’t love a particular choice—say, the thickness of the axis lines or the legend’s location—you can adjust them, same as you normally would using `theme()`, except that you can pass the overrides straight into `theme_plus()` instead:
 
-```{r adj theme, warning=F}
+```{r adj theme, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -495,7 +495,7 @@ ggplot(iris,
 
 Here's how you'd relocate the legend to its normal position–the theme will automatically apply some styling unique to this position instead:
 
-```{r adj theme 2, warning=F}
+```{r adj theme 2, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -511,7 +511,7 @@ Like the rest of the `ggplot.plus` toolkit, `theme_plus()` is meant to be a smar
 
 There are a few theme considerations that apply only to color bars, which are the legend components you see when you map `color` or `fill` to a continuous variable. Let's map a continuous variable to `fill` to get such a legend:
 
-```{r cont color bar theme, warning=F }
+```{r cont color bar theme, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -527,7 +527,7 @@ The changes here include longer and fatter tick marks of pure white for maximum 
 
 Note that color bars can have the same issue as axes, where the ends don't get labels at or near them. As alluded to earlier, there's a `scale_fill_continuous_plus()` function to help with that:
 
-```{r fill plus scale, warning=F}
+```{r fill plus scale, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -547,7 +547,7 @@ Our graph is nearly there (at least in our estimation!)—but one issue remains:
 
 In base `ggplot2`, you *can* reorient the title to be horizontal, at least, using a few hacky adjustments involving line breaks and theme tweaks:
 
-```{r change y axis title manual, warning=F}
+```{r change y axis title manual, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -569,7 +569,7 @@ This works reasonably well, to be honest. It's readable, and it's *relatively* s
 
 To get around these challenges, `ggplot.plus` includes `yaxis_title_plus()`, which moves the y axis title to the top left, above the y axis line and left-justified to the edges of the y-axis labels:
 
-```{r yaxis mover, warning=F}
+```{r yaxis mover, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -598,7 +598,7 @@ This adjustment is backed by **decades of advocacy** from the data visualization
 
 One neat feature: No matter how long your y axis labels get, `yaxis_title_plus()` will ensure the title stays left-justified to their left edge:
 
-```{r stay left justified, warning=F}
+```{r stay left justified, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -616,7 +616,7 @@ If you're using `yaxis_title_plus()` and `theme_plus()` together and your graph 
 
 Sometimes, this will be necessary to get both elements to fit. However, if there is enough room for them to sit side by side, you can set `move_top_legend_down` to `TRUE` inside `yaxis_title_plus()` to move the legend down into the same row as the relocated y axis title for some sweet sweet space efficiency:
 
-```{r relocating the legend, warning=F}
+```{r relocating the legend, message=FALSE}
 #| fig-height: 6
 #| fig-width: 9
 
@@ -641,7 +641,7 @@ One (arguably) controversial opinion coded into `ggplot.plus`'s `theme_plus()` i
 
 If you’d like to restore them, however, you can: you *could* manually add them using `theme()` or `theme_plus()`. But there’s an easier (and more opinionated) option: `gridlines_plus()`. This function *selectively* reintroduces only the major gridlines (not minor ones) in only directions mapped to numeric variables (not discrete ones) and renders them as faintly as possible:
 
-```{r gridlines plus, warning=F}
+```{r gridlines plus, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -663,7 +663,7 @@ However, if you want to tweak them in some respect or another, `gridlines_plus()
 
 If we had just one continuous axis, `gridlines_plus()` would automatically detect this and draw the gridlines in only the one relevant direction:
 
-```{r one one gridlines, warning=F}
+```{r one one gridlines, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Species)) + #<--MAKE DISCRETE
@@ -682,7 +682,7 @@ As the above examples have demonstrated, `ggplot.plus`'s core functions can be u
 
 For example, our previous scatterplot could also have been generated this way:
 
-```{r shortcuts, warning=F}
+```{r shortcuts, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -708,7 +708,7 @@ Note that we can also specify new axis/scale titles inside `geom_plus` if we wan
 
 Faceting—splitting a plot into **small multiples** based on one or more discrete variables—is a core `ggplot2` feature, and it works with the tools provided by `ggplot.plus`:
 
-```{r faceting with geomplus, warning=F}
+```{r faceting with geomplus, message=FALSE}
 #EXAMPLE GRAPH TO SHOW FACETING FEATURES:
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
@@ -731,7 +731,7 @@ For example, using `yaxis_title_plus()` with facets works—the function automat
 
 There are three potential workarounds here. The first is to facet by rows instead of columns:
 
-```{r plot as rows, warning=F}
+```{r plot as rows, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -749,7 +749,7 @@ ggplot(iris,
 
 Another option would be to relocate the facet strip labels to the bottom of the graph so they aren't competing with the relocated y axis title:
 
-```{r moving facet labels, warning=F}
+```{r moving facet labels, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -768,7 +768,7 @@ ggplot(iris,
 
 A third option would be to suppress the facet strip labels and instead retain the legend:
 
-```{r retain legend, warning=F}
+```{r retain legend, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -791,7 +791,7 @@ Faceting is a relatively complex feature of `ggplot2`. `ggplot.plus`'s features 
 
 You may have noticed that the **legend keys**—the circles in the legend that clarify fill color—are solid even though the plotted points are semi-transparent. This is not the way things normally work in `ggplot2`; by default, the `alpha` value applied to the points would be applied to their legend key representations as well. We can see that behavior by using `geom_point()`:
 
-```{r override aes, warning=F}
+```{r override aes, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -810,7 +810,7 @@ As you can see, the legend keys get the same treatment as our points here, which
 \
 We can observe this behavior for size as well:
 
-```{r see size matters, warning=FALSE}
+```{r see size matters, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -864,7 +864,7 @@ geom_point_plus_shapes
 
 These more distinctive shapes can be used to communicate difference whenever using color (alone) to do so might be undesirable or unnecessary:
 
-```{r shape scatter1, warning = F}
+```{r shape scatter1, message=FALSE}
 #| fig-height: 6.5
 #| fig-width: 9
 
@@ -883,7 +883,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ], #<--RESTRICT DATA VOLU
 
 As the example above shows, you can specify a new shape legend title inside `geom_point_plus()` using the `legend_title` parameter for convenience. You can also use the `chosen_shapes` parameter to specify which specific shapes from the new palette you want to use:
 
-```{r choosing shapes, warning = F}
+```{r choosing shapes, message=FALSE}
 #| fig-height: 6.5
 #| fig-width: 9
 
@@ -903,7 +903,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
 
 As you might hope, you can also access these features using `geom_plus(geom = "point_plus")` instead:
 
-```{r geom_plus access, warning=F}
+```{r geom_plus access, message=FALSE}
 #| fig-height: 6.5
 #| fig-width: 9
 
@@ -924,7 +924,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
 
 As previously noted, all these shapes have separate fill and color aesthetics, so these color-based aesthetics can be set to constants or even mapped to variables (although we wouldn't necessarily recommend doing the latter in most cases, we did want to ensure it was possible!):
 
-```{r filling the shapes}
+```{r filling the shapes, message=FALSE}
 #| fig-height: 6.5
 #| fig-width: 9
 
@@ -950,7 +950,7 @@ These shapes are specifically designed for use via `geom_point_plus()` for when 
 
 2.  Set `shape` to a constant outside of `aes()` using the `chosen_shapes` argument.
 
-```{r using custom shapes on their own, warning = F}
+```{r using custom shapes on their own, message=FALSE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -971,7 +971,7 @@ ggplot(iris,
 
 One sort of strange function in `ggplot2` is `coord_flip()`, which will flip the graph's coordinate system so that the x axis runs vertically and the y axis runs horizontally. `ggplot.plus`'s tools will work with this function, if you use it:
 
-```{r coord flip, warning = FALSE}
+```{r coord flip, message=FALSE}
 palettes_plus(begin_discrete = 0, 
               end_discrete = 1)
 ggplot(iris,
@@ -998,7 +998,7 @@ Just like "Petal.Length", most column names are not designed to be perfectly hum
 
 If you use `geom_plus()` and the function can detect that you have not specified custom axis titles for your scales (because the titles being rendered match the column names of the mapped variables exactly), it will flag this:
 
-```{r message no custom titles, warning=TRUE}
+```{r message no custom titles, message=TRUE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -1016,7 +1016,7 @@ The idea here is to flag an issue that someone who might be new to making graphi
 
 Another example: The number of distinct colors that the human eye can successfully distinguish from each other is relatively small. Most research puts this number at 12 (at maximum) but closer to 8 in most contexts. Color perceptual space is just not that big! As such, if you attempt to request a discrete color palette requiring more than 8 colors, you will get a warning about a likely lack of contrast:
 
-```{r warning about less contrast, warning=TRUE}
+```{r warning about less contrast, message=TRUE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
@@ -1036,7 +1036,7 @@ It's hard to even keep the legend "in bounds" here, since it's so big! But it's 
 
 Here’s a "final" version of our scatterplot using all of `ggplot.plus`’s tools together:
 
-```{r idealized graph}
+```{r idealized graph, message=FALSE}
 
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
