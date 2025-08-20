@@ -41,3 +41,4 @@ A ggplot2 layer object.
 \description{
 This function behaves much like \code{ggplot2}'s \code{geom_point()} function except that it allows access to a palette of nine new shapes that vary in their openness, spikiness, and intersectionality, making them more easily distinguished. This function is not meant to be called directly--instead, \code{geom_point_plus()} calls and modifies this function and is the intended function for users.
 }
+\keyword{internal}

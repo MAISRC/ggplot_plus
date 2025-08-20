@@ -9,6 +9,7 @@ geom_plus(
   ...,
   include_theme = FALSE,
   include_gridlines = FALSE,
+  include_ytitle_plus = FALSE,
   include_xscale_plus = FALSE,
   include_yscale_plus = FALSE,
   include_fillscale_plus = FALSE,
@@ -31,6 +32,8 @@ geom_plus(
 \item{include_theme}{Should a call to \code{theme_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
 
 \item{include_gridlines}{Should a call to \code{gridlines_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
+
+\item{include_ytitle_plus}{Should a call to \code{yaxis_title_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
 
 \item{include_xscale_plus}{Should a call to \code{scale_x_continuous_plus()} with no arguments be automatically applied to the ggplot command chain, without needing to be called separately? Defaults to \code{FALSE}. Set to \code{TRUE} to include it.}
 

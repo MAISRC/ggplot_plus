@@ -14,7 +14,7 @@
 #' @param show.legend Logical value controlling whether this layer should be included in the legends, as in `ggplot2::geom_point()`.
 #' @param inherit.aes Logical for whether the default aesthetics should be overridden rather than combined with the provided aesthetics, as in `ggplot2::geom_point()`.
 #' @return A ggplot2 layer object.
-#' @export
+#' @keywords internal
 geom_point2 = function(mapping = NULL,
                        data = NULL,
                        stat = "identity",
@@ -45,7 +45,7 @@ geom_point2 = function(mapping = NULL,
 #' This ggplot proto object is called internally by `geom_point2()` and inherits most, but not all, of its methods and fields from those used in `ggplot2`'s standard `geomPoint` proto class. However, it has different default aesthetics, a different shapes palette, and can draw these new shapes in a legend. This subclass is not meant to be encountered by the user and is instead fodder for `geom_point_plus()`.
 #'
 #' @return A `ggplot2` ggproto subclass object.
-#' @export
+#' @keywords internal
 GeomPointPlus = ggplot2::ggproto(
   "PointPlus",
   ggplot2::GeomPoint, #THIS NEW GEOM PROTO INHERITS PROPERTIES AND METHODS FROM GEOMPOINT, BUT WILL OVERRIDE THREE OF ITS MAIN ATTRIBUTES: DRAW_PANEL, DRAW_KEY, AND DEFAULT AES. IT BEHAVES EXACTLY LIKE GEOM_POINT UNLESS A CHARACTER-BASED SHAPE INPUT IS PROVIDED THAT MATCHES ONE IN THE CUSTOM SHAPES LIST.
@@ -57,78 +57,91 @@ GeomPointPlus = ggplot2::ggproto(
                         shapes,
                         na.rm = FALSE) {
 
-    #THIS TRANSLATES A CHARACTER SHAPE NAME, LIKE "STAR", INTO A NUMERIC CODE TO BE USED IN A LOOKUP OPERATION USING OUR SHAPES LIST.
-    if (is.character(data$shape)) {
-      data$shape = names(shapes)[match(data$shape, names(shapes))]
-    }
+    if(is.factor(data$shape)) { data$shape = as.character(data$shape) } #COERCE FACTORS, WHICH MIGHT LOOK NUMERIC, TO CHARACTERS SO CUSTOM SHAPE STRINGS WORK.
 
-    coords = coord$transform(data, panel_params)
-    stroke_size = coords$stroke
+    coords = coord$transform(data, panel_params) #TRANSFORM DATA INTO THE PANEL COORDINATE SYSTEM FIRST.
+
+    stroke_size = coords$stroke #NORMALIZE STROKE SIZE.
     stroke_size[is.na(stroke_size)] = 0
 
-    #IF THE SHAPE INPUT WAS NUMERIC, IT MEANS IT'S PROBABLY A CONVENTIONAL GGPLOT SHAPE CODE, IN WHICH CASE, WE JUST DO WHAT GEOM_POINT ALREADY DOES, WHICH IS DRAW POINTS USING THOSE CONVENTIONAL SHAPES, ENSURING THAT GEOM_POINT'S BASIC FUNCTIONALITY IS RETAINED (THOUGH IT'S NOT OUR INTENTION THAT USERS USE GEOM_POINT_PLUS WHEN CUSTOM SHAPES ARE NOT NEEDED).
-    if (!is.character(data$shape)) {
+    #TWO DIFFERENT WAYS OF INPUTTING SHAPES MEANS TWO DIFFERENT WAYS OF ADDRESSING THE INPUTS. IF THE SHAPE DATA ARE NUMERIC, THE USER PRESUMABLY WANTS PLAIN-OLD GGPLOT2 POINTS AND WE DELEGATE THAT TO THE STANDARD POINTS GROB.
+
+    if(!is.character(coords$shape)) {
       return(grid::pointsGrob(
-        coords$x,
-        coords$y,
+        x   = coords$x,
+        y   = coords$y,
         pch = coords$shape,
-        gp = grid::gpar(
-          col = ggplot2::alpha(coords$colour, coords$alpha),
-          fill = ggplot2::fill_alpha(coords$fill, coords$alpha),
-          fontsize = coords$size * .pt + stroke_size * .stroke /
-            2,
-          lwd = coords$stroke * .stroke /
-            2
+        gp  = grid::gpar(
+          col       = ggplot2::alpha(coords$colour, coords$alpha),
+          fill      = ggplot2::fill_alpha(coords$fill, coords$alpha),
+          fontsize  = coords$size * ggplot2::.pt + stroke_size * ggplot2::.stroke / 2,
+          lwd       = stroke_size * ggplot2::.stroke / 2
         )
       ))
     }
+
     #OTHERWISE, THE METHOD ASSUMES YOU WANT TO USE THE CUSTOM SHAPES, WHICH IT'LL DRAW BY CONNECTING A SERIES OF COORDINATES USING A PATHGROB.
     #EVERY SHAPE INPUT NEEDS TO BE IN THE SHAPES LIST, AND IT NEEDS TO BE A NAMED LIST WITH $X $Y AND $PIECE ELEMENTS. THE X AND Y VALUES SHOULD BE CENTERED AROUND 0,0 AND BE SCALED TO ~0.4 RADIUS TO BE OF SIMILAR SIZES TO EACH OTHER.
-    g = Map(
-      function(x,
-               y,
-               shape,
-               size,
-               color,
-               fill,
-               strokewidth) {
-        dat = shapes[[shape]]
-        xvals = grid::unit(x, "npc") + grid::unit(dat$x * size * 2, "points")
-        yvals = grid::unit(y, "npc") + grid::unit(dat$y * size * 2, "points")
-        grid::pathGrob(xvals,
-                       yvals,
-                       id = dat$piece,
-                       rule = "evenodd",
-                       gp = grid::gpar(
-                         col = color,
-                         fill = fill,
-                         lwd = strokewidth
-                       ))
-      },
-      coords$x,
-      coords$y,
-      coords$shape,
-      coords$size * ggplot2::.pt + stroke_size * ggplot2::.stroke /
-        2,
-      ggplot2::alpha(coords$colour, coords$alpha),
-      ggplot2::fill_alpha(coords$fill, coords$alpha),
-      coords$stroke * .stroke / 2
-    )
-    do.call(grid::grobTree, c(g, list(name = "geom_point2")))
+
+    #FIRST, WE MAKE SURE WE HAVE ALL THE REQUIRED DATA AND OTHERWISE RETURN NULLGROB.
+    ok = is.finite(coords$x) &
+      is.finite(coords$y) &
+      !is.na(coords$shape)
+    if(!any(ok)) { return(grid::nullGrob()) }
+
+    coords = coords[ok, , drop = FALSE] #GET RID OF ALL NAs SO WE NEVER ERROR OUT TRYING TO USE THEM AS REFERENTS.
+
+    #IF A USER SPECIFIED AN UNKNOWN SHAPE, BAIL EARLY WITH USEFUL MESSAGE.
+    unknown = setdiff(unique(coords$shape),
+                      names(shapes))
+    if(length(unknown)) {
+      stop(sprintf(
+        "Unknown shape name(s): %s. Valid names are: %s",
+        paste(unknown, collapse = ", "),
+        paste(names(shapes), collapse = ", ")
+      ), call. = FALSE)
+    }
+
+    #PRECOMPUTE THE POINT SIZING IN PTS, REFERRING ONLY TO NON-NA POINTS.
+    size_pts = coords$size * ggplot2::.pt + stroke_size[ok] * ggplot2::.stroke / 2
+    stroke_pts = stroke_size[ok] * ggplot2::.stroke / 2
+
+    #BUILD ONE PATH GROB (CUSTOM SHAPE) PER POINT, USING THE EVEN-ODD RULE TO PUNCH HOLES OUT THE CENTER OF SOME SHAPES.
+    g = Map(function(x, y, shape, size, color, fill, lwd) {
+      dat  = shapes[[shape]]  # list with $x, $y, $piece
+      xval = grid::unit(x, "npc") + grid::unit(dat$x * size * 2, "points")
+      yval = grid::unit(y, "npc") + grid::unit(dat$y * size * 2, "points")
+      grid::pathGrob(
+        x = xval, y = yval, id = dat$piece,
+        rule = "evenodd",
+        gp = grid::gpar(
+          col = color,
+          fill = fill,
+          lwd = lwd
+        )
+      )
+    },
+    coords$x, coords$y, coords$shape,
+    size_pts,
+    ggplot2::alpha(coords$colour, coords$alpha),
+    ggplot2::fill_alpha(coords$fill, coords$alpha),
+    stroke_pts)
+
+    grid::grobTree(grobs = do.call(grid::gList, g), name = "geom_point_plus")
   },
 
   #DRAW_KEY IS THE METHOD USED TO DRAW THE SYMBOLS IN THE LEGENDS IT FOLLOWS THE SAME BEHAVIOR AS DRAW_PANEL FOR THE MOST PART EXCEPT IT ONLY DRAWS A SINGLE SYMBOL PER SHAPE NEEDED AT COORDINATES OF 0.5, 0.5 IN NPC UNITS.
   draw_key = function (data, params, size) {
-    if (is.null(data$shape)) {
-      data$shape = 21
-    }
 
+    #SET DEFAULTS THAT MIRROR WHAT THE PACKAGE USES FOR GEOM_POINT.
+    if(is.null(data$shape)) data$shape = 21
     stroke_size = data$stroke %||% 0.5
     stroke_size[is.na(stroke_size)] = 0
-
     size = data$size %||% 5
 
-    if (!is.character(data$shape)) {
+
+    #NUMERIC SHAPE VALUES ONCE AGAIN DIVERT TO STANDARD POINTSGROB.
+    if(!is.character(data$shape)) {
       return(grid::pointsGrob(
         0.5,
         0.5,
@@ -142,25 +155,27 @@ GeomPointPlus = ggplot2::ggproto(
       ))
     }
 
-    g = Map(
-      function(shape, size_val, color, fill, strokewidth) {
-        dat = params$shapes[[shape]]
-        xvals = grid::unit(0.5, "npc") + grid::unit(dat$x * size_val, "points")
-        yvals = grid::unit(0.5, "npc") + grid::unit(dat$y * size_val, "points")
-        grid::pathGrob(
-          xvals, yvals, dat$piece,
-          rule = "evenodd", #THIS PART IS KEY--IT ALLOWS US TO PUNCH HOLES IN SOME OF THE SHAPES TO CREATE OPENNESS.
-          gp = grid::gpar(col = color, fill = fill, lwd = strokewidth)
-        )
-      },
-      data$shape,
-      size * ggplot2::.pt + stroke_size * ggplot2::.stroke / 2,
-      ggplot2::alpha(data$colour, data$alpha),
-      ggplot2::fill_alpha(data$fill, data$alpha),
-      data$stroke * ggplot2::.stroke / 2
-    )
 
-    do.call(grid::grobTree, c(g, list(name = "geom_point_plus_key")))
+    #OTHERWISE WE DRAW THE KEYS USING OUR CUSTOM SHAPES.
+    size_pts   = size * ggplot2::.pt + stroke_size * ggplot2::.stroke / 2
+    lwd_pts    = stroke_size * ggplot2::.stroke / 2
+
+    shapes_vec = as.character(data$shape)
+    g = Map(function(shape, color, fill) {
+      dat  = params$shapes[[shape]]
+      xval = grid::unit(0.5, "npc") + grid::unit(dat$x * size_pts, "points")
+      yval = grid::unit(0.5, "npc") + grid::unit(dat$y * size_pts, "points")
+      grid::pathGrob(
+        x = xval, y = yval, id = dat$piece,
+        rule = "evenodd",
+        gp = grid::gpar(col = color, fill = fill, lwd = lwd_pts)
+      )
+    },
+    shapes_vec,
+    ggplot2::alpha(data$colour, data$alpha),
+    ggplot2::fill_alpha(data$fill, data$alpha))
+
+    grid::grobTree(grobs = do.call(grid::gList, g), name = "geom_point_plus_key")
   },
 
   ##LASTLY WE OVERRIDE THE DEFAULT_AES FIELD SO THAT GGPLOT2 KNOWS WHAT AESTHETICS THIS PROTO ACCEPTS AND WHAT TO SET THEM TO IF THEY ARE NOT AUTOMATICALLY PROVIDED.
@@ -426,9 +441,9 @@ shapes.list = list(
 #' @param data The data to be displayed in this layer, as in `ggplot2::geom_point()`.
 #' @param stat The statistical transformation to use on the data for this layer, as in `ggplot2::geom_point()`.
 #' @param position A position adjustment to use on the data for this layer, as in `ggplot2::geom_point()`.
-#' @param shapes A named list of custom shapes to be drawn in place of `ggplot2`'s standard palette of shapes. Defaults to `shapes.list`, the palette of shapes designed specifically for use in `geom_point_plus()` and should (probably) not be changed unless users have created new shapes they would like to use instead.
-#' @param n_shapes A length-1 integer corresponding to the number of distinct shapes the function is allowed to pull from the shapes palette specified to `shapes`. Defaults to the length of `shapes` and should (probably) not be changed.
-#' @param shape_values A character string referring by name to elements in the `shapes.list` the function should use to allocate shapes to values, e.g. `c("flower", "octagon", "squircle)`. These are provided internally to a `scale_shape_manual()` call and are meant to circumvent the need for such a call to specify a specific subset of shapes to be used. Defaults to `NULL`, i.e., shapes are pulled from `shapes.list` in order.
+#' @param avail_shapes A named list of custom shapes to be drawn in place of `ggplot2`'s standard palette of shapes. Defaults to `shapes.list`, the palette of shapes designed specifically for use in `geom_point_plus()` and should (probably) not be changed unless users have created new shapes they would like to use instead.
+#' @param n_shapes A length-1 integer corresponding to the number of distinct shapes the function is allowed to pull from the shapes palette specified to `avail_shapes`. Defaults to the length of `avail_shapes` and should (probably) not be changed.
+#' @param chosen_shapes A character string referring by name to elements in the `shapes.list` the function should use to allocate shapes to values, e.g. `c("flower", "octagon", "squircle)`. These are provided internally to a `scale_shape_manual()` call and are meant to circumvent the need for such a call to specify a specific subset of shapes to be used. Defaults to `NULL`, i.e., shapes are pulled from `shapes.list` in order. Values here must match the names of those in `avail_shapes`. Numerical values will use `ggplot2`'s default shapes instead.
 #' @param legend_title A length-1 character string corresponding to the name to be used for the shape legend title (if any). This is passed internally to `scale_shape_manual()` and is meant to help circumvent the need for the user to specify any such call directly.
 #' @param key_size A length-1 numeric value corresponding to the desired size of the legend keys. Defaults to 10. This is passed internally to `scale_shape_manual()` and is meant to help circumvent the need for the user to specify any such call directly.
 #' @param include_shape_legend Logical indicating whether a shape legend will be shown (one is always shown unless this is set to FALSE).
@@ -452,9 +467,9 @@ geom_point_plus = function(mapping = NULL,
                            data = NULL,
                            stat = "identity",
                            position = "identity",
-                           shapes = shapes.list, #A NAMED LIST OF SHAPES. DEFAULTS TO THOSE PROVIDED BY ggplot.plus.
-                           n_shapes = length(shapes), #HOW MANY DISTINCT SHAPES SHOULD BE PULLED FROM THE AVAILABLE PALETTE? DEFAULTS TO ALL OF THEM.
-                           shape_values = NULL, #WE PROVIDE DIRECT ACCESS TO THE VALUES ARGUMENT OF SCALE_SHAPE_MANUAL VIA THE SHAPE_VALUES PARAMETER. THIS WAY, A USER NEEDN'T TACK ON AN ADDITIONAL CALL TO SCALE_SHAPE_MANUAL() TO CUSTOMIZE THE SHAPES USED.
+                           avail_shapes = shapes.list, #A NAMED LIST OF SHAPES. DEFAULTS TO THOSE PROVIDED BY ggplot.plus.
+                           n_shapes = length(avail_shapes), #HOW MANY DISTINCT SHAPES SHOULD BE PULLED FROM THE AVAILABLE PALETTE? DEFAULTS TO ALL OF THEM.
+                           chosen_shapes = NULL, #WE PROVIDE DIRECT ACCESS TO THE VALUES ARGUMENT OF SCALE_SHAPE_MANUAL VIA THIS PARAMETER. THIS WAY, A USER NEEDN'T TACK ON AN ADDITIONAL CALL TO SCALE_SHAPE_MANUAL() TO CUSTOMIZE THE SHAPES USED.
                            legend_title = NULL, #WE ALSO PROVIDE DIRECT ACCESS TO THE TITLE ARGUMENT OF THE LEGEND, AS CHANGING THIS MANUALLY WOULD OTHERWISE REQUIRE ANOTHER CALL TO SCALE_SHAPE_DISCRETE AND THAT WOULD TRIGGER A WARNING AND RESET TO THE SHAPES PALETTE GGPLOT2 GENERALLY USES.
                            key_size = 10, #WE PROVIDE DIRECT ACCESS TO THE SIZES OF THE KEYS IN THE LEGEND TOO.
                            include_shape_legend = TRUE, #WE PROVIDE DIRECT ACCESS TO WHETHER OR NOT A SHAPE LEGEND GETS SHOWN, FOR USE IN SINGLE-SHAPE SCATTERPLOTS WHERE THE CUSTOM SHAPES ARE USED INSTEAD OF GGPLOT2 DEFAULTS.
@@ -463,37 +478,59 @@ geom_point_plus = function(mapping = NULL,
                            show.legend = NA,
                            inherit.aes = TRUE) {
 
+  dot_args = rlang::list2(...)
+
+  #IF SHAPE IS NOT BEING MAPPED, JUST RETURN THE LAYER WITHOUT DRAWING ANY SCALE
+  #THIS ONLY CHECKS MAPPING, WHICH IS LOCAL. IF SHAPE IS MAPPED GLOBALLY INSTEAD, A SCALE_SHAPE_MANUAL CALL IS PRETTY HARMLESS.
+  shape_is_mapped = !is.null(mapping) && ("shape" %in% names(mapping))
+
+  #IF CHOSEN_SHAPES IS A CONSTANT, CAPTURE THIS AS A CONSTANT SHAPE AND PASS ALONG.
+  if(!shape_is_mapped &&
+      !is.null(chosen_shapes) &&
+      length(chosen_shapes) == 1 &&
+      is.character(chosen_shapes) &&
+     chosen_shapes %in% names(avail_shapes)) {
+    dot_args$shape = chosen_shapes
+    chosen_shapes = NULL
+  }
+
   #THIS FUNCTION IS MOSTLY JUST A WRAPPER TO GEOM_POINT2 INTERNALLY.
-  geom_call = geom_point2(
-    mapping = mapping,
-    data = data,
-    stat = stat,
-    position = position,
-    shapes = shapes,
-    na.rm = na.rm,
-    show.legend = if(include_shape_legend == TRUE) show.legend else c(shape = FALSE),
-    inherit.aes = inherit.aes,
-    ...
+  geom_call = do.call(
+    geom_point2,
+    c(
+      list(
+        mapping = mapping,
+        data = data,
+        stat = stat,
+        position = position,
+        shapes = avail_shapes,
+        na.rm = na.rm,
+        show.legend = if(isTRUE(include_shape_legend)) {show.legend}  else {c(shape = FALSE)},
+        inherit.aes = inherit.aes
+      ),
+      dot_args
+    )
   )
 
-  #HOWEVER, SO LONG AS SHAPE HAS BEEN MAPPED, WE FIGURE OUT WHICH AND HOW MANY SHAPES TO PULL FROM THE AVAILABLE SHAPES PALETTE.
-  values = shape_values %||% names(shapes)[seq_len(min(length(shapes), n_shapes))]
+  if(!shape_is_mapped) return(geom_call)
+
+  #HERE ARE THE VALUES TO PULL FOR SHAPES TO USE IN THE SHAPE PALETTE
+  values = chosen_shapes %||% names(avail_shapes)[seq_len(min(length(avail_shapes), n_shapes))]
 
   #BUILD THE LEGEND IF WE'RE GOING TO, BUT ONLY PUT IN TITLE IF THE USER PROVIDED ONE.
-    if (!is.null(legend_title)) {
-      scale_call = ggplot2::scale_shape_manual(
-        legend_title,
-        values = values,
-        guide  = ggplot2::guide_legend(override.aes = list(size = key_size))
-      )
-      return(list(geom_call, scale_call))
-    }
+  guide_obj = if(isTRUE(include_shape_legend)) {
+    ggplot2::guide_legend(override.aes = list(size = key_size))
+  } else {
+    "none"
+  }
 
-    scale_call = ggplot2::scale_shape_manual(
-        values = values,
-        guide  = ggplot2::guide_legend(override.aes = list(size = key_size))
-    )
-    return(list(geom_call, scale_call))
+  scale_call = if(!is.null(legend_title)) {
+    ggplot2::scale_shape_manual(legend_title, values = values, guide = guide_obj)
+  } else {
+    ggplot2::scale_shape_manual(values = values, guide = guide_obj)
+  }
+
+  list(geom_call, scale_call)
 
 }
 
@@ -506,7 +543,7 @@ geom_point_plus = function(mapping = NULL,
 geom_point_plus_shapes = ggplot2::ggplot(data = data.frame(x = rep(c(0.5,1.5,2.5), each = 3),
                          y = rep(c(1,2,3), times = 3),
                          shape = factor(1:9))) +
-  geom_point_plus(ggplot2::aes(x = x, y = y, shape = shape, fill = shape), shape_values = c("squircle", "octagon", "flower", "economy", "cross", "waffle", "oval", "sunburst", "lotus"),
+  geom_point_plus(ggplot2::aes(x = x, y = y, shape = shape, fill = shape), chosen_shapes = c("squircle", "octagon", "flower", "economy", "cross", "waffle", "oval", "sunburst", "lotus"),
                   size = 10, stroke = 1)+
   ggplot2::theme_minimal() +
   ggplot2::lims(y=c(0.5, 3.5), x = c(0.4, 3)) +

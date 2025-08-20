@@ -9,9 +9,9 @@ geom_point_plus(
   data = NULL,
   stat = "identity",
   position = "identity",
-  shapes = shapes.list,
-  n_shapes = length(shapes),
-  shape_values = NULL,
+  avail_shapes = shapes.list,
+  n_shapes = length(avail_shapes),
+  chosen_shapes = NULL,
   legend_title = NULL,
   key_size = 10,
   include_shape_legend = TRUE,
@@ -30,11 +30,11 @@ geom_point_plus(
 
 \item{position}{A position adjustment to use on the data for this layer, as in \code{ggplot2::geom_point()}.}
 
-\item{shapes}{A named list of custom shapes to be drawn in place of \code{ggplot2}'s standard palette of shapes. Defaults to \code{shapes.list}, the palette of shapes designed specifically for use in \code{geom_point_plus()} and should (probably) not be changed unless users have created new shapes they would like to use instead.}
+\item{avail_shapes}{A named list of custom shapes to be drawn in place of \code{ggplot2}'s standard palette of shapes. Defaults to \code{shapes.list}, the palette of shapes designed specifically for use in \code{geom_point_plus()} and should (probably) not be changed unless users have created new shapes they would like to use instead.}
 
-\item{n_shapes}{A length-1 integer corresponding to the number of distinct shapes the function is allowed to pull from the shapes palette specified to \code{shapes}. Defaults to the length of \code{shapes} and should (probably) not be changed.}
+\item{n_shapes}{A length-1 integer corresponding to the number of distinct shapes the function is allowed to pull from the shapes palette specified to \code{avail_shapes}. Defaults to the length of \code{avail_shapes} and should (probably) not be changed.}
 
-\item{shape_values}{A character string referring by name to elements in the \code{shapes.list} the function should use to allocate shapes to values, e.g. \verb{c("flower", "octagon", "squircle)}. These are provided internally to a \code{scale_shape_manual()} call and are meant to circumvent the need for such a call to specify a specific subset of shapes to be used. Defaults to \code{NULL}, i.e., shapes are pulled from \code{shapes.list} in order.}
+\item{chosen_shapes}{A character string referring by name to elements in the \code{shapes.list} the function should use to allocate shapes to values, e.g. \verb{c("flower", "octagon", "squircle)}. These are provided internally to a \code{scale_shape_manual()} call and are meant to circumvent the need for such a call to specify a specific subset of shapes to be used. Defaults to \code{NULL}, i.e., shapes are pulled from \code{shapes.list} in order. Values here must match the names of those in \code{avail_shapes}. Numerical values will use \code{ggplot2}'s default shapes instead.}
 
 \item{legend_title}{A length-1 character string corresponding to the name to be used for the shape legend title (if any). This is passed internally to \code{scale_shape_manual()} and is meant to help circumvent the need for the user to specify any such call directly.}
 

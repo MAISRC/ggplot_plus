@@ -81,7 +81,7 @@ The `ggplot.plus` package is guided by three core principles:
 The package has several core functions and a couple of more situational ones:
 
 | Function | Purpose |
-|----|----|
+|------------------------------------|------------------------------------|
 | `geom_plus()` | A general wrapper for all supported `ggplot2` geoms, enforcing opinionated design choices. |
 | `geom_point_plus()` | An alternative version to `geom_point()` that introduces a new palette of shapes designed to be more readily differentiated. |
 | `theme_plus()` | An opinionated version of `ggplot2`'s base `theme_gray` theme, with changes to the settings for size, spacing, legend placement, and much more. |
@@ -690,21 +690,19 @@ ggplot(iris,
             mapping = aes(fill = Species),
             alpha = 0.3, 
             include_gridlines = TRUE, #<--TURNS ON gridlines_plus()
+            include_ytitle_plus = TRUE, #<--TURNS ON yaxis_title_plus()
             include_yscale_plus = TRUE, #<--TURNS ON scale_y_continuous_plus()
             include_theme = TRUE, #<--TURNS ON theme_plus()
             y_title = "Sepal length (cm)" #<--SETS Y AXIS TITLE.
             ) +
-  scale_x_continuous_plus("Petal length (cm)", thin_labels = TRUE) + #<--WE STILL SPECIFY CUSTOM LABELS AND TITLE THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().
-  yaxis_title_plus() #<--THIS STILL NEEDS TO BE ADDED SEPARATELY, AS IT CAN'T COME BUNDLED WITH GEOM_PLUS
+  scale_x_continuous_plus("Petal length (cm)", thin_labels = TRUE) #<--WE STILL SPECIFY CUSTOM LABELS AND TITLE THIS WAY, SINCE WE DON'T WANT TO ACCEPT THE DEFAULTS OF scale_x_continuous_plus().
 ```
 
-In this example, we were able to call `scale_y_continuous_plus()`, `theme_plus()`, and `gridlines_plus()` with their default parameters by setting the corresponding arguments inside `geom_plus()` to `TRUE`.
+In this example, we were able to call `scale_y_continuous_plus()`, `theme_plus()`, `yaxis_title_plus()`, and `gridlines_plus()` with their default parameters by setting the corresponding arguments inside `geom_plus()` to `TRUE`.
 
 If we *don't* want to accept the defaults for these, though, we need to call them separately, which is why we do not set `include_xscale_plus` to `TRUE`; we want to adjust the x axis labels, so we call `scale_x_continuous_plus()` separately to do that.
 
 Note that we can also specify new axis/scale titles inside `geom_plus` if we want (so long as we are not subsequently calling their associated `scale_*_continuous_plus()` function!).
-
-Also note that `yaxis_title_plus()` must still be called separately, if you wish to use it, as it does not come bundled with `geom_plus()`.
 
 ## Faceting With `ggplot.plus`
 
@@ -821,9 +819,9 @@ ggplot(iris,
             size = 1) + #<--MAKE POINTS MUCH SMALLER THAN DEFAULT.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
-  theme_plus() + 
-  yaxis_title_plus() +
-  gridlines_plus()
+  theme_plus() #+ #<--TURN THESE OTHER PACKAGE TOOLS OFF FOR THIS EXAMPLE.
+  # yaxis_title_plus() +
+  # gridlines_plus()
 ```
 
 Even though the points are smaller here (far too small, really!), the legend keys are still large enough to read.
@@ -883,7 +881,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ], #<--RESTRICT DATA VOLU
   gridlines_plus()
 ```
 
-As the example above shows, you can specify a new shape legend title inside `geom_point_plus()` using the `legend_title` parameter for convenience. You can also use the `shape_values` parameter to specify which specific shapes from the new palette you want to use:
+As the example above shows, you can specify a new shape legend title inside `geom_point_plus()` using the `legend_title` parameter for convenience. You can also use the `chosen_shapes` parameter to specify which specific shapes from the new palette you want to use:
 
 ```{r choosing shapes, warning = F}
 #| fig-height: 6.5
@@ -895,7 +893,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
        mapping = aes(x = Petal.Length, y = Sepal.Length)) +
   geom_point_plus(mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + #<--SPECIFY SPECIFIC SHAPES YOU WANT.
+                  chosen_shapes = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + #<--SPECIFY SPECIFIC SHAPES YOU WANT.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
   theme_plus() +
@@ -916,7 +914,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
   geom_plus(geom = "point_plus", #<--EASIER WAY TO ACCESS THESE FEATURES
             mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + 
+                  chosen_shapes = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle")) + 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
   theme_plus() +
@@ -926,7 +924,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
 
 As previously noted, all these shapes have separate fill and color aesthetics, so these color-based aesthetics can be set to constants or even mapped to variables (although we wouldn't necessarily recommend doing the latter in most cases, we did want to ensure it was possible!):
 
-```{r}
+```{r filling the shapes}
 #| fig-height: 6.5
 #| fig-width: 9
 
@@ -937,7 +935,7 @@ ggplot(iris[sample(1:nrow(iris), 30, replace = FALSE), ],
   geom_plus(geom = "point_plus", 
             mapping = aes(shape = factor(round(Petal.Length))), 
                   legend_title = "Petal length (binned)",
-                  shape_values = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle"),
+                  chosen_shapes = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle"),
             fill = viridis::viridis(1,0.5,0.5)) + #<--BOTH COLOR AND FILL CAN BE MAPPED TO CONSTANTS OR EVEN TO VARIABLES 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") +
@@ -950,31 +948,24 @@ These shapes are specifically designed for use via `geom_point_plus()` for when 
 
 1.  Use `geom_point_plus()` rather than `geom_point()`.
 
-2.  Set `shape` to a constant *inside* of `aes()`, not outside of it.
-
-3.  Specify the specific shape(s) you want via the `shape_values` argument.
-
-It's not required, but you may also want to suppress the shape legend by setting `include_shape_legend` to `FALSE` if you're not mapping shape, as a legend will be automatically generated regardless:
+2.  Set `shape` to a constant outside of `aes()` using the `chosen_shapes` argument.
 
 ```{r using custom shapes on their own, warning = F}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
-  geom_plus(geom = "point_plus", #<--MUST USE GEOM_POINT_PLUS, NOT GEOM_POINT
-            mapping = aes(fill = Species, 
-                          shape = factor(1)), #<--MAP SHAPE TO DISCRETE CONSTANT.
+  geom_plus(geom = "point_plus", #<--MUST USE GEOM_POINT_PLUS SOMEHOW
+            mapping = aes(fill = Species), 
             size = 2.5,
             alpha = 0.5,
-            shape_values = "waffle", #<--PICK EXACT SHAPE(S) YOU WANT, OTHERWISE THE DEFAULT ONE WILL BE USED.
-            include_shape_legend = FALSE) + #<--PROBABLY WISE TO SUPPRESS SHAPE LEGEND IF MAPPING TO A CONSTANT.
+            chosen_shapes = "waffle" #<--PICK EXACT SHAPE(S) YOU WANT, OTHERWISE THE DEFAULT ONE WILL BE USED.
+            ) + 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +
   gridlines_plus()
 ```
-
-We'll try to make this less cumbersome in future versions.
 
 ## More Unusual Interactions
 
@@ -987,14 +978,13 @@ ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
   geom_plus(geom = "point", 
-            mapping = aes(fill = Species, 
-                          alpha = 0.3)) + 
+            mapping = aes(fill = Species),
+            alpha = 0.3) + 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
   theme_plus() + 
   yaxis_title_plus() +
   gridlines_plus() +
-  scale_alpha(guide = "none") +
   coord_flip() #<--
 ```
 
@@ -1006,21 +996,20 @@ For example, by default, `ggplot2` will make your axis titles the column names o
 
 Just like "Petal.Length", most column names are not designed to be perfectly human-readable and intuitive. Instead, they are designed to be short, computer-readable, and easy to type. They may feature unusual capitalization and punctuation, lack spaces, include cryptic abbreviations, and lack units.
 
-If you use any of the `scale_*_continuous_plus()` functions, if they detect that you have not specified custom axis titles for your scales (because the titles being rendered match the column names of the mapped variables exactly), they will flag this:
+If you use `geom_plus()` and the function can detect that you have not specified custom axis titles for your scales (because the titles being rendered match the column names of the mapped variables exactly), it will flag this:
 
 ```{r message no custom titles, warning=TRUE}
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
   geom_plus(geom = "point", 
-            mapping = aes(fill = Species, 
-                          alpha = 0.3)) +
+            mapping = aes(fill = Species),
+            alpha = 0.3) +
   scale_x_continuous_plus(thin_labels = TRUE) + #<--NO NAME SPECIFIED.
   scale_y_continuous_plus() + #<--NO NAME SPECIFIED. 
   theme_plus() + 
   yaxis_title_plus() +
-  gridlines_plus() +
-  scale_alpha(guide = "none")
+  gridlines_plus()
 ```
 
 The idea here is to flag an issue that someone who might be new to making graphics in `ggplot2` (or in general) might not otherwise immediately notice or think of and to move them more quickly towards best practices.
@@ -1038,78 +1027,34 @@ ggplot(iris,
   theme_plus() + 
   yaxis_title_plus() +
   gridlines_plus() +
-  scale_alpha(guide = "none") +
   labs(fill = "Petal width (cm)") #<--SATISFY THE PREVIOUS WARNING SO WE DON'T GET IT AGAIN.
 ```
 
 It's hard to even keep the legend "in bounds" here, since it's so big! But it's also nigh-impossible to distinguish neighboring colors here in the legend.
 
-## Known Issues
-
-At present, the package 's codebase is very hacky, though pains have been taken to try to make it less so. As such, there are likely many bugs and also many features of `ggplot2` that `ggplot.plus` fails to support or even breaks.
-
-As a general rule, the more complex a thing you're trying to do, the less likely it is that `ggplot.plus`'s features will work with it. That said, `ggplot.plus` is primarily intended for use by those who may not have the skill (or patience) yet to use `ggplot2` in complex ways; if you're already a `ggplot2` pro, you can probably find ways to work around `ggplot.plus`'s current limitations on your own.
-
-Also, little developmental energy has been put (so far) into making `ggplot.plus` compatible with other ggplot2-niverse packages, so we offer no warranty that it will "play nice" with any others you intend to use.
-
-There is also a known limitation when using `yaxis_title_plus()` alongside a **top-positioned x-axis**. The relocated y-axis title will end up in the same horizontal "row" as the top x axis labels, causing them to clip into each other:
-
-```{r yaxis top conflict, warning=TRUE}
-ggplot(iris,
-       mapping = aes(x = Petal.Length, 
-           y = Sepal.Length)) +
-  geom_plus(geom = "point", 
-            mapping = aes(fill = Species),
-            alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE,
-                          position = "top") + #<--MOVE X AXIS TO TOP
-  scale_y_continuous_plus(name = "Sepal length (cm)") + 
-  theme_plus() + 
-  yaxis_title_plus() +
-  gridlines_plus()
-```
-
-You'll notice that `yaxis_title_plus()` provides a warning in this case and gives you a suggestion as to how to work around it: you can use the `location = "bottom"` option in `yaxis_title_plus()` to relocate the y title beneath the plot instead:
-
-```{r y axis bottom, warning=F}
-ggplot(iris,
-       mapping = aes(x = Petal.Length, 
-           y = Sepal.Length)) +
-  geom_plus(geom = "point", 
-            mapping = aes(fill = Species),
-            alpha = 0.3) +
-  scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE,
-                          position = "top") + 
-  scale_y_continuous_plus(name = "Sepal length (cm)") + 
-  theme_plus() +
-  yaxis_title_plus(location = "bottom") + #<--MOVE Y AXIS TITLE TO BOTTOM INSTEAD
-  gridlines_plus()
-```
-
-This feels a little "backwards" to us, but it works. Maybe it'd make good sense in a specific context wherein this reversing of the graph's standard schema aids reader intuitionl, such as when the y axis is mapped to lake depth.
-
-Now, if you instead *duplicate* the x-axis on **both top and bottom** or have a secondary x axis on the top, you won’t be able to relocate the y-axis title easily. In that case, the best fallback is probably to stick with the horizontal y-axis title broken across as many lines as possible using line breaks (`\n`), as shown earlier.
-
 ## Final scatterplot for reference
 
 Here’s a "final" version of our scatterplot using all of `ggplot.plus`’s tools together:
 
-```{r idealized graph, warning=T}
-palettes_plus(begin_discrete = 0, 
-              end_discrete = 1)
+```{r idealized graph}
+
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
   geom_plus(geom = "point", 
-            mapping = aes(fill = Species, 
-                          alpha = 0.3),
-            silence_warnings = TRUE) + #<--OTHERWISE, Species WILL TRIGGER A WARNING.
+            mapping = aes(fill = Species),
+            alpha = 0.3) + 
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
-  theme_plus() + 
+  theme_plus(legend.text = element_text(face= "italic")) + #<--MAKE THE TAXON NAMES ITALIC LIKE THEY OUGHT TO BE (A PASS-THRU TO ggplot2::theme)
   yaxis_title_plus() +
   gridlines_plus() +
-  scale_alpha(guide = "none")
+  scale_fill_viridis_d(name = "Taxon",
+                       begin = 0, 
+                       end = 1, 
+                       option = "D",
+                       labels = c("I. setosa", "I. versicolor", "I. virginica")
+                      ) #<--TO MODIFY THE FILL SCALE, WE CALL THE SAME ggplot2::scale FUNCTION THAT palettes_plus() CALLS, SPECIFYING A MORE APPROPRIATE TITLE AND LABELS.
 ```
 
 I'd say that looks pretty nice, but it's, at *worst*, an evidence-based starting point upon which to build something truly impactful and distinctive.

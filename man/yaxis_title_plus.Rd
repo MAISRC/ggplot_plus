@@ -4,7 +4,7 @@
 \alias{yaxis_title_plus}
 \title{Relocate a Y Axis Title to Above the Y Axis on a ggplot and Turn it Horizontal.}
 \usage{
-yaxis_title_plus(location = "top", move_top_legend_down = FALSE)
+yaxis_title_plus(location = c("top", "bottom"), move_top_legend_down = FALSE)
 }
 \arguments{
 \item{location}{A length-1 character string matching either "top" or "bottom" for the placement of the new y axis title. Defaults to \code{"top"}. \code{"bottom"} should generally only be used when the x axis labels (which would occupy the same row as the new y axis title) have been moved to the top of the graph.}

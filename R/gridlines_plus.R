@@ -63,74 +63,12 @@ gridlines_plus = function(color = "gray90",
 #' @method ggplot_add gridlines_plus
 ggplot_add.gridlines_plus = function(object, plot, object_name) {
 
-  #ASSUME BOTH X AND Y ARE NOT CONTINUOUS TO START.
-  x_is_cont = FALSE
-  y_is_cont = FALSE
+    plot = .ensure_ggplot_plus(plot) #RUN THIS TO MANAGE STORAGE AND CLASSES.
+    plot$ggplot_plus$grid = list( #STASH IN SUB-OBJECT INTENTS.
+      color = object$color,
+      linewidth = object$linewidth,
+      linetype = object$linetype
+    )
+    plot #RETURN
 
-  gmap = plot$mapping #THIS WOULD BE THE GLOBALLY MAPPING--FALL BACK TO THIS IF LAYERS DON'T SPECIFY THEM.
-
-  #BECAUSE USERS COULD SPECIFY X AND Y AESTHETICS LOCALLY AND EVEN PROVIDE DATA LOCALLY, WE NEED TO CYCLE THRU THE LAYERS TO FIGURE OUT IF *ANY* X/Y AESTHETIC IS MAPPED TO A CONTINUOUS VARIABLE IN *ANY* LAYER.
-  for(layer in plot$layers) {
-    #IF THIS LAYER IS NOT INHERITING DATA FROM GLOBAL, STICK W/ THE LOCAL DATA. OTHERWISE, FALL BACK TO GLOBAL.
-    if(!inherits(layer$data, "waiver")) {
-      layer_data = layer$data
-    } else {
-      layer_data = plot$data
-    }
-
-    #RESOLVE WHETHER WE'RE DEALING WITH LOCAL OR GLOBAL MAPPINGS FOR X AND Y
-    lmap = layer$mapping #LOCAL MAPPINGS
-    x_quo = if(!is.null(lmap$x)) { lmap$x } else gmap$x
-    y_quo = if(!is.null(lmap$y)) { lmap$y } else gmap$y
-
-    #GET NAMES OF VARS MAPPED TO X AND Y AESTHETICS. IF THEY ARE EXPRESSIONS, WE CATCH THAT VIA BUILD LATER
-    x_var = if(!is.null(x_quo)) { rlang::as_label(x_quo) } else { NULL }
-    y_var = if(!is.null(y_quo)) { rlang::as_label(y_quo) } else { NULL }
-
-    #NOW, CHECK--WAS THERE A VARIABLE? IS THAT VARIABLE IN THIS LAYER? IS IT NUMERIC? WAS A PREVIOUS X/Y VARIABLE IN A PREVIOUS LAYER NUMERIC? UPDATE X/Y_IS_CONT ACCORDINGLY.
-    if(!is.null(x_var) && x_var %in% names(layer_data)) {
-      x_is_cont = x_is_cont || is.numeric(layer_data[[x_var]])
-    }
-
-    if(!is.null(y_var) && y_var %in% names(layer_data)) {
-      y_is_cont = y_is_cont || is.numeric(layer_data[[y_var]])
-    }
-  }
-
-  #STEP 4: IN SOME GRAPH TYPES, A DERIVED NUMERIC AXIS MAY GET BUILT, SUCH AS A HISTOGRAM OR DENSITY PLOT. LET'S CHECK FOR THOSE.
-  if (!x_is_cont || !y_is_cont) {
-
-    built = suppressMessages(ggbuild_ggplot(plot)) #FAKE-BUILD THE PLOT.
-
-    #LOOK AT THE CLASSES OF ITS SCALES
-    x_scales = built$layout$panel_scales_x
-    y_scales = built$layout$panel_scales_y
-
-    #CHECK IF EITHER SCALE IS DERIVED BUT STILL CONTINUOUS. WE DO SO BY CHECKING FOR A ScaleContinuous CLASS DESIGNATION ON THE PANEL_SCALES.
-    x_is_cont = x_is_cont || any(vapply(x_scales, function(s) inherits(s, "ScaleContinuous"), logical(1)))
-    y_is_cont = y_is_cont || any(vapply(y_scales, function(s) inherits(s, "ScaleContinuous"), logical(1)))
-  }
-
-  #IF COORD_FLIP IS USED, WE NEED TO FLOP THE LOGIC OF THIS FUNCTION BY SWAPPING THE VALUES ABOVE. I CAN'T JUST ! THEM BOTH BECAUSE THEY COULD BOTH BE TRUE OR BOTH FALSE AND THAT WOULD RESULT IN IMPROPER OUTCOMES.
-  if(inherits(plot$coordinates, "CoordFlip")) {
-    swap = x_is_cont
-    x_is_cont = y_is_cont
-    y_is_cont = swap
-  }
-
-  #STEP 5: IF AN AXIS IS CONTINUOUS, ADD MAJOR AXIS GRIDLINES IN THIS DIRECTION.
-  grid_theme = ggplot2::theme(
-    panel.grid.major.x = if(x_is_cont) { ggplot2::element_line(color = object$color,
-                                                              linewidth = object$linewidth,
-                                                              linetype = object$linetype)
-    } else { ggplot2::element_blank() },
-    panel.grid.major.y = if(y_is_cont) { ggplot2::element_line(color = object$color,
-                                                              linewidth = object$linewidth,
-                                                              linetype = object$linetype)
-    } else { ggplot2::element_blank() }
-  )
-
-
-  #DRAW THE PLOT WITH THE NEW GRIDLINES.
-  plot + grid_theme + ggplot2::theme(panel.grid.minor = element_blank())
 }
