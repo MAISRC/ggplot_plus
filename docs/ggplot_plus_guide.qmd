@@ -801,9 +801,9 @@ ggplot(iris,
              alpha = 0.3) +
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
-  theme_plus() + 
-  yaxis_title_plus() +
-  gridlines_plus()
+  theme_plus() #+ #<--TURN THESE OTHER PACKAGE TOOLS OFF FOR THIS EXAMPLE.
+  # yaxis_title_plus() +
+  # gridlines_plus()
 ```
 
 As you can see, the legend keys get the same treatment as our points here, which makes the legend keys (arguably) harder to interpret. `ggplot.plus`'s `geom_plus()` function attempts to see if you may have set `size` and/or `alpha` aesthetics that would result in legend keys that might be too faint or too small to easily read and overrides the legend aesthetics accordingly, if so.\
@@ -819,9 +819,9 @@ ggplot(iris,
             size = 1) + #<--MAKE POINTS MUCH SMALLER THAN DEFAULT.
   scale_x_continuous_plus(name = "Petal length (cm)", thin_labels = TRUE) +
   scale_y_continuous_plus(name = "Sepal length (cm)") + 
-  theme_plus() #+ #<--TURN THESE OTHER PACKAGE TOOLS OFF FOR THIS EXAMPLE.
-  # yaxis_title_plus() +
-  # gridlines_plus()
+  theme_plus() + 
+  yaxis_title_plus() +
+  gridlines_plus()
 ```
 
 Even though the points are smaller here (far too small, really!), the legend keys are still large enough to read.
