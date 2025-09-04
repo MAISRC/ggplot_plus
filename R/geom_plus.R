@@ -92,6 +92,63 @@ geom_plus = function(geom,
 ggplot_add.geom_plus = function(object, plot, object_name) {
 
   user_args = object$user_args #LOCALLY PROVIDED USER ARGUMENTS.
+
+  #MAKE SURE TO IN PARTICULAR CATCH INHERIT.AES AS THIS INFLUENCES DOWNSTREAM BEHAVIOR.
+  pmatches = pmatch(names(user_args), "inherit.aes", nomatch = 0L, duplicates.ok = TRUE) #ASKS, FOR EVERY ENTRY, DO YOU PARTIALLY MATCH THIS STRING? RETURNS SOME VALUE FOR EACH. 0 FOR NON-MATCHES
+  pmatch_idx = which(pmatches > 0) #WHICH USER_ARGS MATCHED, BY INDEX?
+  if(length(pmatch_idx) > 1) { stop("Too many arguments that match inherit.aes were provided to geom_plus()!") }
+  if(length(pmatch_idx) == 1) {
+    to_insert = user_args[[pmatch_idx]] #CATCH WHAT THIS SHOULD BECOME
+    user_args[[pmatch_idx]] = NULL #WIPE OUT THE UNNAMED VERSION
+    user_args$inherit.aes = to_insert #PROPERLY AND EXPLICITLY NAME
+  } else if(!is.null(object$inherit.aes)) {
+    user_args$inherit.aes = object$inherit.aes #FALL BACK TO WHATEVER IS ALREADY ON THE OBJECT
+  }
+
+  #OF COURSE, THEY MAY SIMPLY HAVE NOT NAMED THEIR INPUT TO INHERIT.AES, SO LET'S *TRY* TO CATCH THAT HERE.
+  if(is.null(user_args$inherit.aes)) {
+  is_logic = vapply(user_args, is.logical, logical(1)) #LOOK FOR LOGICAL INPUTS
+  is_maybe_inheritaes = which(is_logic & #SEE WHICH ARE UNNAMED
+                                (names(user_args) == "" |
+                                   is.na(names(user_args))))
+
+  if(length(is_maybe_inheritaes) > 1) { stop("Too many unnamed arguments that could be inherit.aes were provided! Please name your logical inputs.") } #TOO MANY--STOP
+  if(length(is_maybe_inheritaes) == 1) {
+    to_insert = user_args[[is_maybe_inheritaes]] #SET ASIDE
+    user_args[[is_maybe_inheritaes]] = NULL #ERASE OLD
+    user_args$inherit.aes = to_insert #EXPLICITLY NAME NEW
+  }
+  }
+
+  #AT THIS POINT, MAKE SURE INHERIT.AES IS LENGTH 1 AND LOGICAL AND NOT NA.
+  if(is.na(user_args$inherit.aes) ||
+     length(user_args$inherit.aes) != 1 ||
+     !is.logical(user_args$inherit.aes)) {
+    message("Since your inherit.aes argument was ambiguous, it was set to TRUE.")
+    user_args$inherit.aes = TRUE
+  }
+
+  #THEN, WE ATTEMPT TO PMATCH TO DATA AND MAPPING IN SIMILAR WAYS
+  pmatches2 = pmatch(names(user_args), "data", nomatch = 0L, duplicates.ok = TRUE)
+  pmatch_idx2 = which(pmatches2 > 0)
+  if(length(pmatch_idx2) > 1) { stop("Too many arguments that match data were provided!") }
+  if(length(pmatch_idx2) == 1) {
+    to_insert = user_args[[pmatch_idx2]]
+    user_args[[pmatch_idx2]] = NULL
+    user_args$data = to_insert
+  }
+
+  pmatches3 = pmatch(names(user_args), "mapping", nomatch = 0L, duplicates.ok = TRUE)
+  pmatch_idx3 = which(pmatches3 > 0)
+  if(length(pmatch_idx3) > 1) { stop("Too many arguments that match mapping were provided!") }
+  if(length(pmatch_idx3) == 1) {
+    to_insert = user_args[[pmatch_idx3]]
+    user_args[[pmatch_idx3]] = NULL
+    user_args$mapping = to_insert
+  }
+
+  user_args = .ggplus_normalize_layer_args(user_args, user_args$inherit.aes) #THEN, WE DEAL WITH ANY UNNAMED INPUTS TO MAPPING/DATA BY NAMING THEM IF INHERIT.AES = F AND DELETING THEM IF INHERIT.AES = T.
+
   geom_name = object$geom #UNPACK THE GEOM CHOSEN
   silence_warnings = object$silence_warnings #UNPACK USER DESIRES FOR WARNINGS.
   include_theme = object$include_theme #UNPACK USER DESIRES FOR THEME.
@@ -150,11 +207,6 @@ ggplot_add.geom_plus = function(object, plot, object_name) {
 
   #THE ONLY DEFAULTS WE SHOULD USE ARE FOR THOSE AESTHETICS NOT REFERENCED ANY OTHER TIMES.
   defaults_used = defaults[!names(defaults) %in% c(names(user_args), names(aes_local), names(aes_global))]
-
-  #THE ONLY GLOBAL AESTHETICS WE SHOULD USE ARE THOSE NOT REFERENCE LOCALLY IN ANY WAY.
-  #OF COURSE, USERS MIGHT HAVE SPECIFIED ONE THING BUT MEANT ANOTHER. ONE EXAMPLE IS INHERITANCE. IF THEY SPECIFY INHERIT.AES = FALSE, WE NEED TO RESPECT THAT HERE:
-  pmatch_idx = pmatch("inherit.aes", names(user_args), nomatch = 0L)
-  if (pmatch_idx > 0L) { user_args[[pmatch_idx]] } else { user_args$inherit.aes = TRUE }
 
   #SO, THINGS GO SQUIRRELY WHEN USERS TRY TO SET CONSTANTS INSIDE OF AES() INSTEAD OF OUTSIDE OF IT. WE WILL GO THRU ALL THE MAPPED AESTHETICS AND, IF ANY ARE MAPPED TO CONSTANTS, WE WEED THOSE OUT AND PUT THEM IN USER_ARGS WHERE THEY BELONGED.
   result_local = extract_mapped_constants(aes_local, user_args, silence = silence_warnings, location = "geom")

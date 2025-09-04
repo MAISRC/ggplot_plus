@@ -409,3 +409,108 @@ geom_plus_defaults = list(
 
   return(unique(vars[nzchar(vars)]))
 }
+
+
+#' SOMETIMES, USERS WILL SPECIFY DATA AND/OR MAPPING ARGUMENTS INSIDE GEOM_PLUS BUT NOT GIVE THEM NAMES. IF INHERIT.AES = FALSE, THESE MAY THEN END UP IN THE WRONG ARGUMENT SLOTS, SO THIS FUNCTION HELPS DETECT WHEN THAT MAY HAVE OCCURRED AND TRY TO CATCH AND PROPERLY PLACE THOSE ARGUMENTS. ALTERNATIVELY, IT HELPS TO CATCH WHEN INHERIT.AES = TRUE AND THESE WERE PROVIDED ANYWAY AND SHOULD INSTEAD BE IGNORED.
+#' @param args A list of user arguments given to `geom_plus` via ...
+#' @param inherit.aes Logical value as to whether inherit.aes is on or off.
+#' @return The same list of arguments, but perhaps with some arguments now named.
+#' @keywords internal
+#' @noRd
+.ggplus_normalize_layer_args = function(args, inherit.aes) {
+
+  if (is.null(args) || !length(args)) { return(args) } #IF THERE ARE NO ARGS, END EARLY
+
+  nms = names(args) #STORAGE OBJ.
+  if(is.null(nms)) { nms = rep("", length(args)) } #FAILSAFE STORAGE OBJ
+
+  #FIRST, FIGURE OUT WHO LOOKS LIKE A MAPPING ARGUMENT.
+  is_uneval = vapply(args, function(x) inherits(x, "uneval"), logical(1)) #WHO HAS UNEVAL CLASS?
+
+  if(inherit.aes == FALSE) { #IF INHERIT IS FALSE, THERE SHOULD BE A MAPPING...
+
+    idx_map = which(is_uneval &
+                      (nms == "" | is.na(nms))) #SEE WHICH QUALIFY AND AREN'T NAMED.
+
+    if(length(idx_map) == 1 &
+       !any(nms == "mapping")) { #ONLY DO THIS IF THERE ISN'T ALREADY AN EXPLICITLY NAMED MAPPING ARG.
+      args$mapping = args[[idx_map]] #ASSIGN THIS TO MAPPING
+      args[[idx_map]] = NULL #BLANK ITS UNNAMED VERSION
+      nms = names(args) #REFRESH NAMES OBJ
+      message("The first unnamed aes-like input in geom_plus() was interpreted as an input to mapping.")
+    } else {
+      if(length(idx_map) > 1) {
+        args[[idx_map]] = NULL #WIPE THEM ALL OUT
+        message("Too many unnamed aes-like inputs in geom_plus() were given. All were ignored.")
+      }
+      if(length(idx_map) == 1 &
+         any(nms == "mapping")) {
+        args[[idx_map]] = NULL #WIPE THEM ALL OUT
+        message("You provided an unnamed aes-like input to geom_plus() but also a named mapping input. The former was ignored.")
+      }
+    }
+  } else {
+    if(any(is_uneval) > 0) {
+    args[[which(is_uneval)]] = NULL #IF INHERIT.AES IS TRUE, DESTROY ANY MAPPING ARG AS THIS SHOULD BE IGNORED.
+    message("You provided an unnamed aes-like input to geom_plus() but inherit.aes is TRUE, so the former was ignored.")
+    }
+  }
+
+  #DO THE SAME THING WITH PROSPECTIVE DATA ARGUMENTS.
+  is_data_like = function(x) {
+    inherits(x, c("data.frame","tbl_df","sf","data.table")) || is.matrix(x)
+  }
+
+    is_dat = vapply(args, is_data_like, logical(1)) #WHICH ARGS LOOK LIKE DATA?
+
+    if(inherit.aes == FALSE) {
+
+    unnamed_dat = which(is_dat & (nms == "" | is.na(nms)))
+
+    if(length(unnamed_dat) == 1 &
+       !any(nms == "data")) {
+      args$data = args[[unnamed_dat]]
+      args[[unnamed_dat]] = NULL
+      nms = names(args)
+      message("The first unnamed dataset-like input in geom_plus() was interpreted as an input to data.")
+    } else {
+      if(length(unnamed_dat) > 1) {
+        message("Too many unnamed dataset-like inputs in geom_plus() were given. All were ignored.")
+        args[[unnamed_dat]] = NULL #WIPE THEM ALL OUT
+      }
+      if(length(unnamed_dat) == 1 &
+         any(nms == "data")) {
+        message("You provided an unnamed dataset-like input to geom_plus() but also a named data input. The former was ignored.")
+        args[[unnamed_dat]] = NULL #WIPE THEM ALL OUT
+      }
+     }
+    } else {
+      if(any(is_dat) > 0) {
+      args[[which(is_dat)]] = NULL #IF INHERIT.AES IS TRUE, DESTROY ANY DATA ARGS AS THIS SHOULD BE IGNORED.
+      message("You provided an unnamed dataset-like input to geom_plus() but inherit.aes is TRUE, so the former was ignored.")
+      }
+  }
+
+
+  #IF THERE'S STILL ANYTHING LEFT THAT LOOKS LIKE AN UNEVAL AES() MAPPING ARGUMENT OR A DATA SET, ERROR OUT.
+  nms2 = names(args)
+  if(is.null(nms2)) { nms2 = rep("", length(args)) }
+
+  leftover_unnamed_uneval = any(vapply(args, inherits, logical(1), "uneval") &
+                                  (nms2 == "" | is.na(nms2)))
+
+  if(leftover_unnamed_uneval) {
+    stop("geom_plus() found an unnamed aes() argument inside '...'. Explicitly name it using 'mapping = aes(...)' and only provide one call to aes() as an input inside geom_plus() (and only when inherit.aes = FALSE).",
+         call. = FALSE)
+  }
+
+  leftover_unnamed_ds = any(vapply(args, is_data_like, logical(1)) &
+                                  (nms2 == "" | is.na(nms2)))
+
+  if(leftover_unnamed_ds) {
+    stop("geom_plus() found an unnamed possible data argument inside '...'. Explicitly name it using 'data = ...' and only provide one explicit data argument as an input inside geom_plus() (and only when inherit.aes = FALSE).",
+         call. = FALSE)
+  }
+
+  return(args)
+}
