@@ -329,7 +329,8 @@ ggplotplus_shapes_list = list(
       staplewidth = 0.25,
       outlier.colour = "black",
       outlier.stroke = 1.2,
-      outlier.fill = "transparent"
+      outlier.fill = "transparent",
+      outlier.shape = 21
     )
   ),
   violin = list(

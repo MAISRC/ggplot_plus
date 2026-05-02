@@ -263,7 +263,7 @@ In this example, we’ve disabled the purple end of the palette and we've enable
 
 To see the default color palette for a continuous variable, let's temporarily map color to a numeric variable instead:
 
-```{r check out cividis}
+```{r base continuous scale}
 #A BASE GGPLOT2 GRAPH WITHOUT theme_plus() ON FOR REFERENCE
 ggplot(iris,
        mapping = aes(x = Petal.Length, 
@@ -271,7 +271,15 @@ ggplot(iris,
   geom_point(mapping = aes(color = Petal.Width)) #<--MAP COLOR TO A CONTINUOUS VARIABLE.
 ```
 
-The default `ggplot2` palette for continuous variables is "blues," which is a reasonable palette in that it does vary in luminance, making it more broadly accessible. However, it doesn't vary in hue, which can make nearby values harder to distinguish. As such, `theme_plus()` changes the palette to `cividis`, which has three distinct hues: blue, gray, and yellow.
+The default `ggplot2` palette for continuous variables is "blues," which is a reasonable palette in that it does vary in luminance, making it more broadly accessible. However, it doesn't vary in hue, which can make nearby values harder to distinguish. As such, `theme_plus()` changes the palette to `cividis`, which has three distinct hues: blue, gray, and yellow:
+
+```{r check out cividis}
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Sepal.Length)) +
+  geom_point(mapping = aes(color = Petal.Width)) +
+  theme_plus()
+```
 
 Because humans like to "chunk" data into discrete groups according to hue, even in circumstances where the underlying phenomenon is continuous and nothing "special" is happening at the points of hue transition, this palette's low number of hues results in less "false binning" of the data than tends to happen when using palettes with more distinct hues (such as `viridis`). After all, blue, gray, and yellow points here *are* quite different, so the hue differences many will perceive map accurately to differences in the underlying data, and even relatively similar values are more easily distinguished from one another.
 
