@@ -7,3 +7,9 @@ AT THE CONSOLE--DON'T HIT THE RENDER BUTTON!
 ALSO, YOU MAY WANT TO COMMIT ALL PACKAGE CHANGES FIRST, THEN UPDATE THE README AND COMMIT SEPARATELY, OR IT MAY PULL THE OLDER VERSION OFF GITHUB.
 
 quarto::quarto_render("docs/ggplot_plus_guide.qmd")
+
+
+###UPDATING THE PACKAGE FILES
+First, load devtools.
+Then, do devtools::load_all(). Resolve any conflicts with global.
+Then, do devtools::document(). Resolve any conflicts and identified issues. Check Namespace and description for updates

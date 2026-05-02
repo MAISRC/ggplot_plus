@@ -2,14 +2,14 @@
 % Please edit documentation in R/geom_point_plus.R
 \name{geom_point2}
 \alias{geom_point2}
-\title{An backend version of \code{geom_point()} that can access distinctive shapes.}
+\title{A backend version of \code{geom_point()} that can access distinctive shapes.}
 \usage{
 geom_point2(
   mapping = NULL,
   data = NULL,
   stat = "identity",
   position = "identity",
-  shapes = shapes.list,
+  shapes = ggplotplus_shapes_list,
   ...,
   na.rm = FALSE,
   show.legend = NA,
@@ -29,11 +29,11 @@ geom_point2(
 
 \item{...}{Other arguments passed on to layer()'s params argument, as in \code{ggplot2::geom_point()}.}
 
-\item{na.rm}{Logical value controlling whether missing values should be removed from the data with a warning or silently, as in \code{ggplot2::geom_point()}.}
+\item{na.rm}{Logical controlling whether missing values should be removed from the data with a warning or silently, as in \code{ggplot2::geom_point()}.}
 
-\item{show.legend}{Logical value controlling whether this layer should be included in the legends, as in \code{ggplot2::geom_point()}.}
+\item{show.legend}{Logical controlling whether this layer should be included in the legend(s), as in \code{ggplot2::geom_point()}.}
 
-\item{inherit.aes}{Logical for whether the default aesthetics should be overridden rather than combined with the provided aesthetics, as in \code{ggplot2::geom_point()}.}
+\item{inherit.aes}{Logical controlling whether global aesthetics specified in \code{ggplot2::ggplot()} should be inherited locally by this layer or not, as in \code{ggplot2::geom_point()}.}
 }
 \value{
 A ggplot2 layer object.

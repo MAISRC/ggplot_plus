@@ -4,9 +4,9 @@
 \name{ggplot.plus-package}
 \alias{ggplot.plus}
 \alias{ggplot.plus-package}
-\title{ggplot.plus: `ggplot.plus: An Opinionated, Universal-Design Focused Veneer For Ggplot2}
+\title{ggplot.plus: `ggplot.plus: An Opinionated, Universal-Design-Oriented Veneer For Ggplot2's Defaults}
 \description{
-A collection of ggplot2 enhancements for improved defaults, accessibility, and usability.
+A collection of enhancements to ggplot2's defaults, with a focus on universal accessibility and ease of use.
 }
 \seealso{
 Useful links:

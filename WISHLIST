@@ -1,0 +1,4 @@
+Wishlist:
+1. Make it so that, when alpha is mapped to a constant, the legend doesn't also get the transparency. Same with size.
+2. Allow global mapping of shape with geom_point_plus().
+3. Allow geom_jitter to work like geom_point_plus().
