@@ -28,11 +28,11 @@ editor: visual              # Helps with editing
 
 ## Getting started
 
-To use the `ggplotplus` package, you’ll need to first install it from GitHub using the `devtools` package (you only need to do this once for each release of the package):
+To use the `ggplotplus` package, you’ll need to first install it from GitHub using the `pak` package (you only need to do this once for each release of the package):
 
 ```{r load package, message=FALSE, eval = FALSE}
-# install.packages("devtools")  #IF NOT ALREADY INSTALLED
-devtools::install_github("https://github.com/MAISRC/ggplotplus")
+# install.packages("pak")  #IF NOT ALREADY INSTALLED
+pak::pak("MAISRC/ggplotplus")
 ```
 
 ```{r load package local}

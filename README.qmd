@@ -23,11 +23,11 @@ version: "0.5.0"
 
 ## Quick Start Guide
 
-To begin using the `ggplotplus` package, you’ll first need to install it from GitHub using the devtools package:
+To begin using the `ggplotplus` package, you’ll first need to install it from GitHub using the pak package:
 
 ```{r load package, message=F, eval=F}
 # install.packages("devtools")  #IF NOT ALREADY INSTALLED
-devtools::install_github("https://github.com/MAISRC/ggplotplus")
+pak::pak("MAISRC/ggplotplus")
 ```
 
 ```{r for load knit}
@@ -111,4 +111,4 @@ ggplot(iris,
 
 The above graphs demonstrates how `ggplotplus`'s tools rethink the default design features of `ggplot2`. The intention is to yield a more opinionated, more universal product more quickly so you can spend less time fiddling with your graphs than you otherwise might.
 
-However, there's a *lot* more to know! If you want to dive deeper, please [check out the full package guide](https://maisrc.github.io/ggplot_plus).
+However, there's a *lot* more to know! If you want to dive deeper, please [check out the full package guide](https://maisrc.github.io/ggplotplus/).

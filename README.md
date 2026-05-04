@@ -6,11 +6,11 @@ Species Research Center
 ## Quick Start Guide
 
 To begin using the `ggplotplus` package, you’ll first need to install it
-from GitHub using the devtools package:
+from GitHub using the pak package:
 
 ``` r
 # install.packages("devtools")  #IF NOT ALREADY INSTALLED
-devtools::install_github("https://github.com/MAISRC/ggplotplus")
+pak::pak("MAISRC/ggplotplus")
 ```
 
 Then, load it alongside `ggplot2`:
@@ -107,4 +107,4 @@ time fiddling with your graphs than you otherwise might.
 
 However, there’s a *lot* more to know! If you want to dive deeper,
 please [check out the full package
-guide](https://maisrc.github.io/ggplot_plus/ggplotplus%20guide%20site).
+guide](https://maisrc.github.io/ggplotplus/).
