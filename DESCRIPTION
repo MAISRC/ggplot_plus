@@ -21,7 +21,7 @@ Imports:
     polyclip,
     viridis
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
     ragg (>= 1.5.2)
 Config/testthat/edition: 3
 Acknowledgements:
