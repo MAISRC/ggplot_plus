@@ -22,7 +22,7 @@ Imports:
     viridis
 Suggests: 
     testthat (>= 3.0.0)
-    ragg
+    ragg (>= 1.5.2)
 Config/testthat/edition: 3
 Acknowledgements:
     Thanks to Allan Cameron (@Allan Cameron) for answers to

@@ -1,5 +1,5 @@
 ---
-title: "Guide to the ggplot.plus Package"
+title: "Guide to the ggplot_plus Package"
 author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center"
 date: today
 format:
