@@ -1,4 +1,4 @@
-Package: ggplot_plus
+Package: ggplotplus
 Title: `ggplot_plus: An Opinionated, Universal-Design-Oriented Veneer For Ggplot2's Defaults
 Version: 0.5.0
 Authors@R: 
