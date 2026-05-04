@@ -126,7 +126,7 @@ test_plots$ribbon =
 
 # 13. Tile defaults + fill scale
 test_plots$tile =
-  ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+  ggplot(ggplot2::faithfuld, aes(waiting, eruptions, fill = density)) +
   geom_tile() +
   theme_plus() +
   gridlines_plus() +

@@ -2,7 +2,7 @@
 
 #' @importFrom rlang %||% list2
 #' @import ggplot2
-#' @importFrom ggplot2 update_ggplot class_ggplot ggplot_build ggplot_gtable
+#' @importFrom ggplot2 update_ggplot class_ggplot ggplot_build ggplot_gtable faithfuld
 #' @importFrom polyclip polyclip
 #' @importFrom scales pretty_breaks pal_viridis
 #' @importFrom viridisLite viridis
