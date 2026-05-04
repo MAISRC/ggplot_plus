@@ -4,7 +4,7 @@ quarto::quarto_render("README.qmd")
 
 AT THE CONSOLE--DON'T HIT THE RENDER BUTTON!
 
-quarto::quarto_render("docs/ggplot_plus_guide.qmd")
+quarto::quarto_render("docs/ggplotplus_guide.qmd")
 
 
 ###UPDATING THE PACKAGE FILES

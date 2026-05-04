@@ -1,5 +1,5 @@
 # library(ggplot2)
-# library(ggplot_plus)
+# library(ggplotplus)
 
 test_plots = list()
 
@@ -204,10 +204,10 @@ test_plots$multi_aes =
 # }
 
 # Optional save pass
-# dir.create("ggplot_plus_test_outputs", showWarnings = FALSE)
+# dir.create("ggplotplus_test_outputs", showWarnings = FALSE)
 # for(nm in names(test_plots)) {
 #   ggsave(
-#     filename = file.path("ggplot_plus_test_outputs", paste0(nm, ".png")),
+#     filename = file.path("ggplotplus_test_outputs", paste0(nm, ".png")),
 #     plot = test_plots[[nm]],
 #     width = 7,
 #     height = 5,

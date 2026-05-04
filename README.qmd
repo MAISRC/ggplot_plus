@@ -3,7 +3,7 @@ author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Spec
 format: 
   html: 
     output-file: "README.html"
-    title: "ggplot_plus Readme and Quick-Start Guide"
+    title: "ggplotplus Readme and Quick-Start Guide"
     echo: true
     code-overflow: wrap
   gfm:
@@ -23,11 +23,11 @@ version: "0.5.0"
 
 ## Quick Start Guide
 
-To begin using the `ggplot_plus` package, you’ll first need to install it from GitHub using the devtools package:
+To begin using the `ggplotplus` package, you’ll first need to install it from GitHub using the devtools package:
 
 ```{r load package, message=F, eval=F}
 # install.packages("devtools")  #IF NOT ALREADY INSTALLED
-devtools::install_github("https://github.com/MAISRC/ggplot_plus")
+devtools::install_github("https://github.com/MAISRC/ggplotplus")
 ```
 
 ```{r for load knit}
@@ -41,7 +41,7 @@ Then, load it alongside `ggplot2`:
 ```{r load libraries, eval = F}
 # install.packages("ggplot2")  #IF NOT ALREADY INSTALLED
 library(ggplot2)
-library(ggplot_plus)
+library(ggplotplus)
 ```
 
 Once loaded, you can start layering its `_plus()` tools onto your `ggplot2` calls to improve their base design with minimal effort.
@@ -82,7 +82,7 @@ ggplot(iris,
 
 ### Trying out some new shapes
 
-`ggplot_plus` also introduces a new palette of shapes designed to be more distinctive than the base point shapes available in R, accessible using `geom_point_plus()`:
+`ggplotplus` also introduces a new palette of shapes designed to be more distinctive than the base point shapes available in R, accessible using `geom_point_plus()`:
 
 ```{r new shapes}
 ggplot(iris, 
@@ -109,6 +109,6 @@ ggplot(iris,
        shape = expression(italic("Iris")*" species"))
 ```
 
-The above graphs demonstrates how `ggplot_plus`'s tools rethink the default design features of `ggplot2`. The intention is to yield a more opinionated, more universal product more quickly so you can spend less time fiddling with your graphs than you otherwise might.
+The above graphs demonstrates how `ggplotplus`'s tools rethink the default design features of `ggplot2`. The intention is to yield a more opinionated, more universal product more quickly so you can spend less time fiddling with your graphs than you otherwise might.
 
-However, there's a *lot* more to know! If you want to dive deeper, please [check out the full package guide](https://maisrc.github.io/ggplot_plus/ "ggplot_plus guide site").
+However, there's a *lot* more to know! If you want to dive deeper, please [check out the full package guide](https://maisrc.github.io/ggplot_plus).

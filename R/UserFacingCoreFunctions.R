@@ -539,7 +539,7 @@ geom_point_plus = function(mapping = NULL,
                            data = NULL,
                            stat = "identity",
                            position = "identity",
-                           avail_shapes = ggplotplus_shapes_list, #A NAMED LIST OF SHAPES. DEFAULTS TO THOSE PROVIDED BY ggplot_plus.
+                           avail_shapes = ggplotplus_shapes_list, #A NAMED LIST OF SHAPES. DEFAULTS TO THOSE PROVIDED BY ggplotplus.
                            n_shapes = length(avail_shapes), #HOW MANY DISTINCT SHAPES SHOULD BE PULLED FROM THE AVAILABLE PALETTE? DEFAULTS TO ALL OF THEM.
                            chosen_shapes = NULL, #WE PROVIDE DIRECT ACCESS TO THE VALUES ARGUMENT OF SCALE_SHAPE_MANUAL VIA THIS PARAMETER. THIS WAY, A USER NEEDN'T TACK ON AN ADDITIONAL CALL TO SCALE_SHAPE_MANUAL() TO CUSTOMIZE THE SHAPES USED.
                            legend_title = NULL, #WE ALSO PROVIDE DIRECT ACCESS TO THE TITLE ARGUMENT OF THE LEGEND, AS CHANGING THIS MANUALLY WOULD OTHERWISE REQUIRE ANOTHER CALL TO SCALE_SHAPE_DISCRETE AND THAT WOULD TRIGGER A WARNING AND RESET TO THE SHAPES PALETTE GGPLOT2 GENERALLY USES.

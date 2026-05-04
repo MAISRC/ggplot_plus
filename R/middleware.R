@@ -13,7 +13,7 @@ NULL
 
 #' A new palette of distinct shapes made especially for `geom_point_plus`
 #'
-#' Call this object to generate a `ggplot` showing the names and features of each of the shapes available to `ggplot_plus::geom_point_plus`.
+#' Call this object to generate a `ggplot` showing the names and features of each of the shapes available to `ggplotplus::geom_point_plus`.
 #'
 #' @return A named list.
 #' @export
@@ -491,7 +491,7 @@ ggplotplus_shapes_list = list(
 
 #' Build gridline theme adjustments from trained panel scales
 #'
-#' Internal helper used during the ggplot_plus build stage. Inspects the trained
+#' Internal helper used during the ggplotplus build stage. Inspects the trained
 #' panel scales of a built plot and returns a ggplot2 theme object that keeps
 #' major gridlines only for continuous position scales, using the styling stored
 #' in a `GridlinesPlus` intent.
@@ -812,7 +812,7 @@ ggplotplus_shapes_list = list(
 }
 
 
-#' Construct ggplot_plus palette theme settings
+#' Construct ggplotplus palette theme settings
 #'
 #' Internal helper that builds a `ggplot2::theme()` call configuring discrete
 #' and continuous color/fill palettes using viridis-based palette functions.
@@ -891,7 +891,7 @@ ggplotplus_shapes_list = list(
 #' Check whether a geom parameter is already set
 #'
 #' Internal helper used when applying `theme_plus()` geom defaults. Determines
-#' whether a layer already has a geom parameter set so ggplot_plus does not
+#' whether a layer already has a geom parameter set so ggplotplus does not
 #' overwrite explicit user intent.
 #'
 #' Includes a special case for violin `quantile_gp`, which exists by default in

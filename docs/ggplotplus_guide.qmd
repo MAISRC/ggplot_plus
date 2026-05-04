@@ -1,5 +1,5 @@
 ---
-title: "Guide to the ggplot_plus Package"
+title: "Guide to the ggplotplus Package"
 author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center"
 date: today
 format:
@@ -28,11 +28,11 @@ editor: visual              # Helps with editing
 
 ## Getting started
 
-To use the `ggplot_plus` package, you’ll need to first install it from GitHub using the `devtools` package (you only need to do this once for each release of the package):
+To use the `ggplotplus` package, you’ll need to first install it from GitHub using the `devtools` package (you only need to do this once for each release of the package):
 
 ```{r load package, message=FALSE, eval = FALSE}
 # install.packages("devtools")  #IF NOT ALREADY INSTALLED
-devtools::install_github("https://github.com/MAISRC/ggplot_plus")
+devtools::install_github("https://github.com/MAISRC/ggplotplus")
 ```
 
 ```{r load package local}
@@ -46,39 +46,39 @@ Then, load it alongside `ggplot2`:
 ```{r load libraries, eval = F}
 # install.packages("ggplot2")  #IF NOT ALREADY INSTALLED
 library(ggplot2)
-library(ggplot_plus)
+library(ggplotplus)
 ```
 
 ## Motivation
 
-This guide introduces the `ggplot_plus` package, a collection of tools developed by Dr. Alex Bajcz, Quantitative Ecologist at the Minnesota Aquatic Invasive Species Research Center (MAISRC) at the University of Minnesota.
+This guide introduces the `ggplotplus` package, a collection of tools developed by Dr. Alex Bajcz, Quantitative Ecologist at the Minnesota Aquatic Invasive Species Research Center (MAISRC) at the University of Minnesota.
 
 The tools in this package are meant to provide an opinionated, Universal-Design-oriented update to `ggplot2`'s existing tools and defaults, with the goal helping less-experienced and time-strapped ggplot2 users to make more accessible graphs more quickly and painlessly.
 
 This guide offers an overview of how the tools in this package are intended to be used and is especially aimed at users who are relatively new to `ggplot2` and relatively unfamiliar with its inner workings.
 
-In a nutshell, `ggplot_plus`'s tools overhaul the default design state of `ggplot2`'s graphics. While a typical one-line `ggplot()` call yields a functional graphic, it'll often fall short of modern best practices in data visualization and graph design, especially with respect to universal accessibility. As such, many simple `ggplot()` calls do not immediately yield graphs fit for publication or sharing with a wide, global audience.
+In a nutshell, `ggplotplus`'s tools overhaul the default design state of `ggplot2`'s graphics. While a typical one-line `ggplot()` call yields a functional graphic, it'll often fall short of modern best practices in data visualization and graph design, especially with respect to universal accessibility. As such, many simple `ggplot()` calls do not immediately yield graphs fit for publication or sharing with a wide, global audience.
 
 Of course, experienced users of `ggplot2` can use its many powerful tools and toggles, like those in the `theme()`, `scale_*()`, and `geom_*()` family of functions, to redesign and customize their graphs to meet even the highest standard! But doing so requires hard-won knowledge of how these tools work and can be tedious to implement even when you have the knowledge.
 
-Plus, even if one has the *technical* know-how, not everyone is familiar enough with the most-current tenets of data visualization to know *what* to change and what to change it *to*. The `ggplot_plus` package is designed to help users of all experience levels start from a more accessible baseline without sacrificing `ggplot2`'s capacity for individuality, experimentation, and customization.
+Plus, even if one has the *technical* know-how, not everyone is familiar enough with the most-current tenets of data visualization to know *what* to change and what to change it *to*. The `ggplotplus` package is designed to help users of all experience levels start from a more accessible baseline without sacrificing `ggplot2`'s capacity for individuality, experimentation, and customization.
 
-Accessibility is really the primary motivation for `ggplot_plus`. Many of its changes to the default settings of ggplots are intended to improve compliance with modern accessibility standards; this guide attempts to highlight these improvements as a means of educating the reader on some of the finer points of modern accessible design, in case they are curious and motivated to learn more!
+Accessibility is really the primary motivation for `ggplotplus`. Many of its changes to the default settings of ggplots are intended to improve compliance with modern accessibility standards; this guide attempts to highlight these improvements as a means of educating the reader on some of the finer points of modern accessible design, in case they are curious and motivated to learn more!
 
-**To be clear:** `ggplot_plus` is **not** a replacement for making careful design choices, personal artistry, solicitation of feedback, or understanding your audience's needs and capabilities. Instead, it’s meant to be a new (and at least arguably better) starting point for your graphic design process. While the design choices baked into its tools ultimately reflect Dr. Bajcz’s professional judgments, they're grounded in a thorough review of the last several decades of the data visualization literature, so they don't only *primarily* reflect his *personal* opinions about good graph design (though they also do!). Feel free to disagree with some or even most of its opinions; it's designed to respect all your preferences, just as `ggplot2` would.
+**To be clear:** `ggplotplus` is **not** a replacement for making careful design choices, personal artistry, solicitation of feedback, or understanding your audience's needs and capabilities. Instead, it’s meant to be a new (and at least arguably better) starting point for your graphic design process. While the design choices baked into its tools ultimately reflect Dr. Bajcz’s professional judgments, they're grounded in a thorough review of the last several decades of the data visualization literature, so they don't only *primarily* reflect his *personal* opinions about good graph design (though they also do!). Feel free to disagree with some or even most of its opinions; it's designed to respect all your preferences, just as `ggplot2` would.
 
 ## Overview of the Package's Philosophy Towards Graph Design
 
-The `ggplot_plus` package is guided by three core principles:
+The `ggplotplus` package is guided by three core principles:
 
 1.  **Better Defaults:**\
-    Many default settings in `ggplot2` are functional but sub-optimal in terms of design and accessibility. `ggplot_plus` attempts to improve upon these by, among other things, adjusting colors, shapes, gridlines, spacing, text, etc. to yield cleaner, more accessible graphs at the outset with less fiddling with toggles.
+    Many default settings in `ggplot2` are functional but sub-optimal in terms of design and accessibility. `ggplotplus` attempts to improve upon these by, among other things, adjusting colors, shapes, gridlines, spacing, text, etc. to yield cleaner, more accessible graphs at the outset with less fiddling with toggles.
 
 2.  **Customization:**\
-    Almost all opinions effected by `ggplot_plus`'s tools can be overridden by the user, either through standard `ggplot2` syntax or using `_plus` function variants and their optional inputs. You’re rarely (if ever) stuck with any of the opinions baked into these tools (even though they do have these opinions for a reason!).
+    Almost all opinions effected by `ggplotplus`'s tools can be overridden by the user, either through standard `ggplot2` syntax or using `_plus` function variants and their optional inputs. You’re rarely (if ever) stuck with any of the opinions baked into these tools (even though they do have these opinions for a reason!).
 
 3.  **Modularity:**\
-    Each tool in `ggplot.plus` is designed to be additive and used in concert, as appropriate. Sure, you *can* use just one (e.g., `theme_plus()`), but the intention is to call every relevant tool to achieve the full effect.
+    Each tool in `ggplotplus` is designed to be additive and used in concert, as appropriate. Sure, you *can* use just one (e.g., `theme_plus()`), but the intention is to call every relevant tool to achieve the full effect.
 
 ## Key Functions
 
@@ -155,11 +155,11 @@ This graph is simple and reasonably effective—it's perfectly suitable for expl
 
 -   **Legend placement**: `ggplot2`'s default legend location (in the right-hand margin) is often space-inefficient, creating needlessly large voids above/below it. Plus, it tends to be encountered by readers relatively late when placed in this location. Data visualization best practices are to either integrate a legend's information into the plotting area directly (e.g., through direct labeling of lines) or else to place the legend somewhere both more prominent and more compact.
 
-This list isn’t exhaustive, but it illustrates how even a simple `ggplot` could require many adjustments to meet accessibility, clarity, and design standards. It has been Dr. Bajcz's personal experience that going from a base ggplot to a publishable one often requires several hundreds of lines of code-based adjustments! Not everyone has the time, patience, or wherewithal to do that much fiddling for every graph they make: hence, `ggplot_plus`. It bundles together many of those hundreds of lines of code so that we can all just *start* much closer to where most of us would want to *finish*!
+This list isn’t exhaustive, but it illustrates how even a simple `ggplot` could require many adjustments to meet accessibility, clarity, and design standards. It has been Dr. Bajcz's personal experience that going from a base ggplot to a publishable one often requires several hundreds of lines of code-based adjustments! Not everyone has the time, patience, or wherewithal to do that much fiddling for every graph they make: hence, `ggplotplus`. It bundles together many of those hundreds of lines of code so that we can all just *start* much closer to where most of us would want to *finish*!
 
 ## theme_plus: An Opinionated Starting Point
 
-With many of the design challenges outlined above in mind, `ggplot_plus` introduces the `theme_plus()` function, its core tool. A corollary to `ggplot2`'s `theme()` function, `theme_plus()` is designed to work identically. More experienced `ggplot2` users will know `theme()` to be one of `ggplot2`'s workhorse functions; it exposes many hundreds of toggles for adjusting a graph's appearance, and it's one of the functions perhaps most responsible for `ggplot2`'s not inconsiderable learning curve.
+With many of the design challenges outlined above in mind, `ggplotplus` introduces the `theme_plus()` function, its core tool. A corollary to `ggplot2`'s `theme()` function, `theme_plus()` is designed to work identically. More experienced `ggplot2` users will know `theme()` to be one of `ggplot2`'s workhorse functions; it exposes many hundreds of toggles for adjusting a graph's appearance, and it's one of the functions perhaps most responsible for `ggplot2`'s not inconsiderable learning curve.
 
 The intention of `theme_plus()` is to rewrite many dozens of the "presets" inside of `ggplot2`'s default `theme()` so that you don't have to! Just tack it on to any `ggplot` call, even with no inputs, to access its benefits:
 
@@ -169,7 +169,7 @@ ggplot(data = iris,
        mapping = aes(x = Petal.Length, 
            y = Sepal.Length)) +
   geom_point(mapping = aes(color = Species)) +
-  theme_plus() #<--...BUT WITH ggplot_plus'S theme_plus FUNCTION TACKED ON.
+  theme_plus() #<--...BUT WITH ggplotplus'S theme_plus FUNCTION TACKED ON.
 ```
 
 Hopefully, you can already see how big a difference this one function can make to the design of a graph! Let's discuss some of these design improvements in greater detail:
@@ -212,7 +212,7 @@ ggplot(data = iris,
   theme_plus(legend_pos = "right")
 ```
 
-Like the rest of the `ggplot_plus` toolkit, `theme_plus()` is meant to be a smart starting point, **not** a "final destination." Its outputs won’t be ideal for every plot, person, or context (that's not even remotely possible!), but it’s designed to save you time by making it so there are *fewer* adjustments you need to make to get your graphs to where they ultimately need to be: fully accessible for the entire audience you want!
+Like the rest of the `ggplotplus` toolkit, `theme_plus()` is meant to be a smart starting point, **not** a "final destination." Its outputs won’t be ideal for every plot, person, or context (that's not even remotely possible!), but it’s designed to save you time by making it so there are *fewer* adjustments you need to make to get your graphs to where they ultimately need to be: fully accessible for the entire audience you want!
 
 ### Accessible Color Palettes
 
@@ -396,7 +396,7 @@ If you map the *same aesthetic* in multiple places (e.g., globally and locally),
 
 #### ...So what?
 
-We bring all this up just to say that all of the same rules apply when using `ggplot_plus`. You can:
+We bring all this up just to say that all of the same rules apply when using `ggplotplus`. You can:
 
 -   Map aesthetics globally or locally.
 
@@ -428,7 +428,7 @@ In this version:
 Most common `ggplot2` geoms have defaults adjusted by `theme_plus()`, though not all. To see a list of those receiving specific adjustments, run this command:
 
 ```{r geom list}
-sort(names(ggplot_plus:::.geom_plus_defaults()))
+sort(names(ggplotplus:::.geom_plus_defaults()))
 ```
 
 ### Improving Axes Breaks and Labels
@@ -468,7 +468,7 @@ ggplot(iris,
             alpha = 0.3) +
   theme_plus(begin_discrete = 0, 
               end_discrete = 1) +
-  scale_continuous_plus(scale = "x",#<--SWITCH TO THE GGPLOT_PLUS VARIANT, AND SPECIFY THE SCALE.
+  scale_continuous_plus(scale = "x",#<--SWITCH TO THE ggplotplus VARIANT, AND SPECIFY THE SCALE.
     name = "Petal length (cm)") 
 ```
 
@@ -634,7 +634,7 @@ This works *reasonably* well. It's readable, and it's *relatively* simple to imp
 
 -   It doesn’t scale well to longer axis titles or those with long, unbreakable words. If we want a descriptive, detail-rich title, it's hard to achieve that with this approach.
 
-To get around these challenges, `ggplot_plus` includes `yaxis_title_plus()`, which "surgically" moves the y-axis title to above the y-axis line, left-justified to the plot margin:
+To get around these challenges, `ggplotplus` includes `yaxis_title_plus()`, which "surgically" moves the y-axis title to above the y-axis line, left-justified to the plot margin:
 
 ```{r yaxis mover, message=FALSE}
 ggplot(iris,
@@ -702,7 +702,7 @@ ggplot(iris,
 
 ## Thoughtful Gridlines
 
-One (arguably) controversial opinion coded into `ggplot_plus`'s `theme_plus()` function is the total removal of **gridlines**. While some readers rely on them or expect them, many (probably the majority!) tend to find them distracting or visually cluttering in most situations. In fact, data viz experts often advise they not be used most of the time.
+One (arguably) controversial opinion coded into `ggplotplus`'s `theme_plus()` function is the total removal of **gridlines**. While some readers rely on them or expect them, many (probably the majority!) tend to find them distracting or visually cluttering in most situations. In fact, data viz experts often advise they not be used most of the time.
 
 If you’d like to restore them, however, you can: you *could* manually add them using `theme_plus()`. It'll let you! But there’s an easier (and more opinionated) option: `gridlines_plus()`. This function *selectively* reintroduces *only* the **major gridlines** (not minor ones) in *only* directions mapped to numeric variables (not discrete ones), and renders them as faintly as possible:
 
@@ -750,9 +750,9 @@ ggplot(iris,
 
 Because gridlines are *primarily* beneficial for helping a reader discern exact values, there's no need for them when an axis is discrete and thus has no exact values to read! Thus, we can simplify the presentation by omitting them in that direction automatically.
 
-## Faceting With `ggplot_plus`
+## Faceting With `ggplotplus`
 
-Faceting—splitting a plot into **small multiples** based on one or more discrete variables—is a core `ggplot2` feature, and it *generally* works with the tools provided by `ggplot_plus`:
+Faceting—splitting a plot into **small multiples** based on one or more discrete variables—is a core `ggplot2` feature, and it *generally* works with the tools provided by `ggplotplus`:
 
 ```{r faceting with geomplus, message=FALSE}
 #EXAMPLE GRAPH TO SHOW FACETING FEATURES:
@@ -774,7 +774,7 @@ ggplot(iris,
   facet_grid(. ~ Species) #<--MAKE ONE SMALL MULTIPLE (PANEL) PER SPECIES (ACROSS COLUMNS)
 ```
 
-As this example shows, **many features in `ggplot_plus` are compatible with faceting**, though some *may* require some thought.
+As this example shows, **many features in `ggplotplus` are compatible with faceting**, though some *may* require some thought.
 
 For example, using `yaxis_title_plus()` with facets works—the function places the relocated y-axis title above the facet strip labels. However, for some, this could look a little confusing or awkward. In general, we don't recommend using `yaxis_title_plus()` when you're faceting and have the facet strip labels at the top of the plot. We may make this easier to adjust in the future.
 
@@ -846,11 +846,11 @@ ggplot(iris,
   facet_grid(. ~ Species)
 ```
 
-Faceting is a relatively complex feature of `ggplot2`. `ggplot_plus`'s features are mostly designed to work with it, but that doesn't mean some creativity and future improvements won't be involved!
+Faceting is a relatively complex feature of `ggplot2`. `ggplotplus`'s features are mostly designed to work with it, but that doesn't mean some creativity and future improvements won't be involved!
 
 ## Color Isn't Everything! Incorporating Distinctive Shapes Into Scatterplots
 
-Thus far, we've mostly focused on graphs that use color (hue, luminance, and saturation) to communicate differences in our data. `ggplot_plus` is designed to revamp how `ggplot2` approaches color to yield graphs that are more accessible and more interpretable while still having the aesthetic and engagement benefits of color.
+Thus far, we've mostly focused on graphs that use color (hue, luminance, and saturation) to communicate differences in our data. `ggplotplus` is designed to revamp how `ggplot2` approaches color to yield graphs that are more accessible and more interpretable while still having the aesthetic and engagement benefits of color.
 
 However, *any* graph that uses color to communicate difference can only be *so* accessible and interpretable. A small but sizable number of humans are completely colorblind, and color perception weakens as we age. Additionally, many people still read and/or view graphs in contexts wherein colors may not be readily distinguished.
 
@@ -879,7 +879,7 @@ While there is certainly *some* variation between these shapes, many are percept
 
 Notably, only the last five shapes of those bundled with R have separate outline (stroke) and interior (fill) channels, allowing them to bear separate outline and fill colors, and those same five shapes are also relatively similar with respect to openness and intersectionality, making them harder to distinguish from each other. This limits the versatility of this visual channel.
 
-As such, `ggplot_plus` introduces `geom_point_plus()`, a variant of `ggplot2`'s `geom_point()` layer that introduces access to nine new, intentionally crafted shapes that vary as much as possible along the three axes described above while also being able to bear separate stroke and fill colors:
+As such, `ggplotplus` introduces `geom_point_plus()`, a variant of `ggplot2`'s `geom_point()` layer that introduces access to nine new, intentionally crafted shapes that vary as much as possible along the three axes described above while also being able to bear separate stroke and fill colors:
 
 ```{r shape palette}
 #| fig-height: 7
@@ -973,7 +973,7 @@ Note that, at present, `shape` cannot be mapped globally to access these shapes�
 
 ## More Unusual Interactions
 
-One sort of strange function in `ggplot2` is `coord_flip()`, which flips the graph's coordinate system so that the x axis runs vertically and the y axis runs horizontally (it should be noted that this function is now deprecated in `ggplot2` Version 4). `ggplot_plus`'s tools try to work with this function, if you use it:
+One sort of strange function in `ggplot2` is `coord_flip()`, which flips the graph's coordinate system so that the x axis runs vertically and the y axis runs horizontally (it should be noted that this function is now deprecated in `ggplot2` Version 4). `ggplotplus`'s tools try to work with this function, if you use it:
 
 ```{r coord flip, message=FALSE}
 ggplot(iris,
@@ -996,7 +996,7 @@ ggplot(iris,
 
 ## Final scatterplot for reference
 
-Here’s a "final" version of our scatterplot using all of `ggplot_plus`’s tools together:
+Here’s a "final" version of our scatterplot using all of `ggplotplus`’s tools together:
 
 ```{r idealized graph, message=FALSE}
 ggplot(iris,
@@ -1046,7 +1046,7 @@ ggplot2::ggsave(filename = "Myplot.png",
 
 However, as any experienced `ggplot2` user knows, a graph's design may look great in RStudio's Plots pane, when it's been sized to one set of dimensions, and then may look terrible when it's saved sized to a different set of dimensions! In particular, font and line width sizes often do not automatically scale well to a range of output dimensions.
 
-`ggplot_plus`'s `theme_plus()` function recognizes this and exposes two inputs: `export_width` and `export_height`. When using it, specify the ultimate dimensions you intend to export your graph at (e.g., 7 x 5.26), and it'll adjust the default font and line sizes (though not any custom sizes you've provided!) accordingly to look (reasonably) good at your output dimensions:
+`ggplotplus`'s `theme_plus()` function recognizes this and exposes two inputs: `export_width` and `export_height`. When using it, specify the ultimate dimensions you intend to export your graph at (e.g., 7 x 5.26), and it'll adjust the default font and line sizes (though not any custom sizes you've provided!) accordingly to look (reasonably) good at your output dimensions:
 
 ```{r}
 #| fig-height: 5.26

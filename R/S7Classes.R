@@ -45,9 +45,9 @@ YAxisTitlePlus = S7::new_class(
     nudgeHowMuch = S7::class_numeric)
 )
 
-#' Internal S7 state container for ggplot_plus plots
+#' Internal S7 state container for ggplotplus plots
 #'
-#' Stores deferred ggplot_plus intents attached to a plot. This object is carried
+#' Stores deferred ggplotplus intents attached to a plot. This object is carried
 #' on `GGPlotPlusPlot` objects and read during build and gtable stages.
 #'
 #' @keywords internal
@@ -63,9 +63,9 @@ GGPlotPlusState = S7::new_class(
   )
 )
 
-#' Internal S7 ggplot subclass for ggplot_plus dispatch
+#' Internal S7 ggplot subclass for ggplotplus dispatch
 #'
-#' Subclasses ggplot2 plot objects so ggplot_plus can dispatch custom build-stage
+#' Subclasses ggplot2 plot objects so ggplotplus can dispatch custom build-stage
 #' behavior without changing ggplot2 behavior globally.
 #'
 #' @keywords internal
@@ -74,13 +74,13 @@ GGPlotPlusPlot = S7::new_class(
   "GGPlotPlusPlot", #IT'S SIGNATURE, OR NAME, IS GGPlotPlusPlot
   parent = ggplot2::class_ggplot, #THIS IS A SUBCLASS OF CLASS "ggplot"
   properties = list(
-    ggplot_plus = S7::class_any
+    ggplotplus = S7::class_any
   )
 )
 
-#' Internal S7 built-plot subclass for ggplot_plus gtable dispatch
+#' Internal S7 built-plot subclass for ggplotplus gtable dispatch
 #'
-#' Subclasses ggplot2 built plot objects so ggplot_plus can pass deferred
+#' Subclasses ggplot2 built plot objects so ggplotplus can pass deferred
 #' gtable-stage intents, such as `yaxis_title_plus()`, from plot building into
 #' gtable construction.
 #'

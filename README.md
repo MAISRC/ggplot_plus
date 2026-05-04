@@ -1,16 +1,16 @@
 # README
 Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive
 Species Research Center
-2026-05-02
+2026-05-04
 
 ## Quick Start Guide
 
-To begin using the `ggplot_plus` package, you’ll first need to install
-it from GitHub using the devtools package:
+To begin using the `ggplotplus` package, you’ll first need to install it
+from GitHub using the devtools package:
 
 ``` r
 # install.packages("devtools")  #IF NOT ALREADY INSTALLED
-devtools::install_github("https://github.com/MAISRC/ggplot_plus")
+devtools::install_github("https://github.com/MAISRC/ggplotplus")
 ```
 
 Then, load it alongside `ggplot2`:
@@ -18,7 +18,7 @@ Then, load it alongside `ggplot2`:
 ``` r
 # install.packages("ggplot2")  #IF NOT ALREADY INSTALLED
 library(ggplot2)
-library(ggplot_plus)
+library(ggplotplus)
 ```
 
 Once loaded, you can start layering its `_plus()` tools onto your
@@ -69,9 +69,9 @@ ggplot(iris,
 
 ### Trying out some new shapes
 
-`ggplot_plus` also introduces a new palette of shapes designed to be
-more distinctive than the base point shapes available in R, accessible
-using `geom_point_plus()`:
+`ggplotplus` also introduces a new palette of shapes designed to be more
+distinctive than the base point shapes available in R, accessible using
+`geom_point_plus()`:
 
 ``` r
 ggplot(iris, 
@@ -100,11 +100,11 @@ ggplot(iris,
 
 ![](README_files/figure-commonmark/new%20shapes-1.png)
 
-The above graphs demonstrates how `ggplot_plus`’s tools rethink the
+The above graphs demonstrates how `ggplotplus`’s tools rethink the
 default design features of `ggplot2`. The intention is to yield a more
 opinionated, more universal product more quickly so you can spend less
 time fiddling with your graphs than you otherwise might.
 
 However, there’s a *lot* more to know! If you want to dive deeper,
 please [check out the full package
-guide](https://maisrc.github.io/ggplot_plus/ "ggplot_plus guide site").
+guide](https://maisrc.github.io/ggplot_plus/ggplotplus%20guide%20site).

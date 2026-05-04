@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(ggplot.plus)
+library(ggplotplus)
 
-testthat::test_check("ggplot.plus")
+testthat::test_check("ggplotplus")

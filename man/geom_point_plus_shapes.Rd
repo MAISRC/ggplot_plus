@@ -10,5 +10,5 @@ geom_point_plus_shapes()
 A named list.
 }
 \description{
-Call this object to generate a \code{ggplot} showing the names and features of each of the shapes available to \code{ggplot_plus::geom_point_plus}.
+Call this object to generate a \code{ggplot} showing the names and features of each of the shapes available to \code{ggplotplus::geom_point_plus}.
 }

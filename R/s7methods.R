@@ -1,24 +1,24 @@
 # METHODS DISPATCHING -----------------------------------------------------
-#' Ensures our plot carries the ggplot_plus intent storage and class info into subsequence S7 dispatch methods.
+#' Ensures our plot carries the ggplotplus intent storage and class info into subsequence S7 dispatch methods.
 #' @param plot A `ggplot` object.
 #'
-#' @return The same `ggplot` object, with `plot@ggplot_plus` ensured to exist.
+#' @return The same `ggplot` object, with `plot@ggplotplus` ensured to exist.
 #'
 #' @details
 #' This does **not** build, modify, or draw the plot. It only prepares the
-#' object so the custom S7 methods of ggplot_plus can
+#' object so the custom S7 methods of ggplotplus can
 #' later read the recorded intents during dispatch.
 #'
 #' @keywords internal
 #' @noRd
-.ensure_ggplot_plus_plot = function(plot) {
+.ensure_ggplotplus_plot = function(plot) {
 
   if(!inherits(plot, "GGPlotPlusPlot")) {
     plot = S7::convert(plot, GGPlotPlusPlot)
   }
 
-  if(is.null(plot@ggplot_plus)) {
-    plot@ggplot_plus = GGPlotPlusState()
+  if(is.null(plot@ggplotplus)) {
+    plot@ggplotplus = GGPlotPlusState()
   }
 
   plot
@@ -30,15 +30,15 @@
 #' Add gridlines_plus() intent to a ggplot object
 #'
 #' Internal S7 method for adding `GridlinesPlus` objects to ggplot2 plots.
-#' Ensures the plot carries ggplot_plus state, then stores the gridline intent
+#' Ensures the plot carries ggplotplus state, then stores the gridline intent
 #' for resolution during plot building after scales have been trained.
 #'
 #' @keywords internal
 #' @noRd
 S7::method(update_ggplot, #REGISTER A NEW SPECIFIC VERSION OF THE GENERIC UPDATE_GGPLOT2 METHOD
            list(GridlinesPlus, ggplot2::class_ggplot)) <- function(object, plot, ...) { #NOTE THAT THE SYNTAX HERE WITH THE ARROW OPERATOR IS ESSENTIAL
-    plot = .ensure_ggplot_plus_plot(plot) #ALWAYS RUN FIRST TO MAKE SURE GGPlot_Plus_State exists
-    plot@ggplot_plus@grid = object #THE OBJECT IS THE INCOMING BITS AND BOBS FROM gridlines_plus. SINCE ITS A CLEARLY DEFINED S7 CLASS OBJECT ALREADY, WE USE @ TO REFER TO IT AND ALSO HAVE NO NEED TO UNPACK IT HERE.
+    plot = .ensure_ggplotplus_plot(plot) #ALWAYS RUN FIRST TO MAKE SURE GGPlotPlus_State exists
+    plot@ggplotplus@grid = object #THE OBJECT IS THE INCOMING BITS AND BOBS FROM gridlines_plus. SINCE ITS A CLEARLY DEFINED S7 CLASS OBJECT ALREADY, WE USE @ TO REFER TO IT AND ALSO HAVE NO NEED TO UNPACK IT HERE.
     return(plot)
 }
 
@@ -46,7 +46,7 @@ S7::method(update_ggplot, #REGISTER A NEW SPECIFIC VERSION OF THE GENERIC UPDATE
 #' Add yaxis_title_plus() intent to a ggplot object
 #'
 #' Internal S7 method for adding `YAxisTitlePlus` objects to ggplot2 plots.
-#' Ensures the plot carries ggplot_plus state, applies any margin or legend
+#' Ensures the plot carries ggplotplus state, applies any margin or legend
 #' nudging needed before layout, and stores the y-axis title intent for
 #' resolution during gtable construction.
 #'
@@ -54,7 +54,7 @@ S7::method(update_ggplot, #REGISTER A NEW SPECIFIC VERSION OF THE GENERIC UPDATE
 #' @noRd
 S7::method(update_ggplot,
            list(YAxisTitlePlus, ggplot2::class_ggplot)) <- function(object, plot, ...) {
-  plot = .ensure_ggplot_plus_plot(plot)
+  plot = .ensure_ggplotplus_plot(plot)
 
   #IF MOVING THE TITLE UP TOP, BUMP UP THE TOP MARGIN A SMIDGE.
   currentMargins = plot@theme$plot.margin
@@ -66,7 +66,7 @@ S7::method(update_ggplot,
     plot = plot + .nudge_top_legend_down(howMuch = object@nudgeHowMuch)
   }
 
-  plot@ggplot_plus@y_axis_title = object
+  plot@ggplotplus@y_axis_title = object
   return(plot)
 }
 
@@ -74,7 +74,7 @@ S7::method(update_ggplot,
 #' Add theme_plus() to a ggplot object
 #'
 #' Internal S7 method for adding `ThemePlus` objects to ggplot2 plots. Ensures
-#' the plot carries ggplot_plus state, applies the completed ggplot2 theme, and
+#' the plot carries ggplotplus state, applies the completed ggplot2 theme, and
 #' stores theme-related intent for later geom-default adjustments during plot-
 #' building.
 #'
@@ -83,11 +83,11 @@ S7::method(update_ggplot,
 S7::method(update_ggplot,
            list(ThemePlus, ggplot2::class_ggplot)) <- function(object, plot, ...) {
 
-             plot = .ensure_ggplot_plus_plot(plot)
+             plot = .ensure_ggplotplus_plot(plot)
 
              plot = plot + object@theme2add #<-APPLY THE DEFAULT THEME.
 
-             plot@ggplot_plus@theme = object
+             plot@ggplotplus@theme = object
 
              return(plot)
 }
@@ -95,10 +95,10 @@ S7::method(update_ggplot,
 # S7 BUILD_GGPLOT METHOD --------------------------------------------------
 # ggplot_build = ggplot2::ggplot_build #SAME****
 
-#' Build a ggplot_plus plot
+#' Build a ggplotplus plot
 #'
 #' Internal S7 method for building `GGPlotPlusPlot` objects. Applies deferred
-#' ggplot_plus build-stage behavior before delegating to ggplot2's ordinary plot
+#' ggplotplus build-stage behavior before delegating to ggplot2's ordinary plot
 #' build machinery.
 #'
 #' This method currently patches theme-plus geom defaults into layers before
@@ -111,7 +111,7 @@ S7::method(update_ggplot,
 S7::method(ggplot_build, GGPlotPlusPlot) <- function(plot, ...) {
 
    ###THEME PLUS GEOM DEFAULTS OPERATIONS
-  if(plot@ggplot_plus@theme@applyGeomDefaults == TRUE) {
+  if(plot@ggplotplus@theme@applyGeomDefaults == TRUE) {
 
     plotLayers = plot$layers #ID ALL LAYERS (GEOM) IN THIS PLOT...
     for(layer in 1:length(plotLayers)) { #GO LAYER BY LAYER
@@ -179,7 +179,7 @@ S7::method(ggplot_build, GGPlotPlusPlot) <- function(plot, ...) {
     built = ggplot2::ggplot_build(plain_plot, ...)
 
     ###GRIDLINES PLUS OPERATIONS
-    grid_intents = plot@ggplot_plus@grid # CONVENIENCE OBJ
+    grid_intents = plot@ggplotplus@grid # CONVENIENCE OBJ
     if(!is.null(grid_intents)) {
 
       grid_theme = .apply_gridlines_plus(built, grid_intents) #<--GO SEE MIDDLEWARE.R FOR THIS HELPER.
@@ -190,10 +190,10 @@ S7::method(ggplot_build, GGPlotPlusPlot) <- function(plot, ...) {
 
 
     #REGISTERING INTENT TO MOVE ALONG TO THE GTABLE METHOD FOR YAXIS TITLE PLUS AS NEEDED.
-    if(!is.null(plot@ggplot_plus@y_axis_title)) {
+    if(!is.null(plot@ggplotplus@y_axis_title)) {
       built = S7::convert(built, GGPlotPlusBuilt)
       built@y_axis_title = YAxisTitlePlus(
-          location = plot@ggplot_plus@y_axis_title@location
+          location = plot@ggplotplus@y_axis_title@location
         )
     }
 
@@ -208,11 +208,11 @@ S7::method(ggplot_build, GGPlotPlusPlot) <- function(plot, ...) {
 # ggplot_gtable = ggplot2::ggplot_gtable #SAME****
 
 
-#' Convert a ggplot_plus built plot to a gtable
+#' Convert a ggplotplus built plot to a gtable
 #'
 #' Internal S7 method for converting `GGPlotPlusBuilt` objects to gtables.
 #' Delegates first to ggplot2's ordinary gtable construction, then applies any
-#' deferred ggplot_plus layout edits that require access to the completed gtable.
+#' deferred ggplotplus layout edits that require access to the completed gtable.
 #'
 #' This method currently supports `yaxis_title_plus()`, which moves the y-axis
 #' title into a custom row above or below the panel region.
