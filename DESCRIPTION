@@ -1,6 +1,6 @@
 Package: ggplotplus
 Title: `ggplotplus: An Opinionated, Universal-Design-Oriented Veneer For Ggplot2's Defaults
-Version: 0.5.0
+Version: 0.5.1
 Authors@R: 
     person("Alex", "Bajcz", email = "bajcz003@umn.com", role = c("aut", "cre"))
 Description: A collection of enhancements to ggplot2's defaults, with a focus on universal accessibility and ease of use.
@@ -18,8 +18,8 @@ Imports:
     grid,
     gtable,
     scales,
-    polyclip,
-    viridis
+    viridisLite,
+    polyclip
 Suggests: 
     testthat (>= 3.0.0),
     ragg (>= 1.5.2)
@@ -29,3 +29,4 @@ Acknowledgements:
     Stack Overflow questions 79654995 and 79682150, which
     provided key coding elements enabling the functionality
     of yaxis_title_plus() and geom_point_plus().
+LazyData: true

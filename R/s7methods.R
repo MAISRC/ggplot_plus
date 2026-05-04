@@ -111,7 +111,8 @@ S7::method(update_ggplot,
 S7::method(ggplot_build, GGPlotPlusPlot) <- function(plot, ...) {
 
    ###THEME PLUS GEOM DEFAULTS OPERATIONS
-  if(plot@ggplotplus@theme@applyGeomDefaults == TRUE) {
+  if(S7::prop_exists(plot@ggplotplus@theme, "applyGeomDefaults") && #<--NEEDED IF YOU END UP HERE WITHOUT THEME BUT W/ GRIDLINES.
+    plot@ggplotplus@theme@applyGeomDefaults == TRUE) {
 
     plotLayers = plot$layers #ID ALL LAYERS (GEOM) IN THIS PLOT...
     for(layer in 1:length(plotLayers)) { #GO LAYER BY LAYER
@@ -120,7 +121,7 @@ S7::method(ggplot_build, GGPlotPlusPlot) <- function(plot, ...) {
     geom2match = class(thisLayer$geom)[1] #GET THE CLASS TYPE OF THIS GEOM
     geom2match = tolower(sub("^Geom", "", geom2match)) #YANK OUT THE GEOM BIT AND COERCE TO LOWER.
 
-    defaults2use = .geom_plus_defaults()[[geom2match]] #GRAB THE DEFAULTS FOR IT FROM OUR GLOBAL OBJ.
+    defaults2use = geom_plus_defaults[[geom2match]] #GRAB THE DEFAULTS FOR IT FROM OUR GLOBAL OBJ.
     if(is.null(defaults2use)) { next } #SKIP IF NONE.
 
     if(length(defaults2use$aes) > 0) { #IF THIS GEOM HAS AES DEFAULTS...

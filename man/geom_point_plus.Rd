@@ -50,6 +50,8 @@ geom_point_plus(
 \item{show.legend}{Logical value controlling whether this layer should be included in the legend(s), as in \code{ggplot2::geom_point()}.}
 
 \item{inherit.aes}{Logical controlling whether global aesthetics specified in \code{ggplot2::ggplot()} should be inherited locally by this layer or not, as in \code{ggplot2::geom_point()}.}
+
+\item{show_shape_scale}{Logical controlling whether a call to \code{ggplot2::shape_scale_manual()} should be included as part of the function's operations. Generally, this should be set to \code{TRUE} unless shape is being mapped to a constant, in which case leaving this \code{TRUE} would trigger a legend that is redundant.}
 }
 \value{
 A ggplot2 layer object.

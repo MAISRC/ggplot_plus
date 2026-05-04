@@ -3,17 +3,24 @@
 \docType{data}
 \name{ggplotplus_shapes_list}
 \alias{ggplotplus_shapes_list}
-\title{A new palette of shapes to use in \code{ggplot2} scatterplots.}
+\title{Custom shape palette for \code{geom_point_plus()}}
 \format{
-An object of class \code{list} of length 9.
+A named list of data frames. Each data frame has columns:
+\describe{
+\item{x}{X coordinates for the shape outline.}
+\item{y}{Y coordinates for the shape outline.}
+\item{piece}{Integer identifier for separate polygon pieces or holes.}
+}
 }
 \usage{
 ggplotplus_shapes_list
 }
-\value{
-A named list.
-}
 \description{
-This named list contains elements with x and y coordinates that, when corrected, will draw new shapes to be used as points in \code{ggplot2} scatterplots. The \code{piece} attribute of each element dictates whether a region of the resulting shape will be solid or a "hole" in the final shape.
+A named list of custom point shapes used by \code{geom_point_plus()}. Each element
+contains \code{x} and \code{y} coordinates plus a \code{piece} identifier used when drawing
+filled shapes and holes.
+}
+\examples{
+names(ggplotplus_shapes_list)
 }
 \keyword{datasets}

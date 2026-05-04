@@ -49,11 +49,11 @@ Defaults to \code{"black"}.}
 \item{background_color}{Background fill applied to the panel, plot, legend,
 and strip backgrounds. Defaults to a slightly warm white, \code{"#FFFEFD"}, to reduce eyestrain.}
 
-\item{palette_discrete, }{palette_continuous Default viridis-family color palette codes ("A" through "H") to use for discrete and continuous scales, respectively.}
+\item{palette_discrete, palette_continuous}{Default viridis-family color palette codes ("A" through "H") to use for discrete and continuous scales, respectively.}
 
-\item{begin_discrete, }{end_discrete, begin_continuous, end_continuous Numeric values ranging between 0 and 1 for where to begin drawing colors from a viridis palette for a discrete and continuous color scale, respectively.}
+\item{begin_discrete, end_discrete, begin_continuous, end_continuous}{Numeric values ranging between 0 and 1 for where to begin drawing colors from a viridis palette for a discrete and continuous color scale, respectively.}
 
-\item{export_width, }{export_height Length-1 numeric values indicating your intended export (most likely via ggplot2::ggsave()) width and height, respectively. This rescales font and line sizes internally to stay relatively appropriately for your intended export size.}
+\item{export_width, export_height}{Length-1 numeric values indicating your intended export (most likely via ggplot2::ggsave()) width and height, respectively. This rescales font and line sizes internally to stay relatively appropriately for your intended export size.}
 }
 \value{
 A ggplot2 theme object to add with \code{+}.

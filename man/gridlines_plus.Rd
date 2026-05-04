@@ -32,6 +32,7 @@ library(ggplot2)
 
 ggplot2::ggplot(iris, ggplot2::aes(Sepal.Length, Petal.Length)) +
   ggplot2::geom_point() +
+  theme_plus() + #WE DON'T RECOMMEND USING gridlines_plus() WITHOUT ALSO USING theme_plus()
   gridlines_plus()
 
 # Only y is continuous here (x is discrete) → y-only major gridlines

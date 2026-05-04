@@ -21,6 +21,7 @@
 #'
 #' ggplot2::ggplot(iris, ggplot2::aes(Sepal.Length, Petal.Length)) +
 #'   ggplot2::geom_point() +
+#'   theme_plus() + #WE DON'T RECOMMEND USING gridlines_plus() WITHOUT ALSO USING theme_plus()
 #'   gridlines_plus()
 #'
 #' # Only y is continuous here (x is discrete) → y-only major gridlines
@@ -57,7 +58,7 @@ gridlines_plus = function(color = "gray90",
 #' @return An ggplot class object for adding to a plot with `+`.
 #' @examples
 #' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
-#' geom_plus(geom = "point") +
+#' theme_plus() #WE DO NOT RECOMMEND USING yaxis_title_plus() WITHOUT theme_plus()
 #' yaxis_title_plus()
 #' @export
 yaxis_title_plus = function(location = "top",
@@ -355,9 +356,9 @@ scale_continuous_plus =
 #' @param text_color Default color for most text elements. Defaults to `"black"`.
 #' @param background_color Background fill applied to the panel, plot, legend,
 #'   and strip backgrounds. Defaults to a slightly warm white, `"#FFFEFD"`, to reduce eyestrain.
-#' @param palette_discrete, palette_continuous Default viridis-family color palette codes ("A" through "H") to use for discrete and continuous scales, respectively.
-#' @param begin_discrete, end_discrete, begin_continuous, end_continuous Numeric values ranging between 0 and 1 for where to begin drawing colors from a viridis palette for a discrete and continuous color scale, respectively.
-#' @param export_width, export_height Length-1 numeric values indicating your intended export (most likely via ggplot2::ggsave()) width and height, respectively. This rescales font and line sizes internally to stay relatively appropriately for your intended export size.
+#' @param palette_discrete,palette_continuous Default viridis-family color palette codes ("A" through "H") to use for discrete and continuous scales, respectively.
+#' @param begin_discrete,end_discrete,begin_continuous,end_continuous Numeric values ranging between 0 and 1 for where to begin drawing colors from a viridis palette for a discrete and continuous color scale, respectively.
+#' @param export_width,export_height Length-1 numeric values indicating your intended export (most likely via ggplot2::ggsave()) width and height, respectively. This rescales font and line sizes internally to stay relatively appropriately for your intended export size.
 #'
 #' @return A ggplot2 theme object to add with `+`.
 #'
@@ -523,6 +524,7 @@ theme_plus = function(...,
 #' @param na.rm Logical value controlling whether missing values should be removed from the data with a warning or silently, as in `ggplot2::geom_point()`.
 #' @param show.legend Logical value controlling whether this layer should be included in the legend(s), as in `ggplot2::geom_point()`.
 #' @param inherit.aes Logical controlling whether global aesthetics specified in `ggplot2::ggplot()` should be inherited locally by this layer or not, as in `ggplot2::geom_point()`.
+#' @param show_shape_scale Logical controlling whether a call to `ggplot2::shape_scale_manual()` should be included as part of the function's operations. Generally, this should be set to `TRUE` unless shape is being mapped to a constant, in which case leaving this `TRUE` would trigger a legend that is redundant.
 #' @return A ggplot2 layer object.
 #' @examples
 #' ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg, fill = drat)) +
@@ -618,4 +620,50 @@ geom_point_plus = function(mapping = NULL,
   #BE MORE EXPLICIT ABOUT THE OUTPUT STRUCTURE.
   Filter(Negate(is.null), list(geom_call, scale_call, size_scale_call))
 
+}
+
+
+# geom_point_plus_shapes --------------------------------------------------
+#' Demo plot showing geom_point_plus() shapes
+#'
+#' A prebuilt ggplot object displaying the nine custom point shapes.
+#'
+#' @format A ggplot object.
+#'
+#' @export
+geom_point_plus_shapes = function() {
+
+  ggplot2::ggplot(data = data.frame(x = rep(c(0.5,1.5,2.5), each = 3),
+                                                           y = rep(c(1,2,3), times = 3),
+                                                           shape = factor(1:9))) +
+  geom_point_plus(ggplot2::aes(x = .data$x, y = .data$y, shape = .data$shape, fill = .data$shape), chosen_shapes = c("squircle", "octagon", "flower", "economy", "cross", "waffle", "oval", "sunburst", "lotus"),
+                  size = 10, stroke = 1)+
+  ggplot2::theme_minimal() +
+  ggplot2::lims(y=c(0.5, 3.5), x = c(0.4, 3)) +
+  ggplot2::annotate("text", x = 0.8, y = 1, label = "Closed\nrounded\nuncrossed", size = 5) +
+  ggplot2::annotate("text", x = 0.8, y = 2, label = "Closed\npointed\nuncrossed", size = 5) +
+  ggplot2::annotate("text", x = 0.8, y = 3, label = "Closed\nrounded\ncrossed", size = 5) +
+  ggplot2::annotate("text", x = 1.8, y = 1, label = "Open\npointed\nuncrossed", size = 5) +
+  ggplot2::annotate("text", x = 1.82, y = 2, label = "Intermediate", size = 5) +
+  ggplot2::annotate("text", x = 1.8, y = 3, label = "Closed\npointed\ncrossed", size = 5) +
+  ggplot2::annotate("text", x = 2.8, y = 1, label = "Open\nrounded\nuncrossed", size = 5) +
+  ggplot2::annotate("text", x = 2.8, y = 2, label = "Open\npointed\ncrossed", size = 5) +
+  ggplot2::annotate("text", x = 2.8, y = 3, label = "Open\nrounded\ncrossed", size = 5) +
+  ggplot2::theme(legend.position = "none",
+                 axis.text = ggplot2::element_blank(),
+                 axis.title = ggplot2::element_blank(),
+                 axis.line = ggplot2::element_blank(),
+                 axis.ticks = ggplot2::element_blank(),
+                 axis.title.x = ggplot2::element_blank(),
+                 axis.title.y = ggplot2::element_blank(),
+                 panel.grid = ggplot2::element_blank()) +
+  ggplot2::annotate("text", x = 0.5, y = 0.75, label = "squircle", size = 5, fontface = 'bold') +
+  ggplot2::annotate("text", x = 0.5, y = 1.75, label = "octagon", size = 5, fontface = 'bold') +
+  ggplot2::annotate("text", x = 0.5, y = 2.75, label = "flower", size = 5, fontface = 'bold') +
+  ggplot2::annotate("text", x = 1.5, y = 0.75, label = "economy", size = 5, fontface = 'bold') +
+  ggplot2::annotate("text", x = 1.5, y = 1.75, label = "cross", size = 5, fontface = 'bold') +
+  ggplot2::annotate("text", x = 1.5, y = 2.75, label = "waffle", size = 5, fontface = 'bold') +
+  ggplot2::annotate("text", x = 2.5, y = 0.75, label = "oval", size = 5, fontface = 'bold') +
+  ggplot2::annotate("text", x = 2.5, y = 1.75, label = "sunburst", size = 5, fontface = 'bold') +
+  ggplot2::annotate("text", x = 2.5, y = 2.75, label = "lotus", size = 5, fontface = 'bold')
 }

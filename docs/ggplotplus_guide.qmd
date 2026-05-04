@@ -24,6 +24,7 @@ execute:
   error: false              # Hide errors (set true if you want to show failures)
   freeze: auto              # Prevent re-running code unless it changes
 editor: visual              # Helps with editing
+version: "0.5.1"
 ---
 
 ## Getting started
@@ -428,7 +429,7 @@ In this version:
 Most common `ggplot2` geoms have defaults adjusted by `theme_plus()`, though not all. To see a list of those receiving specific adjustments, run this command:
 
 ```{r geom list}
-sort(names(ggplotplus:::.geom_plus_defaults()))
+sort(names(geom_plus_defaults))
 ```
 
 ### Improving Axes Breaks and Labels

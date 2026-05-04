@@ -1,4 +1,5 @@
 ALEX, TO UPDATE README.QMD, RUN:
+HOWEVER MAKE SURE TO UPDATE THE VERSION # FIRST!!!
 
 quarto::quarto_render("README.qmd")
 
@@ -11,3 +12,6 @@ quarto::quarto_render("docs/ggplotplus_guide.qmd")
 First, load devtools.
 Then, do devtools::load_all(). Resolve any conflicts with global.
 Then, do devtools::document(). Resolve any conflicts and identified issues. Check Namespace and description for updates
+Then do devtools::install(). This will make sure the package can successfully install locally. HOWEVER, I THINK CHECK ALREADY CHECKS FOR THIS.
+Then, do devtools::check(). This will search for bugs/errors/misspecifications, etc.
+rcmdcheck::rcmdcheck() will do a much more thorough search with respect to things that CRAN would care about.

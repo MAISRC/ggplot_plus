@@ -25,6 +25,6 @@ This function relocates the y axis title of a ggplot to the top, above the y axi
 }
 \examples{
 ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
-geom_plus(geom = "point") +
+theme_plus() #WE DO NOT RECOMMEND USING yaxis_title_plus() WITHOUT theme_plus()
 yaxis_title_plus()
 }
