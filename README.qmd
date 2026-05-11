@@ -3,7 +3,6 @@ author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Spec
 format: 
   html: 
     output-file: "README.html"
-    title: "<img src=\"man/figures/ggplotplus_hex.png\" align=\"right\" width=\"180\" alt=\"ggplotplus hex sticker\"> <i>ggplotplus</i> - Universal Design Additions for <i>ggplot2</i>"
     echo: true
     code-overflow: wrap
   gfm:
@@ -18,8 +17,10 @@ execute:
   message: false
 editor: visual
 date: today
-version: "0.5.1"
+version: "0.5.2"
 ---
+
+# *ggplotplus* <img src="man/figures/ggplotplus_hex.png" align="right" width="180" alt="ggplotplus hex sticker">Universal Design additions for *ggplot2*
 
 ## Quick Start Guide
 

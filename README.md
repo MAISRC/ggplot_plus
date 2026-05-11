@@ -3,6 +3,8 @@ Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive
 Species Research Center
 2026-05-11
 
+# *ggplotplus* <img src="man/figures/ggplotplus_hex.png" align="right" width="180" alt="ggplotplus hex sticker">Universal Design additions for *ggplot2*
+
 ## Quick Start Guide
 
 To begin using the `ggplotplus` package, you’ll first need to install it
