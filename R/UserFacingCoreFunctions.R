@@ -4,9 +4,12 @@
 #' continuous variables. Minor gridlines are
 #' blanked. This enables the benefits of gridlines (in instances where there are some) but minimizes visual clutter and cognitive load.
 #'
+#' `gridlines_plus()` ignores any theme instructions to blank major panel scales in either the x or y direction via, e.g., `theme_plus(panel.grid.major.y = ggplot2::element_blank())`. Instead, users can set, e.g., noty == TRUE to prevent gridlines from being drawn in a specific direction, even if that scale is continuous. Similarly, gridline color, linewidth, and linetypes should be set directly in `gridlines_plus()` instead of via `theme()`. Trying to do the latter will fail without error or warning!
+#'
 #' @param color Gridline color. Single character string. Default: `"gray90"`.
 #' @param linewidth Gridline width (theme line units). Single numeric. Default: `1.2`.
 #' @param linetype Gridline type. Single string (e.g., `"solid"`, `"dashed"`).
+#' @param notx,noty Logicals indicating whether gridlines should not be drawn in a specific direction (i.e., the user wants those to be blank even when the axis is continuous). Default to FALSE (gridlines are added).
 #'
 #' @return An ggplot class object for adding to a plot with `+`.
 #'
@@ -37,11 +40,15 @@
 #' @export
 gridlines_plus = function(color = "gray90",
                           linewidth = 1.2,
-                          linetype = "solid") {
+                          linetype = "solid",
+                          notx = FALSE,
+                          noty = FALSE) {
   GridlinesPlus(
     color = color,
     linewidth = linewidth,
-    linetype = linetype
+    linetype = linetype,
+    notx = notx,
+    noty = noty
   )
 }
 
@@ -57,8 +64,10 @@ gridlines_plus = function(color = "gray90",
 #'
 #' @return An ggplot class object for adding to a plot with `+`.
 #' @examples
+#' #WE DO NOT RECOMMEND USING yaxis_title_plus() WITHOUT theme_plus()
 #' ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
-#' theme_plus() #WE DO NOT RECOMMEND USING yaxis_title_plus() WITHOUT theme_plus()
+#' ggplot2::geom_point() +
+#' theme_plus() +
 #' yaxis_title_plus()
 #' @export
 yaxis_title_plus = function(location = "top",
@@ -510,13 +519,17 @@ theme_plus = function(...,
 #'
 #' Collectively, these inputs allow `geom_point_plus()` to access and draw several new and distinctive shapes that are designed to be more readily distinguishable from one another when shape communicates difference.
 #'
+#' To see the special shapes available via this function run `geom_point_plus_shapes()`.
+#'
+#' Note: As of Version 0.5.2, shapes 21-25 in R's default shapes palette are now also available via `geom_point_plus_shapes()`; these are called "circle", "square", "diamond", "triangle_up", and "triangle_down", respectively, though they can also be referred to by number.
+#'
 #' @param mapping Set of aesthetic mappings created by aes(), as in `ggplot2::geom_point()`.
 #' @param data The data to be displayed in this layer, as in `ggplot2::geom_point()`.
 #' @param stat The statistical transformation to use on the data for this layer, as in `ggplot2::geom_point()`.
 #' @param position A position adjustment to use on the data for this layer, as in `ggplot2::geom_point()`.
-#' @param avail_shapes A named list of custom shapes to be drawn in place of `ggplot2`'s standard palette of shapes. Defaults to `ggplotplus_shapes_list`, the palette of shapes designed specifically for use in `geom_point_plus()`. This should probably not be changed unless users have created new shapes they would like to use instead.
+#' @param avail_shapes A named list of custom shapes to be drawn in place of `ggplot2`'s standard palette of shapes. Defaults to `NULL` and is replaced internally with the palette of shapes designed specifically for use in `geom_point_plus()`. This should probably not be changed unless users have created new shapes they would like to use instead.
 #' @param n_shapes A length-1 integer corresponding to the number of distinct shapes the function is allowed to pull from the shapes palette specified to `avail_shapes`. Defaults to the length of `avail_shapes` and should probably not be changed.
-#' @param chosen_shapes A character string referring by name to elements in the `ggplotplus_shapes_list` the function should use to allocate shapes to values, e.g. `c("flower", "octagon", "squircle)`. These are provided internally to a `scale_shape_manual()` call and are meant to circumvent the need for such a call to specify a specific subset of shapes to be used from the new shapes palette. Defaults to `NULL`, i.e., shapes are pulled from `shapes.list` in order. Values here must match the names of those in `avail_shapes`. Numerical values will use `ggplot2`'s default shapes instead.
+#' @param chosen_shapes A character string referring by name to elements in the current shapes registry that the function should use to allocate shapes to values, e.g. `c("flower", "octagon", "squircle)`. These are provided internally to a `scale_shape_manual()` call and are meant to circumvent the need for such a call to specify a specific subset of shapes to be used from the new shapes palette. Defaults to `NULL`, i.e., shapes are pulled from `shapes.list` in order. Numerical values will use `ggplot2`'s default shapes instead.
 #' @param legend_title A length-1 character string corresponding to the name to be used for the shape legend title (if any). This is passed internally to `scale_shape_manual()` and is meant to help circumvent the need for the user to specify any such call directly.
 #' @param key_size A length-1 numeric value corresponding to the desired size of the legend keys. Defaults to 8. This is passed internally to `scale_shape_manual()` and is meant to help circumvent the need for the user to specify any such call directly.
 #' @param include_shape_legend Logical indicating whether a shape legend will be shown (one is always shown unless this is set to FALSE, even when shape is being mapped to a constant and thus a legend may not be appropriate).
@@ -541,7 +554,7 @@ geom_point_plus = function(mapping = NULL,
                            data = NULL,
                            stat = "identity",
                            position = "identity",
-                           avail_shapes = ggplotplus_shapes_list, #A NAMED LIST OF SHAPES. DEFAULTS TO THOSE PROVIDED BY ggplotplus.
+                           avail_shapes = NULL, #A NAMED LIST OF SHAPES. DEFAULTS TO THOSE PROVIDED BY ggplotplus PLUS THOSE ADDED BY THE USER VIA ADD_SHAPE_PLUS. BUT NOT EVALUATED HERE--EVALUATED INSIDE FUNCTION ENVIRON.
                            n_shapes = length(avail_shapes), #HOW MANY DISTINCT SHAPES SHOULD BE PULLED FROM THE AVAILABLE PALETTE? DEFAULTS TO ALL OF THEM.
                            chosen_shapes = NULL, #WE PROVIDE DIRECT ACCESS TO THE VALUES ARGUMENT OF SCALE_SHAPE_MANUAL VIA THIS PARAMETER. THIS WAY, A USER NEEDN'T TACK ON AN ADDITIONAL CALL TO SCALE_SHAPE_MANUAL() TO CUSTOMIZE THE SHAPES USED.
                            legend_title = NULL, #WE ALSO PROVIDE DIRECT ACCESS TO THE TITLE ARGUMENT OF THE LEGEND, AS CHANGING THIS MANUALLY WOULD OTHERWISE REQUIRE ANOTHER CALL TO SCALE_SHAPE_DISCRETE AND THAT WOULD TRIGGER A WARNING AND RESET TO THE SHAPES PALETTE GGPLOT2 GENERALLY USES.
@@ -553,11 +566,18 @@ geom_point_plus = function(mapping = NULL,
                            inherit.aes = TRUE,
                            show_shape_scale = TRUE) {
 
+  #EVALUATES THE SHAPES REGISTRY HERE, UNLESS A DIFFERENT ONE IS PROVIDED.
+  if(is.null(avail_shapes)) {
+    avail_shapes = .pointplus_shapes()
+  }
+
   dot_args = rlang::list2(...)
 
   #IF SHAPE IS NOT BEING MAPPED, JUST RETURN THE LAYER WITHOUT DRAWING ANY SCALE
   #THIS ONLY CHECKS MAPPING, WHICH IS LOCAL. IF SHAPE IS MAPPED GLOBALLY INSTEAD, A SCALE_SHAPE_MANUAL CALL IS PRETTY HARMLESS.
   shape_is_mapped = .has_mapped_aes(mapping, dot_args, "shape")
+
+  chosen_shapes = .standardize_pointplus_shape_names(chosen_shapes) #SEE MIDDLEWARE FOR THIS HELPER.
 
   #IF CHOSEN_SHAPES IS A CONSTANT, PASS IT ALONG AS A CONSTANT AND NOT AN AES.
   if(!shape_is_mapped &&
@@ -587,8 +607,12 @@ geom_point_plus = function(mapping = NULL,
     )
   )
 
-  #HERE ARE THE VALUES TO PULL FOR SHAPES TO USE IN THE SHAPE PALETTE
-  values = chosen_shapes %||% names(avail_shapes)[seq_len(min(length(avail_shapes), n_shapes))]
+  #HERE, SELECT THE EXACT SHAPES TO DRAW FROM THE SHAPES PALETTE, DEFAULTING TO THE SHAPES IN THE REGISTRY IN ORDER IF NO SPECIFIC SHAPES WERE CHOSEN.
+  if(is.null(chosen_shapes) || length(chosen_shapes) == 0) {
+    values = names(avail_shapes)[seq_len(min(length(avail_shapes), n_shapes))]
+  } else {
+    values = chosen_shapes
+  }
 
   #BUILD THE LEGEND IF WE'RE GOING TO, BUT ONLY PUT IN TITLE IF THE USER PROVIDED ONE.
   guide_obj = if(isTRUE(include_shape_legend)) {
@@ -623,10 +647,106 @@ geom_point_plus = function(mapping = NULL,
 }
 
 
-# geom_point_plus_shapes --------------------------------------------------
+#' Jittered points with ggplotplus point shapes
+#'
+#' \code{geom_jitter_plus()} is a convenience wrapper around
+#' \code{geom_point_plus()} that applies jittering to reduce overplotting.
+#' It supports the same custom shape palette and fillable point rendering
+#' as \code{geom_point_plus()} while exposing the familiar \code{width},
+#' \code{height}, and \code{seed} arguments used by
+#' \code{ggplot2::position_jitter()}.
+#'
+#' @inheritParams ggplot2::geom_point
+#' @param width,height Amount of horizontal and vertical jitter. Passed to
+#'   \code{ggplot2::position_jitter()} when \code{position = "jitter"}.
+#' @param seed Random seed used by \code{ggplot2::position_jitter()} to make
+#'   jittering reproducible. Defaults to \code{NA}, matching `ggplot2`.
+#' @param ... Additional arguments passed to \code{geom_point_plus()}, including
+#'   ggplotplus-specific arguments such as \code{chosen_shapes} and
+#'   \code{legend_title}. See `?geom_point_plus` for details.
+#'
+#' @return A ggplot2 layer.
+#'
+#' @examples
+#' ggplot2::ggplot(iris, ggplot2::aes(Species, Sepal.Length)) +
+#'   geom_jitter_plus(
+#'     ggplot2::aes(shape = Species, fill = Petal.Length),
+#'     width = 0.15,
+#'     seed = 1,
+#'     colour = "black"
+#'   )
+#'
+#' ggplot2::ggplot(iris, ggplot2::aes(Species, Sepal.Length)) +
+#'   geom_jitter_plus(
+#'     ggplot2::aes(shape = Species),
+#'     chosen_shapes = c("plus", "flower", "lotus"),
+#'     seed = 123
+#'   )
+#'
+#' @export
+geom_jitter_plus = function(mapping = NULL,
+                            data = NULL,
+                            stat = "identity",
+                            position = "jitter",
+                            ...,
+                            width = NULL,
+                            height = NULL,
+                            seed = NA,
+                            na.rm = FALSE,
+                            show.legend = NA,
+                            inherit.aes = TRUE) {
+
+  #SANITIZING ANY PARTIAL MATCHING INPUTS.
+  dot.args = list(...)
+  anywidth = .partial_match_user_arg(args = dot.args, target = "width")
+  if(length(anywidth) > 0) {
+    width = anywidth
+    dot.args = .remove_partial_match_user_arg(dot.args, "width")
+  }
+  anyheight = .partial_match_user_arg(args = dot.args, target = "height")
+  if(length(anyheight) > 0) {
+    width = anyheight
+    dot.args = .remove_partial_match_user_arg(dot.args, "height")
+  }
+  anyseed = .partial_match_user_arg(args = dot.args, target = "seed")
+  if(length(anyseed) > 0) {
+    width = anyseed
+    dot.args = .remove_partial_match_user_arg(dot.args, "seed")
+  }
+
+  #IF WIDTH OR HEIGHT IS NOT NULL, AND/OR SEED IS NOT NULL, AND WE'RE ON POSITION JITTER...
+  if(!is.null(width) || !is.null(height) || !is.na(seed)) {
+    if(!identical(position, "jitter")) {
+      warning(
+        "`width`, `height`, and `seed` are ignored when `position` is not \"jitter\".",
+        call. = FALSE
+      )
+    } else { #...PASS TO GGPLOT'S POSITION_JITTER.
+      position = ggplot2::position_jitter(
+        width = width,
+        height = height,
+        seed = seed
+      )
+    }
+  }
+
+  #FROM THERE ON OUT, IT'S ALL GEOM_POINT_PLUS'S JOB.
+  geom_point_plus(
+    mapping = mapping,
+    data = data,
+    stat = stat,
+    position = position,
+    ...,
+    na.rm = na.rm,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes
+  )
+}
+
+
 #' Demo plot showing geom_point_plus() shapes
 #'
-#' A prebuilt ggplot object displaying the nine custom point shapes.
+#' A prebuilt ggplot object displaying the nine custom point shapes designed specifically for use in `geom_point_plus()`. As of Version 0.5.2, other shapes are also available, but those are not shown via this function. See the documentation for `geom_point_plus()` for details.
 #'
 #' @format A ggplot object.
 #'
@@ -636,7 +756,7 @@ geom_point_plus_shapes = function() {
   ggplot2::ggplot(data = data.frame(x = rep(c(0.5,1.5,2.5), each = 3),
                                                            y = rep(c(1,2,3), times = 3),
                                                            shape = factor(1:9))) +
-  geom_point_plus(ggplot2::aes(x = .data$x, y = .data$y, shape = .data$shape, fill = .data$shape), chosen_shapes = c("squircle", "octagon", "flower", "economy", "cross", "waffle", "oval", "sunburst", "lotus"),
+  geom_point_plus(ggplot2::aes(x = .data$x, y = .data$y, shape = .data$shape, fill = .data$shape), chosen_shapes = c("squircle", "octagon", "flower", "economy", "plus", "waffle", "oval", "sunburst", "lotus"),
                   size = 10, stroke = 1)+
   ggplot2::theme_minimal() +
   ggplot2::lims(y=c(0.5, 3.5), x = c(0.4, 3)) +
@@ -661,9 +781,132 @@ geom_point_plus_shapes = function() {
   ggplot2::annotate("text", x = 0.5, y = 1.75, label = "octagon", size = 5, fontface = 'bold') +
   ggplot2::annotate("text", x = 0.5, y = 2.75, label = "flower", size = 5, fontface = 'bold') +
   ggplot2::annotate("text", x = 1.5, y = 0.75, label = "economy", size = 5, fontface = 'bold') +
-  ggplot2::annotate("text", x = 1.5, y = 1.75, label = "cross", size = 5, fontface = 'bold') +
+  ggplot2::annotate("text", x = 1.5, y = 1.75, label = "plus", size = 5, fontface = 'bold') +
   ggplot2::annotate("text", x = 1.5, y = 2.75, label = "waffle", size = 5, fontface = 'bold') +
   ggplot2::annotate("text", x = 2.5, y = 0.75, label = "oval", size = 5, fontface = 'bold') +
   ggplot2::annotate("text", x = 2.5, y = 1.75, label = "sunburst", size = 5, fontface = 'bold') +
   ggplot2::annotate("text", x = 2.5, y = 2.75, label = "lotus", size = 5, fontface = 'bold')
+}
+
+
+#' Add a custom shape for geom_point_plus()
+#'
+#' Registers a custom point shape for use with \code{geom_point_plus()}.
+#' Custom shapes are defined by a data frame of connected polygon coordinates
+#' and, once validated, are stored in a session-level shape registry.
+#'
+#' A shape must be supplied as a data frame with columns \code{x}, \code{y},
+#' and \code{piece}. The \code{x} and \code{y} columns define the vertices of
+#' the shape, centered around \code{0, 0}. Coordinates should generally be
+#' scaled to about \code{+/-0.4} to match the scaling of built-in point shapes.
+#' The \code{piece} column identifies separate polygon pieces within the same
+#' shape to generate "holes," as appropriate.
+#'
+#' For inspiration and to model inputs, see `ggplotplus_shapes_list` for the
+#' structure of the built-in point shapes.
+#'
+#' @param name A single character string giving the name of the new shape.
+#' @param shape A data frame with columns \code{x}, \code{y}, and \code{piece}.
+#' @param overwrite Logical. If \code{FALSE}, the default, an error is returned
+#'   when \code{name} already exists in the shape registry. If \code{TRUE}, the
+#'   existing shape is replaced with the newly provided shape. Useful if, e.g.,
+#'   you'd like to scale an existing shape up or down in size.
+#' @param ... Additional arguments. Partial argument matching is supported for
+#' friendly UX.
+#'
+#' @return Invisibly returns the registered shape name.
+#'
+#' @examples
+#' test_star = data.frame(
+#'   x = c(0.000,  0.118,  0.380,  0.190,  0.235,
+#'         0.000, -0.235, -0.190, -0.380, -0.118),
+#'   y = c(0.400,  0.124,  0.124, -0.047, -0.324,
+#'        -0.153, -0.324, -0.047,  0.124,  0.124),
+#'   piece = 1
+#' )
+#'
+#' add_shape_plus("test_star", test_star)
+#'
+#' @export
+add_shape_plus = function(name = NULL,
+                                    shape = NULL,
+                                    overwrite = FALSE,
+                          ...) {
+
+  #TRY TO PARTIAL MATCH NAME FIRST.
+  dot.args = list(...)
+  if(length(dot.args) > 0) {
+  any_name = .partial_match_user_arg(dot.args, "name")
+  if(length(any_name) > 0) {
+    name = any_name
+    dot.args = .remove_partial_match_user_arg(dot.args, "name")
+    }
+
+  #IF UNNAMED FIRST ARG COULD REASONABLY BE NAME, PUT IN THAT FORMAL NAME.
+  if(is.character(dot.args[[1]]) &&
+     length(dot.args[[1]]) == 1) {
+    name = dot.args[[1]]
+    dot.args[[1]] = NULL
+   }
+
+  }
+
+  #SAFETY CHECK--DO WE HAVE A SINGLE CHARACTER NAME THAT ISN'T BLANK?
+  if(!is.character(name) || length(name) != 1 || is.na(name) || name == "") {
+    stop("`name` must be a single non-missing character string. Give your new shape a name!", call. = FALSE)
+  }
+
+
+  name = trimws(name)
+  name = .standardize_pointplus_shape_names(name) #PREVENTS A USER FROM ADDING A "21" OR SOMETHING.
+
+  if(name == ".initialized") {
+    stop("`.initialized` is reserved for internal ggplotplus use. Do not call shapes by that name.", call. = FALSE)
+  }
+
+  .initialize_pointplus_shape_registry()
+
+  #HANDLES SITUATION WHERE A USER TRIES TO ADD A SHAPE WE'VE ALREADY GOT.
+  if(exists(name, envir = .pointplus_shape_registry, inherits = FALSE) && !overwrite) {
+    stop(
+      "A pointplus shape named `", name, "` already exists. ",
+      "Use `overwrite = TRUE` to replace it.",
+      call. = FALSE
+    )
+  }
+
+
+  #NOW, DO THE SAME CLEANING ON SHAPE
+  if(length(dot.args) > 0) {
+    any_shape = .partial_match_user_arg(dot.args, "shape")
+    if(length(any_shape) > 0) {
+      shape = any_shape
+      dot.args = .remove_partial_match_user_arg(dot.args, "shape")
+    }
+
+    #IF UNNAMED FIRST REMAINING ARG COULD REASONABLY BE SHAPE, PUT IN THAT FORMAL NAME.
+    if(is.data.frame(dot.args[[1]]) &&
+       ncol(dot.args[[1]]) >= 3 &&
+       all(c("x", "y", "piece") %in% names(dot.args[[1]]))) { #<--SHOULD BE THREE COLS W/ THESE NAMES AT LEAST.
+      shape = dot.args[[1]]
+      dot.args[[1]] = NULL
+    }
+
+  }
+
+  shape = .validate_pointplus_shape(shape, name = name) #NOW ACTUALLY TRY TO USE THE SHAPE THEY'VE GIVEN.
+
+  assign(name, shape, envir = .pointplus_shape_registry) #IF WE GET THIS FAR, ADD THE SHAPE TO THE REGISTRY.
+
+  #MAKE SURE TO PRESERVE THE INTENDED ORDER AND APPEND USER-ADDED SHAPES TO THE END.
+  if(!name %in% .pointplus_shape_registry$.order) {
+    .pointplus_shape_registry$.order = c(.pointplus_shape_registry$.order, name)
+  }
+
+  if(length(dot.args) > 0) {
+    dot.args = NULL
+    warning("Additional, ambiguous arguments were provided but not used. ")
+  }
+
+  invisible(name) #AN INVISIBLE RETURN FOR SAFETY.
 }

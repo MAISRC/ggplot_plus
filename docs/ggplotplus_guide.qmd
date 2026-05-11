@@ -1,10 +1,10 @@
 ---
-title: "Guide to the ggplotplus Package"
 author: "Dr. Alex Bajcz, Quantitative Ecologist, Minnesota Aquatic Invasive Species Research Center"
 date: today
 format:
   html:
     output-file: index.html
+    title: "Guide to the <i>ggplotplus</i> Package<br><img src=\"../man/figures/ggplotplus_hex.png\" align=\"left\" width=\"180\" alt=\"ggplotplus hex sticker\">"
     self-contained: true
     toc: true               # Table of contents in sidebar
     toc-depth: 3            # Include up to h3 in the TOC
@@ -24,7 +24,7 @@ execute:
   error: false              # Hide errors (set true if you want to show failures)
   freeze: auto              # Prevent re-running code unless it changes
 editor: visual              # Helps with editing
-version: "0.5.1"
+version: "0.5.2"
 ---
 
 ## Getting started
@@ -751,6 +751,26 @@ ggplot(iris,
 
 Because gridlines are *primarily* beneficial for helping a reader discern exact values, there's no need for them when an axis is discrete and thus has no exact values to read! Thus, we can simplify the presentation by omitting them in that direction automatically.
 
+### Selectively Not Adding Gridlines
+
+There might be situations wherein you might want to add very subtle gridlines, and you have more than one continuous axis, but you already know you don't want to add gridlines along one of those two axes. For example, perhaps you have time data on the x-axis, and, even though these data are technically continuous, you don't want gridlines added along that dimension. No worries: set the `notx` or `noty` parameter inside `gridlines_plus()` to `TRUE`:
+
+```{r reject gridlines}
+ggplot(iris,
+       mapping = aes(x = Petal.Length, 
+           y = Species)) +
+  geom_boxplot() + 
+  scale_continuous_plus(
+    scale = "x",
+    name = "Petal length (cm)", 
+    thin.labels = TRUE) +
+  theme_plus() + 
+  yaxis_title_plus() +
+  gridlines_plus(notx = TRUE) #<--REJECT GRIDLINES ALONG THIS SCALE
+```
+
+In this case, this functionally represses all gridlines because there is no other continuous axis.
+
 ## Faceting With `ggplotplus`
 
 Faceting—splitting a plot into **small multiples** based on one or more discrete variables—is a core `ggplot2` feature, and it *generally* works with the tools provided by `ggplotplus`:
@@ -777,9 +797,9 @@ ggplot(iris,
 
 As this example shows, **many features in `ggplotplus` are compatible with faceting**, though some *may* require some thought.
 
-For example, using `yaxis_title_plus()` with facets works—the function places the relocated y-axis title above the facet strip labels. However, for some, this could look a little confusing or awkward. In general, we don't recommend using `yaxis_title_plus()` when you're faceting and have the facet strip labels at the top of the plot. We may make this easier to adjust in the future.
+For example, using `yaxis_title_plus()` with facets works—the function places the relocated y-axis title below the facet strip labels. However, for some, this could look a little confusing or awkward. In general, we don't recommend using `yaxis_title_plus()` when you're faceting and have the facet strip labels at the top of the plot.
 
-However, for now, there are three potential workarounds here. The first is simply to facet by rows instead of columns:
+However, there are three potential workarounds. The first is simply to facet by rows instead of columns:
 
 ```{r plot as rows, message=FALSE}
 #| fig-height: 6
@@ -930,7 +950,7 @@ ggplot(
   geom_point_plus(
     mapping = aes(shape = factor(round(Petal.Length))), 
     legend_title = "Petal length (binned)",
-    chosen_shapes = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle") #<--SPECIFY SPECIFIC SHAPES YOU WANT.
+    chosen_shapes = c("oval", "lotus", "plus", "flower", "octagon", "economy", "waffle") #<--SPECIFY SPECIFIC SHAPES YOU WANT.
   ) + 
   scale_continuous_plus(scale = "x",
                         name = "Petal length (cm)", 
@@ -957,7 +977,7 @@ ggplot(
   geom_point_plus(
     mapping = aes(shape = factor(round(Petal.Length))), 
     legend_title = "Petal length (binned)",
-    chosen_shapes = c("oval", "lotus", "cross", "flower", "octagon", "economy", "waffle"),
+    chosen_shapes = c("oval", "lotus", "plus", "flower", "octagon", "economy", "waffle"),
     fill = viridis::viridis(1,0.5,0.5) #<--GO AHEAD, MAP COLOR/FILL TO CONSTANTS OR EVEN TO VARIABLES!
   ) + 
   scale_continuous_plus(scale = "x",
@@ -970,7 +990,136 @@ ggplot(
   gridlines_plus()
 ```
 
+There is also a `geom_jitter_plus()`, if you'd like to add a little variance to your point locations, e.g., to reduce overplotting:
+
+```{r geom_jitter_plus}
+set.seed(123)
+
+ggplot(
+  iris[sample(1:nrow(iris), 30, replace = FALSE), ],
+  mapping = aes(x = Petal.Length, y = Sepal.Length)
+) +
+  geom_jitter_plus(
+    mapping = aes(shape = factor(round(Petal.Length))), 
+    legend_title = "Petal length (binned)",
+    chosen_shapes = c("oval", "lotus", "plus", "flower", "octagon", "economy", "waffle"),
+    fill = viridis::viridis(1,0.5,0.5),
+    width = 0.5, #<--USE WIDTH, HEIGHT, AND SEED TO CONTROL THE JITTERING.
+    height = 0.35,
+  ) + 
+  scale_continuous_plus(scale = "x",
+                        name = "Petal length (cm)", 
+                        thin.labels = TRUE) +
+  scale_continuous_plus(scale = "y",
+                        name = "Sepal length (cm)") +
+  theme_plus() +
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
 Note that, at present, `shape` cannot be mapped globally to access these shapes–it must be mapped locally in `geom_point_plus()`. Functionality to access these points in different ways and geoms may be added in the future.
+
+### Using a Mixture of R and `ggplotplus` Shapes
+
+To respect the legacy of R graphics, `geom_point_plus()` also has access to the five base R shapes (`pch` 21:25) that can take both fill and color aesthetics. These are accessible via their standard `pch` numbers, e.g. 23, or by names: "circle", "square", "diamond", "triangle_up", and "triangle_down". These can be mix-and-matched with the other shapes added by `ggplotplus`:
+
+```{r mix and match shapes}
+set.seed(123)
+
+ggplot(
+  iris[sample(1:nrow(iris), 30, replace = FALSE), ],
+  mapping = aes(x = Petal.Length, y = Sepal.Length)
+) +
+  geom_point_plus(
+    mapping = aes(shape = factor(round(Petal.Length))), 
+    legend_title = "Petal length (binned)",
+    chosen_shapes = c("oval", "21", "plus", "triangle_up", "octagon", "economy", "diamond"), #<--YOU CAN ACCESS BASE R SHAPES 21-25 VIA NAME OR NUMBER
+    fill = viridis::viridis(1,0.5,0.5) 
+  ) + 
+  scale_continuous_plus(scale = "x",
+                        name = "Petal length (cm)", 
+                        thin.labels = TRUE) +
+  scale_continuous_plus(scale = "y",
+                        name = "Sepal length (cm)") +
+  theme_plus() +
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+### Adding New Shapes to `ggplotplus` For a Session
+
+More radically, you can add your own shapes for use in scatterplots!
+
+The first step to doing so is to generate a list of vertices for your shape. Shapes like those in `ggplotplus` are essentially "connect the dot puzzles," wherein consecutive vertices on a coordinate plane are joined in order. Polygons formed after and within the first are treated as "holes" in the base shape. Coordinates must lie with \[-1, 1\], with a rough diameter of 0.4, in both the horizontal and vertical directions. The base shape should have a `piece` value of 1; all vertices in each `hole` should have a unique `piece` value \>1.
+
+For example, a basic 5-pointed star, with no holes, might have coordinates like these:
+
+```{r test star}
+(test_star = data.frame(
+  x = c(
+    0.000,
+    0.118,
+    0.380,
+    0.190,
+    0.235,
+    0.000,
+    -0.235,
+    -0.190,
+    -0.380,
+    -0.118
+  ),
+  y = c(
+    0.400,
+    0.124,
+    0.124,
+    -0.047,
+    -0.324,
+    -0.153,
+    -0.324,
+    -0.047,
+    0.124,
+    0.124
+  ),
+  piece = 1
+))
+```
+
+We can register this shape with `ggplotplus` for the session using `add_shape_plus()`:
+
+```{r adding shape}
+add_shape_plus(name = "star", #<--THE NAME TO USE TO ACCESS THIS SHAPE.
+               shape = test_star
+              )
+```
+
+Once registered, you can refer to this shape by name in any later calls:
+
+```{r using the star}
+set.seed(123)
+
+ggplot(
+  iris[sample(1:nrow(iris), 30, replace = FALSE), ],
+  mapping = aes(x = Petal.Length, y = Sepal.Length)
+) +
+  geom_point_plus(
+    mapping = aes(shape = factor(round(Petal.Length))), 
+    legend_title = "Petal length (binned)",
+    chosen_shapes = c("oval", "21", "plus", "star", "octagon", "economy", "diamond"), #<--YOU CAN NOW ACCESS THE STAR SHAPE, IF IT'S BEEN REGISTERED
+    fill = viridis::viridis(1,0.5,0.5) 
+  ) + 
+  scale_continuous_plus(scale = "x",
+                        name = "Petal length (cm)", 
+                        thin.labels = TRUE) +
+  scale_continuous_plus(scale = "y",
+                        name = "Sepal length (cm)") +
+  theme_plus() +
+  yaxis_title_plus() +
+  gridlines_plus()
+```
+
+Feel free to get creative to make highly distinctive shapes! Generative AI models are, in our experience, very good at turning shape ideas into compatible lists of vertices and holes, if given the parameters described above.
+
+Note that shape registrations last only for the session; you will need to re-register shapes each new session.
 
 ## More Unusual Interactions
 

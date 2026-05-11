@@ -9,7 +9,7 @@ geom_point2(
   data = NULL,
   stat = "identity",
   position = "identity",
-  shapes = ggplotplus_shapes_list,
+  shapes = NULL,
   ...,
   na.rm = FALSE,
   show.legend = NA,

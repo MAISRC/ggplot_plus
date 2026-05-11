@@ -13,7 +13,7 @@
   )
 }
 
-#SHAPE 2: CROSS. THIS SHAPE IS INTERMEDIATE IN OPENNESS, INTERSECTIONALITY, AND SPIKINESS.
+#SHAPE 2: PLUS THIS SHAPE IS INTERMEDIATE IN OPENNESS, INTERSECTIONALITY, AND SPIKINESS.
 {
   arm_len = 0.40
   arm_thick = 0.12
@@ -36,7 +36,7 @@
     -l,  t
   ), byrow = TRUE, ncol = 2)
 
-  cross = data.frame(x = xy[,1],
+  plus = data.frame(x = xy[,1],
                      y = xy[,2],
                      piece = 1)
 }
@@ -224,17 +224,53 @@
   )
 }
 
+#SHAPES 10-15 ARE THE ORIGINAL SHAPES AVAILABLE IN VANILLA R (PCH 21-25)
+circle = data.frame(
+  x = cos(seq(0, 2*pi, length.out = 50)) * 0.4,
+  y = sin(seq(0, 2*pi, length.out = 50)) * 0.4,
+  piece = 1
+)
+
+square = data.frame(
+  x = c(-0.4, -0.4,  0.4,  0.4),
+  y = c(-0.4,  0.4,  0.4, -0.4),
+  piece = 1
+)
+
+diamond = data.frame(
+  x = c( 0.0,  0.4,  0.0, -0.4),
+  y = c( 0.4,  0.0, -0.4,  0.0),
+  piece = 1
+)
+
+triangle_up = data.frame(
+  x = c( 0.0, -0.4,  0.4),
+  y = c( 0.4, -0.4, -0.4),
+  piece = 1
+)
+
+triangle_down = data.frame(
+  x = c( 0.0, -0.4,  0.4),
+  y = c(-0.4,  0.4,  0.4),
+  piece = 1
+)
+
 #BUNDLES ALL THAT UP INTO AN OBJECT.
 ggplotplus_shapes_list = list(
-  squircle = squircle,
-  lotus = egg_of_life,
+  plus = plus,
+  octagon = octagon,
   flower = flower,
   oval = oval,
-  octagon = octagon,
-  sunburst = sunburst,
   waffle = waffle,
+  squircle = squircle,
+  sunburst = sunburst,
+  lotus = egg_of_life,
   economy = economy,
-  cross = cross
+  circle = circle,
+  square = square,
+  diamond = diamond,
+  triangle_up = triangle_up,
+  triangle_down = triangle_down
 )
 
 #BUNDLES THIS INTO A STORED DATA OBJECT WHICH WILL BE FASTER TO LOAD AT INSTALL.

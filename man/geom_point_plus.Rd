@@ -9,7 +9,7 @@ geom_point_plus(
   data = NULL,
   stat = "identity",
   position = "identity",
-  avail_shapes = ggplotplus_shapes_list,
+  avail_shapes = NULL,
   n_shapes = length(avail_shapes),
   chosen_shapes = NULL,
   legend_title = NULL,
@@ -31,11 +31,11 @@ geom_point_plus(
 
 \item{position}{A position adjustment to use on the data for this layer, as in \code{ggplot2::geom_point()}.}
 
-\item{avail_shapes}{A named list of custom shapes to be drawn in place of \code{ggplot2}'s standard palette of shapes. Defaults to \code{ggplotplus_shapes_list}, the palette of shapes designed specifically for use in \code{geom_point_plus()}. This should probably not be changed unless users have created new shapes they would like to use instead.}
+\item{avail_shapes}{A named list of custom shapes to be drawn in place of \code{ggplot2}'s standard palette of shapes. Defaults to \code{NULL} and is replaced internally with the palette of shapes designed specifically for use in \code{geom_point_plus()}. This should probably not be changed unless users have created new shapes they would like to use instead.}
 
 \item{n_shapes}{A length-1 integer corresponding to the number of distinct shapes the function is allowed to pull from the shapes palette specified to \code{avail_shapes}. Defaults to the length of \code{avail_shapes} and should probably not be changed.}
 
-\item{chosen_shapes}{A character string referring by name to elements in the \code{ggplotplus_shapes_list} the function should use to allocate shapes to values, e.g. \verb{c("flower", "octagon", "squircle)}. These are provided internally to a \code{scale_shape_manual()} call and are meant to circumvent the need for such a call to specify a specific subset of shapes to be used from the new shapes palette. Defaults to \code{NULL}, i.e., shapes are pulled from \code{shapes.list} in order. Values here must match the names of those in \code{avail_shapes}. Numerical values will use \code{ggplot2}'s default shapes instead.}
+\item{chosen_shapes}{A character string referring by name to elements in the current shapes registry that the function should use to allocate shapes to values, e.g. \verb{c("flower", "octagon", "squircle)}. These are provided internally to a \code{scale_shape_manual()} call and are meant to circumvent the need for such a call to specify a specific subset of shapes to be used from the new shapes palette. Defaults to \code{NULL}, i.e., shapes are pulled from \code{shapes.list} in order. Numerical values will use \code{ggplot2}'s default shapes instead.}
 
 \item{legend_title}{A length-1 character string corresponding to the name to be used for the shape legend title (if any). This is passed internally to \code{scale_shape_manual()} and is meant to help circumvent the need for the user to specify any such call directly.}
 
@@ -61,6 +61,10 @@ This function behaves similarly to \code{ggplot2::geom_point()} except that it t
 }
 \details{
 Collectively, these inputs allow \code{geom_point_plus()} to access and draw several new and distinctive shapes that are designed to be more readily distinguishable from one another when shape communicates difference.
+
+To see the special shapes available via this function run \code{geom_point_plus_shapes()}.
+
+Note: As of Version 0.5.2, shapes 21-25 in R's default shapes palette are now also available via \code{geom_point_plus_shapes()}; these are called "circle", "square", "diamond", "triangle_up", and "triangle_down", respectively, though they can also be referred to by number.
 }
 \examples{
 ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg, fill = drat)) +

@@ -19,11 +19,19 @@ geom_point2 = function(mapping = NULL,
                        data = NULL,
                        stat = "identity",
                        position = "identity",
-                       shapes = ggplotplus_shapes_list, #THE KEY INPUT--THIS IS THE NEW PALETTE OF SHAPES AVAILABLE.
+                       shapes = NULL, #THE KEY INPUT--THIS IS THE NEW PALETTE OF SHAPES AVAILABLE (PLUS NOW THOSE AVAILABLE FROM THE USER)
                        ...,
                        na.rm = FALSE,
                        show.legend = NA,
                        inherit.aes = TRUE){
+
+  if(is.null(shapes)) {
+    shapes = .pointplus_shapes()
+  }
+
+  if(length(shapes) == 0) {
+    stop("No geom_point_plus() shapes are currently registered.", call. = FALSE)
+  }
 
   ggplot2::layer(
     data = data,
@@ -56,7 +64,7 @@ GeomPointPlus = ggplot2::ggproto(
                         shapes,
                         na.rm = FALSE) {
 
-    if(is.factor(data$shape)) { data$shape = as.character(data$shape) } #COERCE FACTORS, WHICH MIGHT LOOK NUMERIC, TO CHARACTERS SO CUSTOM SHAPE STRINGS WORK.
+    if(is.factor(coord$shape)) { coord$shape = as.character(coord$shape) } #COERCE FACTORS, WHICH MIGHT LOOK NUMERIC, TO CHARACTERS SO CUSTOM SHAPE STRINGS WORK.
 
     coords = coord$transform(data, panel_params) #TRANSFORM DATA INTO THE PANEL COORDINATE SYSTEM FIRST.
 
@@ -65,7 +73,8 @@ GeomPointPlus = ggplot2::ggproto(
 
     #TWO DIFFERENT WAYS OF INPUTTING SHAPES MEANS TWO DIFFERENT WAYS OF ADDRESSING THE INPUTS. IF THE SHAPE DATA ARE NUMERIC, THE USER PRESUMABLY WANTS PLAIN-OLD GGPLOT2 POINTS AND WE DELEGATE THAT TO THE STANDARD POINTS GROB.
 
-    if(!is.character(coords$shape)) {
+    if(!is.character(coords$shape) &&
+       !any(21:25 %in% coords$shape)) {
       return(grid::pointsGrob(
         x   = coords$x,
         y   = coords$y,
@@ -90,6 +99,9 @@ GeomPointPlus = ggplot2::ggproto(
 
     coords = coords[ok, , drop = FALSE] #GET RID OF ALL NAs SO WE NEVER ERROR OUT TRYING TO USE THEM AS REFERENTS.
 
+    #IF USER SPECIFIED ANY OF THE BASE SHAPES BTW. 21 AND 25, CONVERT TO CORRESPONDING TEXT STRINGS
+    coords$shape = .standardize_pointplus_shape_names(coords$shape) #<--SEE MIDDLEWARE FOR THIS HELPER.
+
     #IF A USER SPECIFIED AN UNKNOWN SHAPE, BAIL EARLY WITH USEFUL MESSAGE.
     unknown = setdiff(unique(coords$shape),
                       names(shapes))
@@ -110,8 +122,8 @@ GeomPointPlus = ggplot2::ggproto(
     #BUILD ONE PATH GROB (CUSTOM SHAPE) PER POINT, USING THE EVEN-ODD RULE TO PUNCH HOLES OUT OF THE CENTER OF SOME SHAPES.
     g = Map(function(x, y, shape, size, color, fill, lwd) {
       dat  = shapes[[shape]]
-      xval = unit(x, "npc") + unit(dat$x * size * .pointplus_scale, "points")
-      yval = unit(y, "npc") + unit(dat$y * size * .pointplus_scale, "points")
+      xval = ggplot2::unit(x, "npc") + ggplot2::unit(dat$x * size * .pointplus_scale, "points")
+      yval = ggplot2::unit(y, "npc") + ggplot2::unit(dat$y * size * .pointplus_scale, "points")
       grid::pathGrob(
         x = xval, y = yval, id = dat$piece,
         rule = "evenodd",
@@ -122,7 +134,9 @@ GeomPointPlus = ggplot2::ggproto(
         )
       )
     },
-    coords$x, coords$y, coords$shape,
+    coords$x,
+    coords$y,
+    coords$shape,
     size_pts,
     ggplot2::alpha(coords$colour, coords$alpha),
     ggplot2::fill_alpha(coords$fill, coords$alpha),

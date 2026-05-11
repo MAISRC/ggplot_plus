@@ -10,7 +10,9 @@ GridlinesPlus = S7::new_class(
   properties = list(
     color = S7::class_character,
     linewidth = S7::class_numeric,
-    linetype = S7::class_character
+    linetype = S7::class_character,
+    notx = S7::class_logical,
+    noty = S7::class_logical
   )
 )
 

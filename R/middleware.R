@@ -245,16 +245,25 @@ geom_plus_defaults = list(
   x_is_cont = inherits(panel_scales$x, "ScaleContinuousPosition")
   y_is_cont = inherits(panel_scales$y, "ScaleContinuousPosition")
 
+  #UNPACK STORED INTENTS AROUND KEEPING SOME AXES BLANK
+  notx = intents@notx
+  noty = intents@noty
+
   #NEED TO CHECK FOR AND RESPECT A COORD_FLIP BY SWAPPING THE ABOVE.
   if(inherits(plot@plot@coordinates, "CoordFlip")) {
     tmp = x_is_cont
+    tmp2 = notx
+
     x_is_cont = y_is_cont
+    notx = noty
+
     y_is_cont = tmp
+    noty = tmp2
   }
 
   #CONDITIONALLY ADJUST GRIDLINES AS APPROPRIATE AND SUPPRESS ALL OTHERS.
   grid_theme = ggplot2::theme(
-    panel.grid.major.x = if (x_is_cont) {
+    panel.grid.major.x = if(x_is_cont && !notx) { #<--ENSURE INTENT OF USER IS ACKNOWLEDGED.
       ggplot2::element_line(
         colour = intents@color,
         linewidth = intents@linewidth,
@@ -263,7 +272,7 @@ geom_plus_defaults = list(
     } else {
       ggplot2::element_blank()
     },
-    panel.grid.major.y = if (y_is_cont) {
+    panel.grid.major.y = if(y_is_cont && !noty) {
       ggplot2::element_line(
         colour = intents@color,
         linewidth = intents@linewidth,
@@ -333,16 +342,31 @@ geom_plus_defaults = list(
     cols2zero = unique(unlist(Map(seq.int, gt$layout$l[kill_idx], gt$layout$r[kill_idx])))
     gt$widths[cols2zero] = ggplot2::unit(0, "points")
 
-  ###WE TRY TO LOCATE THE ROWS ABOVE WHEREVER THE AXIS-T OR BELOW THE AXIS-B ROWS ARE.
-    axis_title_rows = which(grepl("^xlab-t", gt$layout$name))
-    if(!length(axis_title_rows)) {
+  ###WE TRY TO LOCATE THE ROWS ABOVE WHEREVER THE AXIS-T OR BELOW THE AXIS-B ROWS ARE -- OR, ON A FACETED GRAPH, WHERE THE TOP OR BOTTOM STRIP LABELS ARE.
+    axis_title_rows = which(grepl("^xlab-[tb]", gt$layout$name))
+    strip_label_rows = which(grepl("^strip-[tb]", gt$layout$name))
+
+    if(!length(axis_title_rows) & !length(strip_label_rows)) {
       return(gt) #IF SOMEHOW NONE, BREAK. ****WHY WOULD THIS OCCUR?
     }
 
-  target_axis_title_row = if(location == "top") {
-    min(gt$layout$t[axis_title_rows]) - 1 #GO ABOVE AT TOP, BELOW AT BOTTOM.
+  if(location == "top") {
+    if(length(strip_label_rows) > 0 &&
+       length(which(grepl("^strip-[t]", gt$layout$name)))) {
+
+      target_axis_title_row = min(gt$layout$t[strip_label_rows]) #INSERT RIGHT WHERE THEY CURRENTLY ARE.
+    } else {
+      target_axis_title_row = min(gt$layout$t[axis_title_rows]) - 1 #GO ABOVE X AXIS TITLE ROW OTHERWISE.
+    }
+    new_title_row = target_axis_title_row + 1 #THE NEW ROW IS BELOW THE ONE I WAS TARGETING THANKS TO INCREMENTAL INDEXING.
   } else {
-    max(gt$layout$b[axis_title_rows]) + 1
+    if(length(strip_label_rows) > 0 & #REVERSE PATTERN ON BOTTOM.
+       length(which(grepl("^strip-[b]", gt$layout$name)))) {
+      target_axis_title_row = max(gt$layout$b[strip_label_rows])
+    } else {
+      target_axis_title_row = max(gt$layout$b[axis_title_rows]) + 1
+    }
+    new_title_row = target_axis_title_row - 1
   }
 
     #FIND THE COLUMN IN WHICH THE AXIS-L CONTENT WAS ORIGINALLY--THIS IS WHAT WE WILL JUSTIFY THE CONTENTS OF THE NEW TITLE TO ON THE LEFT-HAND SIDE.
@@ -376,7 +400,8 @@ geom_plus_defaults = list(
       rot = 0,
       gp = gp
     ),
-    t = target_axis_title_row,
+    t = new_title_row,
+    b = new_title_row,
     l = title_col,
     name = paste0("ggplotplus-", real_scale, "-title"),
     clip = "off"
@@ -715,4 +740,186 @@ geom_plus_defaults = list(
 
   ggplot2::theme(legend.box.margin = ggplot2::margin(b = -howMuch, r = 5, t = 5, l = 5))
 
+}
+
+
+#' Standardize ggplotplus shape names
+#'
+#' Internal helper to normalize shape identifiers used by
+#' \code{geom_point_plus()}. Converts numeric shape codes
+#' corresponding to base R's fillable point shapes (21--25)
+#' into their ggplotplus string equivalents.
+#'
+#' This ensures consistent downstream handling regardless of
+#' whether users supply shapes as numbers (e.g., \code{21}) or
+#' names (e.g., \code{"circle"}).
+#'
+#' @param shape A vector of shape identifiers. May be numeric,
+#'   character, or factor.
+#'
+#' @return A character vector of standardized shape names.
+#'
+#' @keywords internal
+.standardize_pointplus_shape_names = function(shape) {
+
+  if(is.null(shape)) { #DEFENDS--IF NULL, THE DEFAULT, JUST RETURN NULL, AS THAT IS WHAT IS EXPECTED DOWNSTREAM.
+    return(NULL)
+  }
+
+  validshapeslookup = c(
+    "21" = "circle",
+    "22" = "square",
+    "23" = "diamond",
+    "24" = "triangle_up",
+    "25" = "triangle_down"
+  )
+
+  shape = as.character(shape)
+
+  use_lookup = shape %in% names(validshapeslookup)
+
+  shape[use_lookup] = validshapeslookup[shape[use_lookup]]
+
+  shape
+}
+
+
+#' Validate a geom_point_plus() shape definition
+#'
+#' Internal helper used by \code{add_shape_plus()} to check that a custom
+#' point shape has the structure needed by the ggplotplus shape-drawing
+#' machinery.
+#'
+#' @param shape A proposed shape definition. Must be a data frame with columns
+#'   \code{x}, \code{y}, and \code{piece}.
+#' @param name Shape name, used by callers.
+#'
+#' @return A cleaned shape data frame containing only \code{x}, \code{y}, and
+#'   \code{piece}. The \code{piece} column is converted to sequential integers if
+#'   it wasn't already formatted thusly.
+#'
+#' @keywords internal
+.validate_pointplus_shape = function(shape, name = NULL) {
+
+  #VARIOUS SAFETY CHECKS TO ENSURE WE GOT THE INPUTS WE NEEDED W/ HELPFUL ERROR MESSAGES IF NOT.
+  required_cols = c("x", "y", "piece")
+
+  if(!is.data.frame(shape)) {
+    stop("`shape` must be a data frame containing three columns named 'x', 'y', and 'piece'. See ?add_shape_plus for details.", call. = FALSE)
+  }
+
+  missing_cols = setdiff(required_cols, names(shape))
+
+  if(length(missing_cols) > 0) {
+    stop(
+      "`shape` is missing the following required column(s): ",
+      paste(missing_cols, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  if(!is.numeric(shape$x) || !is.numeric(shape$y)) {
+    stop("`shape$x` and `shape$y` must both be numeric.", call. = FALSE)
+  }
+
+  if(any(!is.finite(shape$x)) || any(!is.finite(shape$y))) {
+    stop("`shape$x` and `shape$y` must contain only finite numeric values.", call. = FALSE)
+  }
+
+  if(any(is.na(shape$piece))) {
+    stop("`shape$piece` cannot contain missing values. These should be integers starting at 1.", call. = FALSE)
+  }
+
+  pieces = split(shape, shape$piece) #CHOPS INTO A LIST BY PIECE VAL.
+
+  n_vertices = vapply(pieces, nrow, integer(1)) #APPLIES NROW TO EACH.
+
+  if(any(n_vertices < 3)) {
+    stop("Each `piece` of your shape must contain at least 3 points.", call. = FALSE)
+  }
+
+  #****THIS VALIDATES THE FIRST REQUIREMENT BUT NOT THE SECOND...THAT'S PROBABLY OK? MORE LIKELY YOU WILL FAIL BOTH IF YOU FAIL THE FIRST. CAN FINE-TUNE LATER.
+  if(max(abs(c(shape$x, shape$y))) > 1) {
+    warning(
+      "`shape` coordinates extend beyond +/-1. ",
+      "Point shapes are expected to be centered on 0 and scaled to roughly +/-0.4.",
+      call. = FALSE
+    )
+  }
+
+  shape = shape[, required_cols, drop = FALSE] #GETS RID OF ANY EXTRA COLS.
+
+  shape$piece = as.integer(as.factor(shape$piece)) #RENUMBERS THESE TO BE INTEGERS STARTING AT 1 IF THEY AREN'T ALREADY.
+
+  return(shape)
+}
+
+
+#' Get registered geom_point_plus() shapes
+#'
+#' Internal helper that returns the current ggplotplus point-shape registry,
+#' including both built-in package shapes and any shapes added during the
+#' current R session with \code{add_shape_plus()}.
+#'
+#' @return A named list of point-shape data frames.
+#'
+#' @keywords internal
+.pointplus_shapes = function() {
+
+  .initialize_pointplus_shape_registry()
+
+  shape_names = .pointplus_shape_registry$.order
+
+  shape_names = shape_names[
+    vapply(shape_names, function(x) {
+      exists(x, envir = .pointplus_shape_registry, inherits = FALSE)
+    }, logical(1))
+  ]
+
+  stats::setNames(
+    lapply(shape_names, function(x) {
+      get(x, envir = .pointplus_shape_registry, inherits = FALSE)
+    }),
+    shape_names
+  )
+}
+
+
+#' Safely check whether an S7 property is TRUE
+#'
+#' Internal helper that safely checks whether an object:
+#' \enumerate{
+#'   \item exists and is not \code{NULL},
+#'   \item is an S7 object,
+#'   \item contains a specified property, and
+#'   \item has that property set to \code{TRUE}.
+#' }
+#'
+#' This helper is primarily used to avoid errors when optional
+#' ggplotplus S7 components may not (yet) exist on a plot object.
+#'
+#' @param object An object that may or may not be an S7 object.
+#' @param prop A single character string giving the property name
+#'   to check.
+#'
+#' @return A logical scalar. Returns \code{TRUE} only if the object
+#'   is a valid S7 object, the property exists, and the property
+#'   value is exactly \code{TRUE}. Otherwise returns \code{FALSE}.
+#'
+#' @keywords internal
+.s7_prop_is_true = function(object, prop) {
+
+  if(is.null(object)) {
+    return(FALSE)
+  }
+
+  if(!S7::S7_inherits(object, S7::S7_object)) {
+    return(FALSE)
+  }
+
+  if(!S7::prop_exists(object, prop)) {
+    return(FALSE)
+  }
+
+  isTRUE(S7::prop(object, prop))
 }

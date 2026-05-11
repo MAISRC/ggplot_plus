@@ -24,7 +24,9 @@ An ggplot class object for adding to a plot with \code{+}.
 This function relocates the y axis title of a ggplot to the top, above the y axis line and left-justified to the left edge of the y axis labels, sort of like a plot subtitle. It also orients the text horizontally for space-efficiency and easy reading. This is otherwise difficult to do using \code{ggplot2}'s default styling tools.
 }
 \examples{
+#WE DO NOT RECOMMEND USING yaxis_title_plus() WITHOUT theme_plus()
 ggplot2::ggplot(iris, ggplot2::aes(x=Sepal.Length, y=Petal.Length)) +
-theme_plus() #WE DO NOT RECOMMEND USING yaxis_title_plus() WITHOUT theme_plus()
+ggplot2::geom_point() +
+theme_plus() +
 yaxis_title_plus()
 }

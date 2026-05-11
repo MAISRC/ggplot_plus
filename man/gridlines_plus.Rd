@@ -4,7 +4,13 @@
 \alias{gridlines_plus}
 \title{Subtle, Minimal Gridlines For When and Where They Help}
 \usage{
-gridlines_plus(color = "gray90", linewidth = 1.2, linetype = "solid")
+gridlines_plus(
+  color = "gray90",
+  linewidth = 1.2,
+  linetype = "solid",
+  notx = FALSE,
+  noty = FALSE
+)
 }
 \arguments{
 \item{color}{Gridline color. Single character string. Default: \code{"gray90"}.}
@@ -12,6 +18,8 @@ gridlines_plus(color = "gray90", linewidth = 1.2, linetype = "solid")
 \item{linewidth}{Gridline width (theme line units). Single numeric. Default: \code{1.2}.}
 
 \item{linetype}{Gridline type. Single string (e.g., \code{"solid"}, \code{"dashed"}).}
+
+\item{notx, noty}{Logicals indicating whether gridlines should not be drawn in a specific direction (i.e., the user wants those to be blank even when the axis is continuous). Default to FALSE (gridlines are added).}
 }
 \value{
 An ggplot class object for adding to a plot with \code{+}.
@@ -22,6 +30,8 @@ continuous variables. Minor gridlines are
 blanked. This enables the benefits of gridlines (in instances where there are some) but minimizes visual clutter and cognitive load.
 }
 \details{
+\code{gridlines_plus()} ignores any theme instructions to blank major panel scales in either the x or y direction via, e.g., \code{theme_plus(panel.grid.major.y = ggplot2::element_blank())}. Instead, users can set, e.g., noty == TRUE to prevent gridlines from being drawn in a specific direction, even if that scale is continuous. Similarly, gridline color, linewidth, and linetypes should be set directly in \code{gridlines_plus()} instead of via \code{theme()}. Trying to do the latter will fail without error or warning!
+
 Under the hood, \code{gridlines_plus()} checks layer and/or global mappings to
 see if \code{x} and/or \code{y} are continuous. It does this by inspecting the trained panel scales.
 It then turns on \strong{major} gridlines for continuous directions and explicitly

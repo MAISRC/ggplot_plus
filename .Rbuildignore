@@ -19,3 +19,6 @@
 ^\.Rd2pdf[0-9]+$
 ^\.\.?pdf$
 ^/deprecated$
+^data-raw$
+^dev$
+^images$

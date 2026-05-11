@@ -54,12 +54,8 @@ S7::method(update_ggplot, #REGISTER A NEW SPECIFIC VERSION OF THE GENERIC UPDATE
 #' @noRd
 S7::method(update_ggplot,
            list(YAxisTitlePlus, ggplot2::class_ggplot)) <- function(object, plot, ...) {
-  plot = .ensure_ggplotplus_plot(plot)
 
-  #IF MOVING THE TITLE UP TOP, BUMP UP THE TOP MARGIN A SMIDGE.
-  currentMargins = plot@theme$plot.margin
-  nextMargin = currentMargins[1] + unit(10, "pt")
-  plot = plot + ggplot2::theme(plot.margin = ggplot2::margin(t = nextMargin, r = currentMargins[2], b = currentMargins[3], l = currentMargins[4]))
+  plot = .ensure_ggplotplus_plot(plot)
 
   #IF BUNDLING THE NUDGE FUNCTION, IMPLEMENT HERE.
   if(isTRUE(object@nudgeTopLegendDown)) {
@@ -111,10 +107,10 @@ S7::method(update_ggplot,
 S7::method(ggplot_build, GGPlotPlusPlot) <- function(plot, ...) {
 
    ###THEME PLUS GEOM DEFAULTS OPERATIONS
-  if(S7::prop_exists(plot@ggplotplus@theme, "applyGeomDefaults") && #<--NEEDED IF YOU END UP HERE WITHOUT THEME BUT W/ GRIDLINES.
-    plot@ggplotplus@theme@applyGeomDefaults == TRUE) {
+  if(.s7_prop_is_true(plot@ggplotplus@theme, "applyGeomDefaults")) {
 
     plotLayers = plot$layers #ID ALL LAYERS (GEOM) IN THIS PLOT...
+    if(length(plotLayers) > 0) { #POSSIBLE THEY PUT IN NO GEOMS, IN WHICH CASE THERE'D BE NO LAYERS.
     for(layer in 1:length(plotLayers)) { #GO LAYER BY LAYER
 
     thisLayer = plotLayers[[layer]] #ISOLATE THIS LAYER
@@ -172,6 +168,7 @@ S7::method(ggplot_build, GGPlotPlusPlot) <- function(plot, ...) {
       }#END PARAM DEFAULTS LOOP
 
     } #END LAYER BY LAYER GEOM DEFAULTS CHECK
+   } #NO LAYERS/NO LAYERS CHECK
 
   } #END THEME PLUS GEOM DEFAULTS REGION
 
